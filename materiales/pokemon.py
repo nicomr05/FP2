@@ -1,7 +1,6 @@
 """
 TODO: Implement in this file the Pokemon hierarchy.
 """
-#asdadasdsa
 
 from abc import ABC, abstractmethod
 

@@ -49,7 +49,7 @@ class Trainer:
         '''
         estado = False
         opponent = self._pokemon # ???
-        for pokemon in p:
+        for pokemon in opponent:
             if pokemon._hp <= 0:
                 estado = True
             estado = estado # Revisar función (meter lógicos)
