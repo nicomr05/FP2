@@ -20,7 +20,14 @@ class Trainer:
     Methods 
     ------- 
     all_debilitated(self, opponent): 
-        Método que comprueba si todos los pokémons están debilitados.
+        Comprueba si todos los pokémons están debilitados.
+    
+    select_first_pokemon(self):
+        Selecciona el pokémon que se escogerá al iniciar el combate.
+    
+    select_next_pokemon(self, p:Pokemon):
+        Selecciona el pokémon no debilitado que mejor vaya contra el oponente actual.
+        Tiene como precondición que exista un pokémon no debilitado.
     '''
     def __init__(self, name:str, pokemon:list):
         '''Asigna atributos al objeto. 
@@ -55,7 +62,7 @@ class Trainer:
             estado = estado # Revisar función (meter lógicos)
         return estado
         
-    #def select_initial_pokemon(self) -> Pokemon:    
+    #def select_first_pokemon(self) -> Pokemon:    
         
     #def select_next_pokemon(self, p:Pokemon) -> Pokemon:
         
