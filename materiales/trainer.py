@@ -46,27 +46,48 @@ class Trainer:
         self._name = name
         self._pokemon = pokemon
         
-    def all_debilitated(self, opponent:Pokemon) -> bool:
+    def all_debilitated(self) -> bool:
         '''Asigna True si todos los pokémons del entrenador fueron derrotados.
- 
+        
         Returns 
         ------- 
         bool
-            Resultado de comprobar si todos los pokémons del entrenador están debilitados.
+         Resultado de comprobar si todos los pokémons del entrenador están debilitados (T/F).
         '''
-        estado = False
-        opponent = self._pokemon # ???
-        for pokemon in opponent:
+        estado = False #Iniciamos la variable que controla el estado de todos los pokémons en False.
+        estado_pokemon = False # Iniciamos la variable que controla el estado de cada pokémon en False. 
+        lista_pokemons = self._pokemon
+            # Es necesario el parámetro "opponent" del enunciado?? En mi opinión no.
+        
+        for pokemon in lista_pokemons:
             if pokemon._hp <= 0:
-                estado = True
-            estado = estado # Revisar función (meter lógicos)
+                estado_pokemon = True
+            estado = estado and estado_pokemon # Revisar función otra vez.
+        
         return estado
         
-    #def select_first_pokemon(self) -> Pokemon:    
+    def select_first_pokemon(self) -> Pokemon:    
+        '''Devuelve el primer pokémon de la lista de pokémons del entrenador que no esté
+        debilitado. Devuelve None en caso de que no exista ningún pokémon disponible.
         
-    #def select_next_pokemon(self, p:Pokemon) -> Pokemon:
+        Returns 
+        ------- 
+        Pokemon
+         Primer pokémon que no está debilitado dentro de la lista de pokémons del entrenador.
+        '''
+        pass
+
+    def select_next_pokemon(self, p:Pokemon) -> Pokemon:
+        '''Selecciona el pokémon del entrenador que más probabilidades de ganar
+        tenga contra el pokémon contra el que se esté luchando.
         
-        
+        Returns 
+        ------- 
+        Pokemon
+         Pokémon que mejor se ajuste a la batalla.
+        '''
+        pass
+
     @property
     def name(self) -> str:
         return self._name
