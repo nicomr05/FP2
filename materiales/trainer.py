@@ -5,7 +5,8 @@ TODO: Implement in the file the Trainer class
 from pokemon import Pokemon
 
 class Trainer:
-    '''Clase de entrenador, es al que le pertenecen los pokémons.
+    '''
+    Clase de entrenador, es al que le pertenecen los pokémons.
     
     Clase en la que se recoge la lista de los nombres de los 6 pokémons pertenecientes al entrenador además
     de comprobar si todos los pokémons del mismo están debilitados o no.
@@ -30,7 +31,8 @@ class Trainer:
         Tiene como precondición que exista un pokémon no debilitado.
     '''
     def __init__(self, name:str, pokemon:list):
-        '''Asigna atributos al objeto. 
+        '''
+        Asigna atributos al objeto. 
  
         Parameters 
         ---------- 
@@ -47,7 +49,8 @@ class Trainer:
         self._pokemon = pokemon
         
     def all_debilitated(self) -> bool:
-        '''Asigna True si todos los pokémons del entrenador fueron derrotados.
+        '''
+        Asigna True si todos los pokémons del entrenador fueron derrotados.
         
         Returns 
         ------- 
@@ -57,7 +60,6 @@ class Trainer:
         estado = False #Iniciamos la variable que controla el estado de todos los pokémons en False.
         estado_pokemon = False # Iniciamos la variable que controla el estado de cada pokémon en False. 
         lista_pokemons = self._pokemon
-            # Es necesario el parámetro "opponent" del enunciado?? En mi opinión no.
         
         for pokemon in lista_pokemons:
             if pokemon._hp <= 0:
@@ -67,7 +69,8 @@ class Trainer:
         return estado
         
     def select_first_pokemon(self) -> Pokemon:    
-        '''Devuelve el primer pokémon de la lista de pokémons del entrenador que no esté
+        '''
+        Devuelve el primer pokémon de la lista de pokémons del entrenador que no esté
         debilitado. Devuelve None en caso de que no exista ningún pokémon disponible.
         
         Returns 
@@ -78,7 +81,8 @@ class Trainer:
         pass
 
     def select_next_pokemon(self, p:Pokemon) -> Pokemon:
-        '''Selecciona el pokémon del entrenador que más probabilidades de ganar
+        '''
+        Selecciona el pokémon del entrenador que más probabilidades de ganar
         tenga contra el pokémon contra el que se esté luchando.
         
         Returns 
