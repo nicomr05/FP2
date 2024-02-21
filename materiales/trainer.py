@@ -57,16 +57,14 @@ class Trainer:
         bool
          Resultado de comprobar si todos los pokémons del entrenador están debilitados (T/F).
         '''
-        estado = False #Iniciamos la variable que controla el estado de todos los pokémons en False.
-        estado_pokemon = False # Iniciamos la variable que controla el estado de cada pokémon en False. 
-        lista_pokemons = self._pokemon
-        
-        for pokemon in lista_pokemons:
+        for pokemon in self._pokemon:
             if pokemon._hp <= 0:
-                estado_pokemon = True
-            estado = estado and estado_pokemon # Revisar función otra vez.
+                self._pokemon.remove(pokemon)
         
-        return estado
+        if len(self._pokemon) == 0:
+            return True
+        else:
+            return False
         
     def select_first_pokemon(self) -> Pokemon:    
         '''
@@ -78,9 +76,13 @@ class Trainer:
         Pokemon
          Primer pokémon que no está debilitado dentro de la lista de pokémons del entrenador.
         '''
-        pass
+        for pokemon in self._pokemon:
+            if pokemon._hp != 0:
+                return pokemon
+            else:
+                return None
 
-    def select_next_pokemon(self, p:Pokemon) -> Pokemon:
+    def select_next_pokemon(self, opponent:Pokemon) -> Pokemon:
         '''
         Selecciona el pokémon del entrenador que más probabilidades de ganar
         tenga contra el pokémon contra el que se esté luchando.
@@ -90,7 +92,10 @@ class Trainer:
         Pokemon
          Pokémon que mejor se ajuste a la batalla.
         '''
-        pass
+        if self.all_debilitated():
+            pass
+        else:
+            pass
 
     @property
     def name(self) -> str:
