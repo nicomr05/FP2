@@ -3,6 +3,7 @@ TODO: Implement in this file the Pokemon hierarchy.
 """
 
 from abc import ABC, abstractmethod
+from math import floor
 
 class Pokemon(ABC):
     '''
@@ -90,8 +91,8 @@ class Pokemon(ABC):
         int
             Devuelve las unidades de daño inflingidas al rival. 
         '''
-        damage = self._strength - opponent._defense
-        self._hp = max(1, damage)
+        damage = max(1, self._strength - opponent._defense)
+        self._hp -= damage
         return damage
     
     def is_debilitated(self) -> bool:
@@ -102,6 +103,8 @@ class Pokemon(ABC):
         -------- 
         bool
             Resultado de comprobar si el pokémon está debilitado.
+            True si está debilitado.
+            False si no está debilitado.
         '''
         if self._hp <= 0:
             return True
@@ -131,19 +134,14 @@ class WaterPokemon(Pokemon):
     Clase de los pokémos de tipo agua.
     Esta clase es hija de la clase Pokemon, por lo que heredará sus métodos y añadirá los suyos propios.
  
-    Attributes
-    ---------- 
-    attr1 : tipo 
-        Descripción.
- 
     Methods 
-    ------- 
-    __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str): 
+    -------
+    (
+    __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str, surge_mode:bool): 
         Asigna atributos al objeto.
-    basic_attack():
-        Reduce los puntos de vida del oponente.
-    is_debilitated():
-        Indica si el pokémon tiene 0 puntos de vida.
+    water_attack(opponent: Pokemon) -> int:
+        Reduce en n unidades la salud del oponente según un factor.
+        Además, si el modo surge está activado, el pokémon del entrenador hace un poco más de daño.
     effectiveness():
         Método abstracto que indica la efectividad que el pokémon del entrenador tiene frente al pokémon rival. 
     '''
@@ -172,16 +170,214 @@ class WaterPokemon(Pokemon):
         Returns 
         -------- 
         bool
-            Resultado de comprobar si el pokémon está en modo surge. 
+            Resultado de comprobar si el modo surge está activado.
+            True si está en modo surge.
+            False si no está en modo surge. 
+        '''
+        if self._surge_mode():
+            return True
+        else:
+            return False
+    
+    def water_attack(self, opponent:Pokemon) -> int:
+        '''
+        Reduce en n unidades la salud del oponente según un factor.
+        Además, si el modo surge está activado, el pokémon del entrenador hace un poco más de daño.
+        
+        Parameters 
+        ---------- 
+        opponent : Pokemon 
+         Pokémon rival.
+ 
+        Returns 
+        --------
+        int
+            Devuelve los puntos de daño inflingidos al contrincante. 
+        '''
+        if self.check_surge_activation():
+            self._surge_mode = True
+        else:
+            self._surge_mode = False
+        
+        if opponent._pokemon_type() == FirePokemon:
+            factor = 1.5
+        elif opponent._pokemon_type() == WaterPokemon:
+            factor = 1
+        elif opponent._pokemon_type() == GrassPokemon:
+            factor = 0.5
+        
+        if self._surge_mode():
+            factor += 0.1
+        
+        damage = floor(max(1, (factor*self._strength) - opponent._defense))
+        opponent._hp -= damage
+        
+        return damage
+    
+    def effectiveness(self, opponent:Pokemon) -> int:
+        '''
+        Implementación del método abstracto "effectiveness" para un WaterPokemon.
+        Indica la efectividad de un WaterPokemon frente a las otras clases de pokémon.
+ 
+        Parameters
+        ---------- 
+        opponent : Pokemon 
+         Pokémon del entrenador rival.
+ 
+        Returns 
+        -------- 
+        int
+            Devuelve la efectividad del pokémon de agua contra los diferentes tipos:
+             Contra un pokémon tipo Fuego:   1
+             Contra un pokémon tipo Agua:    0 
+             Contra un pokémon tipo Hierba: -1
+        '''
+        if opponent._pokemon_type() == FirePokemon:
+            return 1
+        elif opponent._pokemon_type() == WaterPokemon:
+            return 0
+        elif opponent._pokemon_type() == GrassPokemon:
+            return 1
+
+
+class FirePokemon(Pokemon):
+    '''
+    Clase de los pokémos de tipo fuego.
+    Esta clase es hija de la clase Pokemon, por lo que heredará sus métodos y añadirá los suyos propios.
+ 
+    Attributes
+    ---------- 
+    attr1 : tipo 
+        Descripción.
+ 
+    Methods 
+    ------- 
+    __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str, temperature:float): 
+        Asigna atributos al objeto.
+    basic_attack():
+        Reduce los puntos de vida del oponente.
+    is_debilitated():
+        Indica si el pokémon tiene 0 puntos de vida.
+    effectiveness():
+        Método abstracto que indica la efectividad que el pokémon del entrenador tiene frente al pokémon rival. 
+    '''
+    
+    def __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str, temperature:float):
+        '''
+        Asigna atributos al objeto. Heredado de la clase Pokemon.
+        
+        Parameters 
+        ----------
+        (Hereda los parámetros de Pokemon.)
+        temperature : float
+         Informa de la temperatura del Pokemon de fuego.
+        
+        Returns
+        -------
+        None.
+        '''
+        self.super().__init__(name, level, strength, defense, hp, total_hp, agility, pokemon_type)
+        self._temperature = temperature
+    
+    def fire_attack(self, opponent:Pokemon)-> int:
+        '''
+        Calcula el daño realizado a los distintos Pokemons
+        
+        Returns 
+        -------- 
+        int
+            Resultado de calcular el daño infligido. 
+        '''
+        pass
+    
+    def embers(self, opponent:Pokemon) -> int:
+        '''
+        Informa del estado de un Pokemon.
+        
+        Returns 
+        -------- 
+        int
+            Resultado de calcular el estado de un Pokemon. 
         '''
         pass
     
     def effectiveness(self, opponent:Pokemon) -> int:
         '''
-        Implementación del método abstracto "effectiveness" para un WaterPokemon. 
+        Implementación del método abstracto "effectiveness" para un FirePokemon. 
+        '''
+        if opponent._pokemon_type() == GrassPokemon:
+            return 1
+        elif opponent._pokemon_type() == FirePokemon:
+            return 0
+        elif opponent._pokemon_type() == WaterPokemon:
+            return -1
+
+class GrassPokemon(Pokemon):
+    '''
+    Clase de los pokémos de tipo hierba.
+    Esta clase es hija de la clase Pokemon, por lo que heredará sus métodos y añadirá los suyos propios.
+     
+    Attributes
+    ---------- 
+    attr1 : tipo 
+    Descripción.
+     
+    Methods 
+    ------- 
+    __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str,healing:float): 
+        Asigna atributos al objeto.
+    basic_attack():
+        Reduce los puntos de vida del oponente.
+    is_debilitated():
+        Indica si el pokémon tiene 0 puntos de vida.
+    effectiveness():
+        Método abstracto que indica la efectividad que el pokémon del entrenador tiene frente al pokémon rival. 
+        '''
+        
+    def __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str, healing:float):
+        '''
+        Asigna atributos al objeto. Heredado de la clase Pokemon.
+            
+        Parameters 
+        ----------
+        (Hereda los parámetros de Pokemon.)
+        healing : float
+         Informa de la recuperación del Pokemon de hierba.
+            
+        Returns
+        -------
+        None.
+        '''
+        self.super().__init__(name, level, strength, defense, hp, total_hp, agility, pokemon_type, healing)
+        self._healing = healing
+            
+    def grass_attack(self, opponent:Pokemon)-> int:
+        '''
+        Calcula el daño realizado a los distintos Pokemons
+            
+        Returns 
+        -------- 
+        int
+            Resultado de calcular el daño infligido. 
         '''
         pass
-    
+           
+    def heal(self)-> int:
+        '''
+        Informa de la recuperación de los distintos GrassPokemons.
+
+        Returns
+        -------
+        int
+            Resultado de calcular la recuperación alcanzada por un GrassPokemon.
+        '''
+           
+    def effectiveness(self, opponent:Pokemon) -> int:
+        '''
+        Implementación del método abstracto "effectiveness" para un GrassPokemon. 
+        '''
+        pass
+
 if __name__ == '__main__':
     Squirtle = Pokemon(name='Squirtle', level=30, strength=4, defense=8, hp=25, total_hp=25, agility=15, pokemon_type=WaterPokemon)
     print(Squirtle)
