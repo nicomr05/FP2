@@ -77,7 +77,7 @@ class Trainer:
          Primer pokémon que no está debilitado dentro de la lista de pokémons del entrenador.
         '''
         for pokemon in self._pokemon:
-            if pokemon._hp != 0:
+            if pokemon._hp > 0:
                 return pokemon
             else:
                 return None
