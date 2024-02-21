@@ -148,23 +148,33 @@ class WaterPokemon(Pokemon):
         Método abstracto que indica la efectividad que el pokémon del entrenador tiene frente al pokémon rival. 
     '''
     
-    def __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str):
+    def __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str, surge_mode:bool):
         '''
         Asigna atributos al objeto. Heredado de la clase Pokemon.
+        
+        Parameters 
+        ----------
+        (Hereda los parámetros de Pokemon.)
+        surge_mode : bool
+         Pokémon en modo surge / no en modo surge.
+        
+        Returns
+        -------
+        None.
         '''
-        return self.super().__init__(name, level, strength, defense, hp, total_hp, agility, pokemon_type)
+        self.super().__init__(name, level, strength, defense, hp, total_hp, agility, pokemon_type)
+        self._surge_mode = surge_mode
     
-    def basic_attack(self, opponent:Pokemon) -> int:
+    def check_surge_activation(self)-> bool:
         '''
-        Método heredado de Pokemon, disminuye la vida del rival.
+        Comprueba si el pokémon está en modo surge o no.
+        
+        Returns 
+        -------- 
+        bool
+            Resultado de comprobar si el pokémon está en modo surge. 
         '''
-        return self.super().basic_attack(opponent)
-    
-    def is_debilitated(self) -> bool:
-        '''
-        Método heredado de Pokemon, devuelve si el pokémon está debilitado o no.
-        '''
-        return self.super().is_debilitated()
+        pass
     
     def effectiveness(self, opponent:Pokemon) -> int:
         '''
