@@ -63,23 +63,20 @@ class Pokemon(ABC):
         self._agility = agility
         self._pokemon_type = pokemon_type
         
-    def __str__(self):  # COMENTAR Y HACER __str__
+    def __str__(self):
         '''
-        Una línea de resumen.
- 
-        Parameters 
-        ---------- 
-        param1 : tipo 
-         Descripción. 
+        Muestra los atributos del pokémon como un str.
  
         Returns 
         -------- 
         str 
-            Resultado de...
+            Atributos del pokémon como strings.
         '''
-        pass
+        cadena = '{name}({pokemon_type}) Stats: Level:{level}, ATT: {strength}, DEF: {defense}, AGI: {agility}, HP: {hp}/{total_hp}.' \
+                .format(self._name, self._pokemon_type, self._level, self._strength, self._defense, self._agility, self._hp, self._total_hp)
+        return cadena
         
-    def basic_attack(self, opponent:Pokemon) -> int:
+    def basic_attack(self, opponent:'Pokemon') -> int:
         '''
         Disminuye la vida del pokémon rival en n unidades de daño.
  
@@ -112,7 +109,7 @@ class Pokemon(ABC):
             return False
     
     @abstractmethod
-    def effectiveness(self, opponent:Pokemon) -> int:
+    def effectiveness(self, opponent:'Pokemon') -> int:
         '''
         Método abstracto dentro de Pokemon. Este método debe ser implementado en todas las clases hijas de Pokemon.
         Indica la efectividad de un tipo de pokémon frente al resto.
@@ -155,10 +152,26 @@ class WaterPokemon(Pokemon):
         '''
         Asigna atributos al objeto. Heredado de la clase Pokemon.
         '''
-        self.super().__init__(name, level, strength, defense, hp, total_hp, agility, pokemon_type)
+        return self.super().__init__(name, level, strength, defense, hp, total_hp, agility, pokemon_type)
+    
+    def basic_attack(self, opponent:Pokemon) -> int:
+        '''
+        Método heredado de Pokemon, disminuye la vida del rival.
+        '''
+        return self.super().basic_attack(opponent)
+    
+    def is_debilitated(self) -> bool:
+        '''
+        Método heredado de Pokemon, devuelve si el pokémon está debilitado o no.
+        '''
+        return self.super().is_debilitated()
     
     def effectiveness(self, opponent:Pokemon) -> int:
         '''
-        Implementación del abstracto de "effectiveness" para un WaterPokemon. 
+        Implementación del método abstracto "effectiveness" para un WaterPokemon. 
         '''
         pass
+    
+if __name__ == '__main__':
+    Squirtle = Pokemon(name='Squirtle', level=30, strength=4, defense=8, hp=25, total_hp=25, agility=15, pokemon_type=WaterPokemon)
+    print(Squirtle)
