@@ -128,7 +128,81 @@ class Pokemon(ABC):
             Devuelve 1, 0 o -1 según el tipo de pokémon contra el que se esté enfrentando el pokémon del entrenador. 
         '''
         pass
-        
+    
+    @property
+    def name(self) -> str:
+        return self._name
+    
+    @property
+    def total_hp(self) -> int:
+        return self._total_hp
+    
+    @property
+    def level(self) -> int:
+        return self._level
+    
+    @level.setter
+    def level(self, nuevo_nivel):
+        if isinstance(nuevo_nivel, int) and nuevo_nivel >= 0:
+            self._level = nuevo_nivel
+        else:
+            raise ValueError('No se puede asignar un nivel negativo.')
+    
+    @property
+    def strength(self) -> int:
+        return self._strength
+    
+    @strength.setter
+    def strength(self, nueva_fuerza):
+        if isinstance(nueva_fuerza, int) and nueva_fuerza >= 0:
+            self._strength = nueva_fuerza
+        else:
+            raise ValueError('La fuerza no puede ser negativa')
+    
+    @property
+    def defense(self) -> int:
+        return self._defense
+    
+    @defense.setter
+    def defense(self, nueva_defensa):
+        if isinstance(nueva_defensa, int) and nueva_defensa >= 0:
+            self._defense = nueva_defensa
+        else:
+            raise ValueError('La defensa no puede ser negativa.')
+    
+    @property
+    def hp(self) -> int:
+        return self._hp
+    
+    @hp.setter
+    def hp(self, nueva_vida):
+        if isinstance(nueva_vida, int) and nueva_vida >= 0:
+            self._hp = nueva_vida
+        else:
+            raise ValueError('La vida no puede ser negativa.')
+    
+    @property
+    def agility(self) -> int:
+        return self._agility
+    
+    @agility.setter
+    def agility(self, nueva_agilidad):
+        if isinstance(nueva_agilidad, int) and nueva_agilidad >= 0:
+            self._agility = nueva_agilidad
+        else:
+            raise ValueError('La agilidad no puede ser negativa.')
+    
+    @property
+    def pokemon_type(self) -> str:
+        return self._pokemon_type
+    
+    @pokemon_type.setter  #Revisar setter
+    def pokemon_type(self, nuevo_tipo):
+        if isinstance(nuevo_tipo, str) and len(nuevo_tipo) > 0 and nuevo_tipo in ['Water','Fire','Grass']:
+            self._pokemon_type = nuevo_tipo
+        else:
+            raise ValueError('El tipo del pokémon')
+    
 class WaterPokemon(Pokemon):
     '''
     Clase de los pokémos de tipo agua.
@@ -232,7 +306,7 @@ class WaterPokemon(Pokemon):
              Contra un pokémon tipo Agua:    0 
              Contra un pokémon tipo Hierba: -1
         '''
-        if opponent._pokemon_type() == FirePokemon:
+        if opponent._pokemon_type() == 'FirePokemon': #Poner como string?
             return 1
         elif opponent._pokemon_type() == WaterPokemon:
             return 0
