@@ -106,7 +106,7 @@ class Trainer:
         if isinstance(nuevo_nombre, str) and len(nuevo_nombre) > 0:
             self._name = nuevo_nombre
         else:
-            raise ValueError('El nombre no puede tener longitud 0.')
+            raise ValueError('El nombre no puede tener longitud {longitud}.'.format(len(nuevo_nombre)))
     
     @property
     def pokemon(self) -> list:
@@ -114,5 +114,8 @@ class Trainer:
     
     @pokemon.setter
     def pokemon(self, nuevo_pokemon) -> list:
-        #Hacer setter de pokemons
-        pass
+        if isinstance(nuevo_pokemon, Pokemon):
+            self._pokemon.append(nuevo_pokemon)
+        else:
+            raise ValueError('El pokémon a añadir debe de ser de tipo Pokemon.')
+    
