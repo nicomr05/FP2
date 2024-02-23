@@ -93,10 +93,19 @@ class Trainer:
          Pokémon que mejor se ajuste a la batalla.
         '''
         if self.all_debilitated():
-            pass
+            return None
         else:
-            pass
-
+            efectividad = -1
+            for pokemon in self._pokemon:
+                if pokemon.effectiveness(opponent) > efectividad:
+                    efectividad = pokemon.effectiveness(opponent)
+                    pok = pokemon
+                if pokemon.effectiveness(opponent) == efectividad:
+                    if pokemon.level > pok.level:
+                        pok = pokemon
+                        
+            return pok
+    
     @property
     def name(self) -> str:
         return self._name
