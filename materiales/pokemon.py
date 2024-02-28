@@ -13,8 +13,22 @@ class Pokemon(ABC):
  
     Attributes 
     ---------- 
-    attr1 : tipo 
-        Descripción.
+    name : str 
+     Nombre del pokémon.
+    level : int
+     Nivel del pokémon.
+    strength : int
+     Fuerza del pokémon.
+    defense: int
+     Defensa del pokémon.
+    hp : int
+     Vida actual del pokémon.
+    total_hp : int
+     Vida máxima del pokémon.
+    agility : int
+     Agilidad del pokémon.
+    pokemon_type : str
+     Tipo de pokémon.
  
     Methods 
     ------- 
@@ -45,7 +59,7 @@ class Pokemon(ABC):
         hp : int
          Vida actual del pokémon.
         total_hp : int
-        Vida máxima del pokémon.
+         Vida máxima del pokémon.
         agility : int
          Agilidad del pokémon.
         pokemon_type : str
