@@ -76,11 +76,12 @@ class Trainer:
         Pokemon
          Primer pokémon que no está debilitado dentro de la lista de pokémons del entrenador.
         '''
+        if len(self._pokemon) == 0:
+            return None
+        
         for pokemon in self._pokemon:
             if pokemon._hp > 0:
                 return pokemon
-            else:
-                return None
 
     def select_next_pokemon(self, opponent:Pokemon) -> Pokemon:
         '''
