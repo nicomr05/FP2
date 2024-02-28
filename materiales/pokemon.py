@@ -84,11 +84,11 @@ class Pokemon(ABC):
  
         Returns 
         -------- 
-        str 
-            Atributos del pokémon como strings.
+        cadena : str 
+        Atributos del pokémon como strings.
         '''
         cadena = '{name}({pokemon_type}) Stats: Level:{level}, ATT: {strength}, DEF: {defense}, AGI: {agility}, HP: {hp}/{total_hp}.' \
-                .format(self._name, self._pokemon_type, self._level, self._strength, self._defense, self._agility, self._hp, self._total_hp)
+                .format(self.name, self.pokemon_type, self.level, self.strength, self.defense, self.agility, self.hp, self.total_hp)
         return cadena
         
     def basic_attack(self, opponent:'Pokemon') -> int:
@@ -102,11 +102,15 @@ class Pokemon(ABC):
  
         Returns 
         -------- 
-        int
-            Devuelve las unidades de daño inflingidas al rival. 
+        damage : int
+         Devuelve las unidades de daño inflingidas al rival. 
         '''
-        damage = max(1, self._strength - opponent._defense)
-        self._hp -= damage
+        damage = max(1, self.strength - opponent.defense)
+        opponent.hp -= damage
+        
+        if opponent.hp < 0:
+            opponent.hp = 0
+        
         return damage
     
     def is_debilitated(self) -> bool:
@@ -120,7 +124,7 @@ class Pokemon(ABC):
             True si está debilitado.
             False si no está debilitado.
         '''
-        if self._hp <= 0:
+        if self.hp <= 0:
             return True
         else:
             return False
@@ -139,7 +143,7 @@ class Pokemon(ABC):
         Returns 
         -------- 
         int
-            Devuelve 1, 0 o -1 según el tipo de pokémon contra el que se esté enfrentando el pokémon del entrenador. 
+         Devuelve 1, 0 o -1 según el tipo de pokémon contra el que se esté enfrentando el pokémon del entrenador. 
         '''
         pass
     
@@ -160,7 +164,7 @@ class Pokemon(ABC):
         if isinstance(nuevo_nivel, int) and nuevo_nivel >= 0:
             self._level = nuevo_nivel
         else:
-            raise ValueError('No se puede asignar un nivel negativo.')
+            raise ValueError('El nivel debe ser un entero no negativo.')
     
     @property
     def strength(self) -> int:
@@ -171,7 +175,7 @@ class Pokemon(ABC):
         if isinstance(nueva_fuerza, int) and nueva_fuerza >= 0:
             self._strength = nueva_fuerza
         else:
-            raise ValueError('La fuerza no puede ser negativa')
+            raise ValueError('La fuerza debe ser un entero no negativo.')
     
     @property
     def defense(self) -> int:
@@ -182,7 +186,7 @@ class Pokemon(ABC):
         if isinstance(nueva_defensa, int) and nueva_defensa >= 0:
             self._defense = nueva_defensa
         else:
-            raise ValueError('La defensa no puede ser negativa.')
+            raise ValueError('La defensa debe ser no negativa.')
     
     @property
     def hp(self) -> int:
@@ -193,7 +197,7 @@ class Pokemon(ABC):
         if isinstance(nueva_vida, int) and nueva_vida >= 0:
             self._hp = nueva_vida
         else:
-            raise ValueError('La vida no puede ser negativa.')
+            raise ValueError('La vida debe ser no negativa.')
     
     @property
     def agility(self) -> int:
@@ -204,7 +208,7 @@ class Pokemon(ABC):
         if isinstance(nueva_agilidad, int) and nueva_agilidad >= 0:
             self._agility = nueva_agilidad
         else:
-            raise ValueError('La agilidad no puede ser negativa.')
+            raise ValueError('La agilidad debe ser no negativa.')
     
     @property
     def pokemon_type(self) -> str:
@@ -215,16 +219,23 @@ class Pokemon(ABC):
         if isinstance(nuevo_tipo, str) and len(nuevo_tipo) > 0 and nuevo_tipo in ['Water','Fire','Grass']:
             self._pokemon_type = nuevo_tipo
         else:
-            raise ValueError('El tipo del pokémon')
+            raise ValueError('El tipo del pokémon debe ser uno de los siguientes: Water/Fire/Grass')
     
 class WaterPokemon(Pokemon):
     '''
     Clase de los pokémos de tipo agua.
     Esta clase es hija de la clase Pokemon, por lo que heredará sus métodos y añadirá los suyos propios.
- 
+    
+    Attributes
+    ---------- 
+    Hereda los atributos de Pokemon, además de definir:
+    pokemon_type : str
+     Tipo de pokémon.
+    surge_mode : bool
+     Modo especial de un pokémon tipo agua en el que hace un poco más de daño al atacar.
+    
     Methods 
     -------
-    (
     __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str, surge_mode:bool): 
         Asigna atributos al objeto.
     water_attack(opponent: Pokemon) -> int:
@@ -234,13 +245,15 @@ class WaterPokemon(Pokemon):
         Método abstracto que indica la efectividad que el pokémon del entrenador tiene frente al pokémon rival. 
     '''
     
-    def __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str, surge_mode:bool):
+    def __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, surge_mode:bool):
         '''
         Asigna atributos al objeto. Heredado de la clase Pokemon.
         
         Parameters 
         ----------
         (Hereda los parámetros de Pokemon.)
+        pokemon_type : str
+         Tipo de pokémon.
         surge_mode : bool
          Pokémon en modo surge / no en modo surge.
         
@@ -248,8 +261,9 @@ class WaterPokemon(Pokemon):
         -------
         None.
         '''
-        self.super().__init__(name, level, strength, defense, hp, total_hp, agility, pokemon_type)
+        self.super().__init__(name, level, strength, defense, hp, total_hp, agility)
         self._surge_mode = surge_mode
+        self._pokemon_type = 'Water'
     
     def check_surge_activation(self)-> bool:
         '''
@@ -258,11 +272,11 @@ class WaterPokemon(Pokemon):
         Returns 
         -------- 
         bool
-            Resultado de comprobar si el modo surge está activado.
-            True si está en modo surge.
-            False si no está en modo surge. 
+         Resultado de comprobar si el modo surge está activado.
+         True si está en modo surge.
+         False si no está en modo surge. 
         '''
-        if self._surge_mode():
+        if self.surge_mode:
             return True
         else:
             return False
@@ -271,6 +285,7 @@ class WaterPokemon(Pokemon):
         '''
         Reduce en n unidades la salud del oponente según un factor.
         Además, si el modo surge está activado, el pokémon del entrenador hace un poco más de daño.
+        Finalmente, la vida del oponente no puede ser inferior a 0 al terminar el ataque.
         
         Parameters 
         ---------- 
@@ -279,26 +294,29 @@ class WaterPokemon(Pokemon):
  
         Returns 
         --------
-        int
-            Devuelve los puntos de daño inflingidos al contrincante. 
+        damage : int
+         Devuelve los puntos de daño inflingidos al contrincante. 
         '''
         if self.check_surge_activation():
-            self._surge_mode = True
+            self.surge_mode = True
         else:
-            self._surge_mode = False
+            self.surge_mode = False
         
-        if opponent._pokemon_type() == FirePokemon:
+        if opponent.pokemon_type == 'Fire':
             factor = 1.5
-        elif opponent._pokemon_type() == WaterPokemon:
+        elif opponent.pokemon_type == 'Water':
             factor = 1
-        elif opponent._pokemon_type() == GrassPokemon:
+        elif opponent.pokemon_type == 'Grass':
             factor = 0.5
         
-        if self._surge_mode():
+        if self.surge_mode:
             factor += 0.1
         
-        damage = floor(max(1, (factor*self._strength) - opponent._defense))
-        opponent._hp -= damage
+        damage = int(floor(max(1, (factor*self.strength) - opponent.defense)))
+        opponent.hp -= damage
+        
+        if opponent.hp < 0:
+            opponent.hp = 0
         
         return damage
     
@@ -315,18 +333,21 @@ class WaterPokemon(Pokemon):
         Returns 
         -------- 
         int
-            Devuelve la efectividad del pokémon de agua contra los diferentes tipos:
+         Devuelve la efectividad del pokémon de agua contra los diferentes tipos:
              Contra un pokémon tipo Fuego:   1
              Contra un pokémon tipo Agua:    0 
              Contra un pokémon tipo Hierba: -1
         '''
-        if opponent._pokemon_type() == 'FirePokemon': #Poner como string?
+        if opponent.pokemon_type == 'Fire':
             return 1
-        elif opponent._pokemon_type() == WaterPokemon:
+        elif opponent.pokemon_type == 'Water':
             return 0
-        elif opponent._pokemon_type() == GrassPokemon:
-            return 1
+        elif opponent.pokemon_type == 'Grass':
+            return -1
 
+    @property
+    def surge_mode(self) -> str:
+        return self._surge_mode
 
 class FirePokemon(Pokemon):
     '''
@@ -335,8 +356,11 @@ class FirePokemon(Pokemon):
  
     Attributes
     ---------- 
-    attr1 : tipo 
-        Descripción.
+    Hereda los atributos de Pokemon, además de definir:
+    pokemon_type : str
+     Tipo de pokémon.
+    temperature : float
+     Temperatura del pokémon.
  
     Methods 
     ------- 
@@ -350,13 +374,15 @@ class FirePokemon(Pokemon):
         Método abstracto que indica la efectividad que el pokémon del entrenador tiene frente al pokémon rival. 
     '''
     
-    def __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str, temperature:float):
+    def __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, temperature:float):
         '''
         Asigna atributos al objeto. Heredado de la clase Pokemon.
         
         Parameters 
         ----------
         (Hereda los parámetros de Pokemon.)
+        pokemon_type : str
+         Tipo de pokémon.
         temperature : float
          Informa de la temperatura del Pokemon de fuego.
         
@@ -364,41 +390,91 @@ class FirePokemon(Pokemon):
         -------
         None.
         '''
-        self.super().__init__(name, level, strength, defense, hp, total_hp, agility, pokemon_type)
+        self.super().__init__(name, level, strength, defense, hp, total_hp, agility)
         self._temperature = temperature
+        self._pokemon_type = 'Fire'
     
     def fire_attack(self, opponent:Pokemon)-> int:
         '''
-        Calcula el daño realizado a los distintos Pokemons
+        Calcula el daño realizado al pokémon oponente.
+        Además, la vida del oponente no puede ser inferior a 0 al terminar el ataque.
+        
+        Parameters 
+        ----------
+        opponent : Pokemon
+         Pokémon del entrenador rival.
         
         Returns 
         -------- 
-        int
-            Resultado de calcular el daño infligido. 
+        damage : int
+         Daño inflingido al oponente.
         '''
-        pass
+        if opponent.pokemon_type == 'Grass':
+            factor = 1.5
+        elif opponent.pokemon_type == 'Fire':
+            factor = 1
+        elif opponent.pokemon_type == 'Water':
+            factor = 0.5 
+
+        damage = int(floor(max(1, (factor*self.strength) - opponent.defense)))
+        opponent.hp -= damage
+        
+        if opponent.hp < 0:
+            opponent.hp = 0
+        
+        return damage
     
     def embers(self, opponent:Pokemon) -> int:
         '''
-        Informa del estado de un Pokemon.
+        Disminuye la vida del oponente n unidades de daño.
+        Además, la 
+        
+        Parameters 
+        ----------
+        opponent : Pokemon
+         Pokémon del entrenador rival.
         
         Returns 
         -------- 
-        int
-            Resultado de calcular el estado de un Pokemon. 
+        damage : int
+         Daño causado al oponente.
         '''
-        pass
+        damage = int(floor(self.strength*self.temperature))
+        opponent.hp -= damage
+        
+        if opponent.hp < 0:
+            opponent.hp = 0
+        
+        return damage
     
     def effectiveness(self, opponent:Pokemon) -> int:
         '''
-        Implementación del método abstracto "effectiveness" para un FirePokemon. 
+        Implementación del método abstracto "effectiveness" para un FirePokemon.
+        Indica la efectividad de un FirePokemon frente a las otras clases de pokémon.
+ 
+        Parameters
+        ---------- 
+        opponent : Pokemon 
+         Pokémon del entrenador rival.
+ 
+        Returns 
+        -------- 
+        int
+         Devuelve la efectividad del pokémon de agua contra los diferentes tipos:
+             Contra un pokémon tipo Hierba:   1
+             Contra un pokémon tipo Fuego:    0 
+             Contra un pokémon tipo Agua:    -1
         '''
-        if opponent._pokemon_type() == GrassPokemon:
+        if opponent._pokemon_type() == 'Grass':
             return 1
-        elif opponent._pokemon_type() == FirePokemon:
+        elif opponent._pokemon_type() == 'Fire':
             return 0
-        elif opponent._pokemon_type() == WaterPokemon:
+        elif opponent._pokemon_type() == 'Water':
             return -1
+    
+    @property
+    def temperature(self) -> str:
+        return self._temperature
 
 class GrassPokemon(Pokemon):
     '''
@@ -407,12 +483,15 @@ class GrassPokemon(Pokemon):
      
     Attributes
     ---------- 
-    attr1 : tipo 
-    Descripción.
+    Hereda los atributos de Pokemon, además de definir:
+    pokemon_type : str
+     Tipo de pokémon.
+    healing : float
+     Curación del pokémon.
      
     Methods 
     ------- 
-    __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str,healing:float): 
+    __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str, healing:float): 
         Asigna atributos al objeto.
     basic_attack():
         Reduce los puntos de vida del oponente.
@@ -422,13 +501,15 @@ class GrassPokemon(Pokemon):
         Método abstracto que indica la efectividad que el pokémon del entrenador tiene frente al pokémon rival. 
         '''
         
-    def __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str, healing:float):
+    def __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, healing:float):
         '''
         Asigna atributos al objeto. Heredado de la clase Pokemon.
             
         Parameters 
         ----------
         (Hereda los parámetros de Pokemon.)
+        pokemon_type : str
+         Tipo de pokémon.
         healing : float
          Informa de la recuperación del Pokemon de hierba.
             
@@ -436,36 +517,87 @@ class GrassPokemon(Pokemon):
         -------
         None.
         '''
-        self.super().__init__(name, level, strength, defense, hp, total_hp, agility, pokemon_type, healing)
+        self.super().__init__(name, level, strength, defense, hp, total_hp, agility, healing)
         self._healing = healing
+        self._pokemon_type = 'Grass'
             
     def grass_attack(self, opponent:Pokemon)-> int:
         '''
-        Calcula el daño realizado a los distintos Pokemons
-            
+        Disminuye la vida del oponente en n unidades de daño.
+        Además, la vida del oponente no puede ser inferior a 0 al terminar el ataque.
+        
+        Parameters 
+        ----------
+        opponent : Pokemon
+         Pokémon del entrenador rival.
+        
         Returns 
         -------- 
-        int
-            Resultado de calcular el daño infligido. 
+        damage : int
+         Daño infligido al pokémon del entrenador rival. 
         '''
-        pass
+        if opponent.pokemon_type == 'Water':
+            factor = 1.5
+        elif opponent.pokemon_type == 'Grass':
+            factor = 1
+        elif opponent.pokemon_type == 'Fire':
+            factor = 0.5 
+
+        damage = int(floor(max(1, (factor*self.strength) - opponent.defense)))
+        opponent.hp -= damage
+        
+        if opponent.hp < 0:
+            opponent.hp = 0
+        
+        return damage
            
     def heal(self)-> int:
         '''
-        Informa de la recuperación de los distintos GrassPokemons.
-
+        Cura el pokémon un máximo de n unidades.
+        Además, la curación no puede superar los puntos de salud máximos al terminar la curación.
+        
         Returns
         -------
         int
-            Resultado de calcular la recuperación alcanzada por un GrassPokemon.
+         Puntos de vida que ha recuperado el pokémon.
         '''
+        cura = int(floor(self.healing*self.hp))
+        self.hp += cura
+        
+        if self.hp > self.total_hp:
+            self.hp = self.total_hp
+        
+        return cura
            
     def effectiveness(self, opponent:Pokemon) -> int:
         '''
-        Implementación del método abstracto "effectiveness" para un GrassPokemon. 
+        Implementación del método abstracto "effectiveness" para un GrassPokemon.
+        Indica la efectividad de un GrassPokemon frente a las otras clases de pokémon.
+ 
+        Parameters
+        ---------- 
+        opponent : Pokemon 
+         Pokémon del entrenador rival.
+ 
+        Returns 
+        -------- 
+        int
+         Devuelve la efectividad del pokémon de agua contra los diferentes tipos:
+             Contra un pokémon tipo Agua:     1        
+             Contra un pokémon tipo Hierba:   0
+             Contra un pokémon tipo Fuego:   -1 
         '''
-        pass
+        if opponent._pokemon_type() == 'Water':
+            return 1
+        elif opponent._pokemon_type() == 'Grass':
+            return 0
+        elif opponent._pokemon_type() == 'Fire':
+            return -1
+    
+    @property
+    def healing(self) -> str:
+        return self._healing
 
 if __name__ == '__main__':
-    Squirtle = Pokemon(name='Squirtle', level=30, strength=4, defense=8, hp=25, total_hp=25, agility=15, pokemon_type=WaterPokemon)
+    Squirtle = WaterPokemon(name='Squirtle', level=30, strength=4, defense=8, hp=25, total_hp=25, agility=15)
     print(Squirtle)
