@@ -57,31 +57,29 @@ class Trainer:
         bool
          Resultado de comprobar si todos los pokémons del entrenador están debilitados (T/F).
         '''
-        for pokemon in self._pokemon:
-            if pokemon._hp <= 0:
-                self._pokemon.remove(pokemon)
-        
-        if len(self._pokemon) == 0:
-            return True
-        else:
-            return False
+        for bicho in self.pokemon:
+            if bicho.hp <= 0:
+                return False
+        return True
         
     def select_first_pokemon(self) -> Pokemon:    
         '''
         Devuelve el primer pokémon de la lista de pokémons del entrenador que no esté
-        debilitado. Devuelve None en caso de que no exista ningún pokémon disponible.
+        debilitado.
+        Devuelve None en caso de que no exista ningún pokémon disponible.
         
         Returns 
         ------- 
-        Pokemon
+        bicho : Pokemon
          Primer pokémon que no está debilitado dentro de la lista de pokémons del entrenador.
+        None.
         '''
-        if len(self._pokemon) == 0:
+        if self.all_debilitated():
             return None
         
-        for pokemon in self._pokemon:
-            if pokemon._hp > 0:
-                return pokemon
+        for bicho in self.pokemon:
+            if bicho.hp > 0:
+                return bicho
 
     def select_next_pokemon(self, opponent:Pokemon) -> Pokemon:
         '''
@@ -90,20 +88,20 @@ class Trainer:
         
         Returns 
         ------- 
-        Pokemon
+        pok : Pokemon
          Pokémon que mejor se ajuste a la batalla.
         '''
         if self.all_debilitated():
             return None
         else:
             efectividad = -1
-            for pokemon in self._pokemon:
-                if pokemon.effectiveness(opponent) > efectividad:
-                    efectividad = pokemon.effectiveness(opponent)
-                    pok = pokemon
-                if pokemon.effectiveness(opponent) == efectividad:
-                    if pokemon.level > pok.level:
-                        pok = pokemon
+            for bicho in self.pokemon:
+                if bicho.effectiveness(opponent) > efectividad:
+                    efectividad = bicho.effectiveness(opponent)
+                    pok = bicho
+                elif bicho.effectiveness(opponent) == efectividad:
+                    if bicho.level > pok.level:
+                        pok = bicho
                         
             return pok
     
@@ -116,7 +114,7 @@ class Trainer:
         if isinstance(nuevo_nombre, str) and len(nuevo_nombre) > 0:
             self._name = nuevo_nombre
         else:
-            raise ValueError('El nombre no puede tener longitud {longitud}.'.format(len(nuevo_nombre)))
+            raise ValueError('El nombre debe de ser un string con longitud mayor que 0.')
     
     @property
     def pokemon(self) -> list:
