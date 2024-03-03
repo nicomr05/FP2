@@ -221,6 +221,7 @@ class Pokemon(ABC):
         else:
             raise ValueError('El tipo del pokémon debe ser uno de los siguientes: Water/Fire/Grass')
     
+
 class WaterPokemon(Pokemon):
     '''
     Clase de los pokémos de tipo agua.
@@ -261,7 +262,7 @@ class WaterPokemon(Pokemon):
         -------
         None.
         '''
-        self.super().__init__(name, level, strength, defense, hp, total_hp, agility)
+        super().__init__(name, level, strength, defense, hp, total_hp, agility)
         self._surge_mode = surge_mode
         self._pokemon_type = 'Water'
     
@@ -390,7 +391,7 @@ class FirePokemon(Pokemon):
         -------
         None.
         '''
-        self.super().__init__(name, level, strength, defense, hp, total_hp, agility)
+        super().__init__(name, level, strength, defense, hp, total_hp, agility)
         self._temperature = temperature
         self._pokemon_type = 'Fire'
     
@@ -427,7 +428,7 @@ class FirePokemon(Pokemon):
     def embers(self, opponent:Pokemon) -> int:
         '''
         Disminuye la vida del oponente n unidades de daño.
-        Además, la 
+        Además, la salud del oponente no puede ser inferior a 0.
         
         Parameters 
         ----------
@@ -517,7 +518,7 @@ class GrassPokemon(Pokemon):
         -------
         None.
         '''
-        self.super().__init__(name, level, strength, defense, hp, total_hp, agility, healing)
+        super().__init__(name, level, strength, defense, hp, total_hp, agility, healing)
         self._healing = healing
         self._pokemon_type = 'Grass'
             
@@ -597,7 +598,3 @@ class GrassPokemon(Pokemon):
     @property
     def healing(self) -> str:
         return self._healing
-
-if __name__ == '__main__':
-    Squirtle = WaterPokemon(name='Squirtle', level=30, strength=4, defense=8, hp=25, total_hp=25, agility=15)
-    print(Squirtle)

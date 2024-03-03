@@ -1,9 +1,11 @@
 import sys
+from trainer import Trainer
+from pokemon import Pokemon, FirePokemon, GrassPokemon, WaterPokemon
 
 class PokemonSimulator:
     """A class that simulates Pokemon trainers and their Pokemon."""
 
-    def create_trainer_and_pokemons(self, text: str):
+    def create_trainer_and_pokemons(self, text:str):
         """
         Creates a trainer and their pokemons from a given text input.
 
@@ -90,6 +92,47 @@ def main():
         trainer1, trainer2 = simulator.parse_file(pokemon_text)
         print ("""TODO: Implement the rest of the practice from here. Define classes and functions and
         maintain the code structured, respecting the object-oriented programming paradigm""")
+
+
+class Batalla:
+    '''
+    Una línea de resumen. 
+    Descripción en varias líneas.
+    
+    Attributes 
+    ---------- 
+    attr1 : tipo 
+    Descripción. 
+    attr2 : tipo 
+    Descripción. 
+    
+    Methods 
+    ------- 
+    metodo1(param1): 
+    Una línea de resumen.
+    '''
+
+    def __init__(self, trainer1, trainer2):
+        self._trainer1 = trainer1
+        self._trainer2 = trainer2
+
+    def inicio(trainer1:Trainer, trainer2:Trainer):
+        p1 = trainer1.select_first_pokemon()
+        p2 = trainer2.select_first_pokemon()
+
+        print(f'===============================\
+        Battle between: {trainer1.name} vs {trainer2.name} begins!\
+        {trainer1.name} chooses {p1.name}\
+        {trainer2.name} chooses {p2.name}\
+        ===============================')
+    
+    @property
+    def trainer1(self):
+        return self._trainer1
+    
+    @property
+    def trainer2(self):
+        return self._trainer2
 
 
 if __name__ == '__main__':
