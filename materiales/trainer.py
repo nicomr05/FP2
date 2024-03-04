@@ -19,7 +19,10 @@ class Trainer:
          Lista con los pokémons del entrenador.
  
     Methods 
-    ------- 
+    -------
+    __init__(self, name:str, pokemon:list): 
+        Asigna atributos al objeto.
+
     all_debilitated(self, opponent): 
         Comprueba si todos los pokémons están debilitados.
     
@@ -40,10 +43,6 @@ class Trainer:
          Nombre del entrenador.
         pokemon : list 
          Lista con los pokémons del entrenador.
- 
-        Returns 
-        ------- 
-        None.
         '''
         self._name = name
         self._pokemon = pokemon
