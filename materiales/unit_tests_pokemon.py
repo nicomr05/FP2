@@ -14,12 +14,9 @@ class TestPokemon(unittest.TestCase):
         This method is called before every individual test method. It initializes three types of Pokemon.
         """
         
-        self.squirtle = WaterPokemon(name="Squirtle", level=5, strength=60, defense=25, 
-                                     hp=75, total_hp=75, agility=10, surge_mode=False)
-        self.bulbasaur = GrassPokemon(name="Bulbasaur",  level=5, strength=60, defense=25, 
-                                      hp=75, total_hp=75, agility=10, healing=0.2)
-        self.charmander = FirePokemon(name="Charmander", level=5, strength=60, defense=25, 
-                                      hp=75, total_hp=75, agility=10, temperature=0.2)
+        self.squirtle = WaterPokemon(name="Squirtle", level=5, strength=60, defense=25, hp=75, total_hp=75, agility=10, surge_mode=False)
+        self.bulbasaur = GrassPokemon(name="Bulbasaur",  level=5, strength=60, defense=25, hp=75, total_hp=75, agility=10, healing=0.2)
+        self.charmander = FirePokemon(name="Charmander", level=5, strength=60, defense=25, hp=75, total_hp=75, agility=10, temperature=0.2)
 
 
     ###########################################################################

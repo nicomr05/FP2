@@ -35,17 +35,21 @@ class Pokemon(ABC):
     ------- 
     __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str): 
         Asigna atributos al objeto.
+
     __str__():
         Muestra los atributos del pokémon como un str.
+
     basic_attack():
         Reduce los puntos de vida del oponente.
+
     is_debilitated():
         Indica si el pokémon tiene 0 puntos de vida.
+
     effectiveness():
         Método abstracto que indica la efectividad que el pokémon del entrenador tiene frente al pokémon rival. 
     '''
 
-    def __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str):
+    def __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int):
         '''
         Clase de todos los pokémons.
         De esta clase saldrán las clases hijas de los diferentes tipos de pokémon (Agua, Hierba o Fuego).
@@ -78,7 +82,7 @@ class Pokemon(ABC):
         self._hp = hp
         self._total_hp = total_hp
         self._agility = agility
-        self._pokemon_type = pokemon_type
+        self._pokemon_type = str
         
     def __str__(self):
         '''
@@ -256,11 +260,14 @@ class WaterPokemon(Pokemon):
     -------
     __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str, surge_mode:bool): 
         Asigna atributos al objeto.
+
     check_surge_activation():
         Comprueba si el pokémon está en modo surge.
+        
     water_attack(opponent: Pokemon) -> int:
         Reduce en n unidades la salud del oponente según un factor.
         Además, si el modo surge está activado, el pokémon del entrenador hace un poco más de daño.
+
     effectiveness():
         Método abstracto que indica la efectividad que el pokémon del entrenador tiene frente al pokémon rival. 
     '''
@@ -293,9 +300,9 @@ class WaterPokemon(Pokemon):
          Modo especial de un pokémon tipo agua en el que
          hace un poco más de daño al atacar.
         '''
-        super().__init__(name, level, strength, defense, hp, total_hp, agility)
+        super().__init__(name, level, strength, defense, hp, total_hp, agility, pokemon_type = 'Water')
         self._surge_mode = surge_mode
-        self._pokemon_type = 'Water'
+        
     
     def check_surge_activation(self)-> bool:
         '''
@@ -411,10 +418,13 @@ class FirePokemon(Pokemon):
     ------- 
     __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str, temperature:float): 
         Asigna atributos al objeto.
+
     fire_attack():
         Reduce los puntos de vida del oponente.
+
     embers():
         Indica si el pokémon tiene 0 puntos de vida.
+
     effectiveness():
         Método abstracto que indica la efectividad que el pokémon del entrenador tiene frente al pokémon rival. 
     '''
@@ -444,9 +454,8 @@ class FirePokemon(Pokemon):
         temperature : float
          Temperatura del pokémon.
         '''
-        super().__init__(name, level, strength, defense, hp, total_hp, agility)
+        super().__init__(name, level, strength, defense, hp, total_hp, agility, pokemon_type = 'Fire')
         self._temperature = temperature
-        self._pokemon_type = 'Fire'
     
     def fire_attack(self, opponent:Pokemon)-> int:
         '''
@@ -561,10 +570,13 @@ class GrassPokemon(Pokemon):
     ------- 
     __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str, healing:float): 
         Asigna atributos al objeto.
+
     basic_attack():
         Reduce los puntos de vida del oponente.
+
     is_debilitated():
         Indica si el pokémon tiene 0 puntos de vida.
+        
     effectiveness():
         Método abstracto que indica la efectividad que el pokémon del entrenador tiene frente al pokémon rival. 
         '''
@@ -594,9 +606,8 @@ class GrassPokemon(Pokemon):
         healing : float
          Curación del pokémon.
         '''
-        super().__init__(name, level, strength, defense, hp, total_hp, agility, healing)
+        super().__init__(name, level, strength, defense, hp, total_hp, agility, healing, pokemon_type = 'Grass')
         self._healing = healing
-        self._pokemon_type = 'Grass'
             
     def grass_attack(self, opponent:Pokemon)-> int:
         '''
