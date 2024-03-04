@@ -9,7 +9,8 @@ class Pokemon(ABC):
     '''
     Clase de todos los pokémons.
     De esta clase saldrán las clases hijas de los diferentes tipos de pokémon (Agua, Hierba o Fuego).
-    Todo pokémon tiene los atributos de vida, 
+    Todo pokémon tiene los atributos de nombre, nivel, fuerza, defensa, puntos de salud, salud total,
+    agilidad y tipo de pokémon, además de los atributos propios de cada tipo de pokémon.
  
     Attributes 
     ---------- 
@@ -34,6 +35,8 @@ class Pokemon(ABC):
     ------- 
     __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str): 
         Asigna atributos al objeto.
+    __str__():
+        Muestra los atributos del pokémon como un str.
     basic_attack():
         Reduce los puntos de vida del oponente.
     is_debilitated():
@@ -44,7 +47,10 @@ class Pokemon(ABC):
 
     def __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str):
         '''
-        Asigna atributos al objeto. 
+        Clase de todos los pokémons.
+        De esta clase saldrán las clases hijas de los diferentes tipos de pokémon (Agua, Hierba o Fuego).
+        Todo pokémon tiene los atributos de nombre, nivel, fuerza, defensa, puntos de salud, salud total,
+        agilidad y tipo de pokémon, además de los atributos propios de cada tipo de pokémon.
  
         Parameters 
         ---------- 
@@ -64,10 +70,6 @@ class Pokemon(ABC):
          Agilidad del pokémon.
         pokemon_type : str
          Tipo de pokémon.
- 
-        Returns 
-        ------- 
-        None.
         '''
         self._name = name
         self._level = level
@@ -225,20 +227,37 @@ class Pokemon(ABC):
 class WaterPokemon(Pokemon):
     '''
     Clase de los pokémos de tipo agua.
-    Esta clase es hija de la clase Pokemon, por lo que heredará sus métodos y añadirá los suyos propios.
+    Esta clase es hija de la clase Pokemon, por lo que heredará sus
+    atributos y métodos y añadirá los suyos.
     
     Attributes
     ---------- 
-    Hereda los atributos de Pokemon, además de definir:
+    name : str 
+     Nombre del pokémon.
+    level : int
+     Nivel del pokémon.
+    strength : int
+     Fuerza del pokémon.
+    defense: int
+     Defensa del pokémon.
+    hp : int
+     Vida actual del pokémon.
+    total_hp : int
+     Vida máxima del pokémon.
+    agility : int
+     Agilidad del pokémon.
     pokemon_type : str
      Tipo de pokémon.
     surge_mode : bool
-     Modo especial de un pokémon tipo agua en el que hace un poco más de daño al atacar.
+     Modo especial de un pokémon tipo agua en el que
+     hace un poco más de daño al atacar.
     
     Methods 
     -------
     __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str, surge_mode:bool): 
         Asigna atributos al objeto.
+    check_surge_activation():
+        Comprueba si el pokémon está en modo surge.
     water_attack(opponent: Pokemon) -> int:
         Reduce en n unidades la salud del oponente según un factor.
         Además, si el modo surge está activado, el pokémon del entrenador hace un poco más de daño.
@@ -248,19 +267,31 @@ class WaterPokemon(Pokemon):
     
     def __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, surge_mode:bool):
         '''
-        Asigna atributos al objeto. Heredado de la clase Pokemon.
-        
+        Clase de los pokémos de tipo agua.
+        Esta clase es hija de la clase Pokemon, por lo que heredará sus
+        atributos y métodos y añadirá los suyos.
+            
         Parameters 
         ----------
-        (Hereda los parámetros de Pokemon.)
+        name : str 
+         Nombre del pokémon.
+        level : int
+         Nivel del pokémon.
+        strength : int
+         Fuerza del pokémon.
+        defense: int
+         Defensa del pokémon.
+        hp : int
+         Vida actual del pokémon.
+        total_hp : int
+         Vida máxima del pokémon.
+        agility : int
+         Agilidad del pokémon.
         pokemon_type : str
          Tipo de pokémon.
         surge_mode : bool
-         Pokémon en modo surge / no en modo surge.
-        
-        Returns
-        -------
-        None.
+         Modo especial de un pokémon tipo agua en el que
+         hace un poco más de daño al atacar.
         '''
         super().__init__(name, level, strength, defense, hp, total_hp, agility)
         self._surge_mode = surge_mode
@@ -268,14 +299,14 @@ class WaterPokemon(Pokemon):
     
     def check_surge_activation(self)-> bool:
         '''
-        Comprueba si el pokémon está en modo surge o no.
+        Comprueba si el pokémon está en modo surge.
         
         Returns 
         -------- 
         bool
          Resultado de comprobar si el modo surge está activado.
-         True si está en modo surge.
-         False si no está en modo surge. 
+             True  : si está en modo surge.
+             False : si no está en modo surge. 
         '''
         if self.surge_mode:
             return True
@@ -356,8 +387,21 @@ class FirePokemon(Pokemon):
     Esta clase es hija de la clase Pokemon, por lo que heredará sus métodos y añadirá los suyos propios.
  
     Attributes
-    ---------- 
-    Hereda los atributos de Pokemon, además de definir:
+    ----------
+    name : str 
+     Nombre del pokémon.
+    level : int
+     Nivel del pokémon.
+    strength : int
+     Fuerza del pokémon.
+    defense: int
+     Defensa del pokémon.
+    hp : int
+     Vida actual del pokémon.
+    total_hp : int
+     Vida máxima del pokémon.
+    agility : int
+     Agilidad del pokémon.
     pokemon_type : str
      Tipo de pokémon.
     temperature : float
@@ -367,9 +411,9 @@ class FirePokemon(Pokemon):
     ------- 
     __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str, temperature:float): 
         Asigna atributos al objeto.
-    basic_attack():
+    fire_attack():
         Reduce los puntos de vida del oponente.
-    is_debilitated():
+    embers():
         Indica si el pokémon tiene 0 puntos de vida.
     effectiveness():
         Método abstracto que indica la efectividad que el pokémon del entrenador tiene frente al pokémon rival. 
@@ -381,15 +425,24 @@ class FirePokemon(Pokemon):
         
         Parameters 
         ----------
-        (Hereda los parámetros de Pokemon.)
+        name : str 
+         Nombre del pokémon.
+        level : int
+         Nivel del pokémon.
+        strength : int
+         Fuerza del pokémon.
+        defense: int
+         Defensa del pokémon.
+        hp : int
+         Vida actual del pokémon.
+        total_hp : int
+         Vida máxima del pokémon.
+        agility : int
+         Agilidad del pokémon.
         pokemon_type : str
          Tipo de pokémon.
         temperature : float
-         Informa de la temperatura del Pokemon de fuego.
-        
-        Returns
-        -------
-        None.
+         Temperatura del pokémon.
         '''
         super().__init__(name, level, strength, defense, hp, total_hp, agility)
         self._temperature = temperature
@@ -397,6 +450,7 @@ class FirePokemon(Pokemon):
     
     def fire_attack(self, opponent:Pokemon)-> int:
         '''
+        Ataque específico de un FirePokemon.
         Calcula el daño realizado al pokémon oponente.
         Además, la vida del oponente no puede ser inferior a 0 al terminar el ataque.
         
@@ -484,7 +538,20 @@ class GrassPokemon(Pokemon):
      
     Attributes
     ---------- 
-    Hereda los atributos de Pokemon, además de definir:
+    name : str 
+     Nombre del pokémon.
+    level : int
+     Nivel del pokémon.
+    strength : int
+     Fuerza del pokémon.
+    defense: int
+     Defensa del pokémon.
+    hp : int
+     Vida actual del pokémon.
+    total_hp : int
+     Vida máxima del pokémon.
+    agility : int
+     Agilidad del pokémon.
     pokemon_type : str
      Tipo de pokémon.
     healing : float
@@ -508,15 +575,24 @@ class GrassPokemon(Pokemon):
             
         Parameters 
         ----------
-        (Hereda los parámetros de Pokemon.)
+        name : str 
+         Nombre del pokémon.
+        level : int
+         Nivel del pokémon.
+        strength : int
+         Fuerza del pokémon.
+        defense: int
+         Defensa del pokémon.
+        hp : int
+         Vida actual del pokémon.
+        total_hp : int
+         Vida máxima del pokémon.
+        agility : int
+         Agilidad del pokémon.
         pokemon_type : str
          Tipo de pokémon.
         healing : float
-         Informa de la recuperación del Pokemon de hierba.
-            
-        Returns
-        -------
-        None.
+         Curación del pokémon.
         '''
         super().__init__(name, level, strength, defense, hp, total_hp, agility, healing)
         self._healing = healing
