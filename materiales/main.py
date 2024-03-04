@@ -3,18 +3,19 @@ from trainer import Trainer
 from pokemon import Pokemon, FirePokemon, GrassPokemon, WaterPokemon
 
 class PokemonSimulator:
-    """A class that simulates Pokemon trainers and their Pokemon."""
+    '''A class that simulates Pokemon trainers and their Pokemon.'''
 
     def create_trainer_and_pokemons(self, text:str):
-        """
+        '''
         Creates a trainer and their pokemons from a given text input.
 
         Parameters:
         text (str): Multiline text where the first line is the trainer's name and subsequent lines contain Pokemon details.
         
         Returns:
-        None: The function is currently set up to return None. Intended to return a Trainer instance in future development.
-        """
+        trainer : Trainer
+         Entrenador creado a partir de la lista de pokémons previamente elaborada.
+        '''
 
         lines = text.split("\n")
         trainer_name = lines[0]
@@ -37,34 +38,26 @@ class PokemonSimulator:
             # Creating pokemons based on their type
             if pokemon_type == 'Fire':
                 temperature = details[6].split(': ')[1]
-                # TODO: Implement creation of a FirePokemon
                 pokemon = FirePokemon(pokemon_name, level, strength, defense, hp, total_hp, agility, temperature)
-
-                print ("TODO: Crear un FirePokemon - ", end="")
-                # Printing the attributes for now
-                print (f"name: {pokemon_name}, level: {level}, strength: {strength}, defense: {defense}, hp: {hp}, total_hp: {total_hp}, agility: {agility}, temperature: {temperature} ")
+                
             elif pokemon_type == 'Grass':
-                # TODO: Implement creation of a GrassPokemon
                 healing = details[6].split(': ')[1]
-                # Printing the attributes for now
-                print ("TODO: Crear un GrassPokemon - ", end="")
-                print (f"name: {pokemon_name},  level: {level}, strength: {strength}, defense: {defense}, hp: {hp}, total_hp: {total_hp}, agility: {agility}, healing: {healing} ")
+                pokemon = GrassPokemon(pokemon_name, level, strength, defense, hp, total_hp, agility, healing)
+
             elif pokemon_type == 'Water':
                 surge_mode = False
-                # TODO: Implement creation of a WaterPokemon
-                print ("TODO: Crear un WaterPokemon - ", end="")
-                # Printing the attributes for now
-                print (f"name: {pokemon_name}, level: {level}, strength: {strength}, defense: {defense}, hp: {hp}, total_hp: {total_hp}, agility: {agility}, surge_mode: {surge_mode} ")
+                pokemon = WaterPokemon(pokemon_name, level, strength, defense, hp, total_hp, agility, surge_mode)
+
             else: 
-                raise ValueError(f"Invalid Pokemon type: {pokemon_type}")
+                raise ValueError(f'Invalid Pokemon type: {pokemon_type}')
 
-        # Reminder to implement the instance creation of Trainer
-        print (f"TODO: Crear instancia de Trainer con nombre {trainer_name} y su lista de pokemon {pokemons} (primero deberas anadir los Pokemon creados a esta lista)\n\n")
-        # Function is intended to return a Trainer instance in future development
-        return None
+            pokemons.append(pokemon)
+        
+        trainer = Trainer(name = trainer_name, pokemon = pokemons)
+        return trainer
 
-    def parse_file(self, text: str):
-        """
+    def parse_file(self, text: str):                                    # Preguntar funcionalidad de esta función
+        '''
         Parses the given text to create trainers and their pokemons.
 
         Parameters:
@@ -72,7 +65,7 @@ class PokemonSimulator:
 
         Returns:
         None: Currently does not return anything. Intended to return a list of Trainer instances in future development.
-        """
+        '''
 
         info_trainer_1, info_trainer_2 = text.strip().split("\n\n")
 
@@ -98,8 +91,9 @@ class Batalla:
     
     Methods 
     ------- 
-    metodo1(param1): 
-    Una línea de resumen.
+    __init__(self, name:str, pokemon:list): 
+        Asigna atributos al objeto.
+    
     '''
 
     def __init__(self, trainer1:Trainer, trainer2:Trainer):
@@ -120,7 +114,7 @@ class Batalla:
         
     def str_inicio(self) -> str:
         '''
-        Devuelve un string informativo al inicio de la batalla.
+        Devuelve un string informativo al inicio de la batalla entre dos entrenadores.
         
         Returns 
         ------- 
@@ -132,19 +126,87 @@ class Batalla:
         
         return cad_inicio
     
+    def str_combate(self, round:int) -> str:
+        '''
+        Devuelve un string informativo al comenzar el combate entre dos pokémons.
+        
+        Returns 
+        ------- 
+        cad_combate : str
+         Cadena informativa al inicio del combate.
+        '''
+        cad_ronda = f'┌───────── Round {round} ─────────┐\n'
+
+        primer_combatiente = 'Fighter 1: {0}({1}) Stats: Level:{2}, ATT:{3}, DEF:{4}, AGI:{5}, HP:{6}/{7}.\n'\
+            .format(self.p1.name, self.p1.pokemon_type, self.p1.level, self.p1.strength, self.p1.defense, self.p1.agility, self.p1.hp, self.p1.total_hp)
+        
+        saegundo_combatiente = 'Fighter 2: {0}({1}) Stats: Level:{2}, ATT:{3}, DEF:{4}, AGI:{5}, HP:{6}/{7}.\n'\
+            .format(self.p2.name, self.p2.pokemon_type, self.p2.level, self.p2.strength, self.p2.defense, self.p2.agility, self.p2.hp, self.p2.total_hp)
+
+        actions = 'Actions\n'
+
+        cad_combate = cad_ronda + primer_combatiente + saegundo_combatiente + actions
+        return cad_combate
+
     def inicio(self):
         '''
         Selecciona los dos primeros pokémons que pelean e imprime un mensaje
-        indicativo que indica qué pokémons combatirán.
+        indicativo que muestra los pokémons elegidos.
  
         Returns 
-        -------- 
+        -------
         None.
         '''
         self.p1 = self.trainer1.select_first_pokemon()
         self.p2 = self.trainer2.select_first_pokemon()
         print(self.str_inicio())
-    
+
+    def combate(self):
+        '''
+        Gestiona el combate entre dos pokémons dados de ambos entrenadores.
+ 
+        Returns 
+        -------
+        None.
+        '''
+        round_number = 1
+        while not (self.p1.is_debilitated() or self.p2.is_debilitated()):
+            print(self.str_combate(round_number))
+
+            if round_number % 2 == 1:
+                if self.p1.agility > self.p2.agility and isinstance(self.p1, FirePokemon):
+                    self.p1.fire_attack(self.p2)
+
+                if self.p1.agility > self.p2.agility and isinstance(self.p1, GrassPokemon):            
+                    self.p1.grass_attack(self.p2)
+
+                if self.p1.agility > self.p2.agility and isinstance(self.p1, WaterPokemon):            
+                    self.p1.water_attack(self.p2)  
+
+
+
+
+
+
+                if self.p1.agility >= self.p2.agility:
+                    self.p1.type_attack(self.p2)
+                    if self.p2.hp > 0:
+                        self.p2.type_attack(self.p1)
+                else:
+                    self.p2.type_attack(self.p1)
+                    if self.p1.hp > 0:
+                        self.p1.type_attack(self.p2)
+
+
+
+
+            else:
+                self.p1.basic_attack(self.p2)
+                self.p2.basic_attack(self.p1)
+            
+            round_number += 1
+
+
     @property
     def trainer1(self):
         return self._trainer1
