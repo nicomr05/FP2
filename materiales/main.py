@@ -38,6 +38,8 @@ class PokemonSimulator:
             if pokemon_type == 'Fire':
                 temperature = details[6].split(': ')[1]
                 # TODO: Implement creation of a FirePokemon
+                pokemon = FirePokemon(pokemon_name, level, strength, defense, hp, total_hp, agility, temperature)
+
                 print ("TODO: Crear un FirePokemon - ", end="")
                 # Printing the attributes for now
                 print (f"name: {pokemon_name}, level: {level}, strength: {strength}, defense: {defense}, hp: {hp}, total_hp: {total_hp}, agility: {agility}, temperature: {temperature} ")
@@ -80,31 +82,19 @@ class PokemonSimulator:
         return trainer1, trainer2
 
 
-def main():
-
-    """
-    The main function that reads from a file and starts the simulation.
-    """
-
-    with open(sys.argv[1]) as f:
-        pokemon_text = f.read()
-        simulator = PokemonSimulator()
-        trainer1, trainer2 = simulator.parse_file(pokemon_text)
-        print ("""TODO: Implement the rest of the practice from here. Define classes and functions and
-        maintain the code structured, respecting the object-oriented programming paradigm""")
-
-
 class Batalla:
     '''
-    Una línea de resumen. 
-    Descripción en varias líneas.
+    Clase de batalla entre dos entrenadores pokémon.
+    Esta clase contiene las funciones necesarias para implementar tanto el inicio de la batalla
+    entera, como el inicio del combate entre dos pokémons concretos, como la selección de un nuevo
+    pokémon si el actual ha sido debilitado.
     
     Attributes 
     ---------- 
-    attr1 : tipo 
-    Descripción. 
-    attr2 : tipo 
-    Descripción. 
+    trainer1 : Trainer
+     Primer entrenador combatiente.
+    trainer2 : Trainer 
+     Segundo entrenador combatiente.
     
     Methods 
     ------- 
@@ -112,19 +102,48 @@ class Batalla:
     Una línea de resumen.
     '''
 
-    def __init__(self, trainer1, trainer2):
+    def __init__(self, trainer1:Trainer, trainer2:Trainer):
+        '''
+        Asigna atributos al objeto. 
+ 
+        Parameters 
+        ---------- 
+        trainer1 : Trainer
+         Primer entrenador combatiente.
+        trainer2 : Trainer 
+         Segundo entrenador combatiente.
+        '''
         self._trainer1 = trainer1
         self._trainer2 = trainer2
-
-    def inicio(trainer1:Trainer, trainer2:Trainer):
-        p1 = trainer1.select_first_pokemon()
-        p2 = trainer2.select_first_pokemon()
-
-        print(f'===============================\
-        Battle between: {trainer1.name} vs {trainer2.name} begins!\
-        {trainer1.name} chooses {p1.name}\
-        {trainer2.name} chooses {p2.name}\
-        ===============================')
+        self._p1 = Pokemon
+        self._p2 = Pokemon
+        
+    def str_inicio(self) -> str:
+        '''
+        Devuelve un string informativo al inicio de la batalla.
+        
+        Returns 
+        ------- 
+        cad_inicio : str
+         Cadena informativa al inicio de la batalla.
+        '''
+        cad_inicio = '===============================\nBattle between: {0} vs {1} begins!\n{2} chooses {3}\n{4} chooses {5}\n==============================='\
+        .format(self.trainer1.name, self.trainer2.name, self.trainer1.name, self.p1.name, self.trainer2.name, self.p2.name)
+        
+        return cad_inicio
+    
+    def inicio(self):
+        '''
+        Selecciona los dos primeros pokémons que pelean e imprime un mensaje
+        indicativo que indica qué pokémons combatirán.
+ 
+        Returns 
+        -------- 
+        None.
+        '''
+        self.p1 = self.trainer1.select_first_pokemon()
+        self.p2 = self.trainer2.select_first_pokemon()
+        print(self.str_inicio())
     
     @property
     def trainer1(self):
@@ -133,7 +152,41 @@ class Batalla:
     @property
     def trainer2(self):
         return self._trainer2
+    
+    @property
+    def p1(self):
+        return self._p1
 
+    @p1.setter
+    def p1(self, pokemon_actual) -> Pokemon:
+        if isinstance(pokemon_actual, Pokemon):
+            self._p1 = pokemon_actual
+        else:
+            raise ValueError('El nuevo pokémon debe ser de tipo Pokemon.')
+    
+    @property
+    def p2(self):
+        return self._p2
+    
+    @p2.setter
+    def p2(self, pokemon_actual) -> Pokemon:
+        if isinstance(pokemon_actual, Pokemon):
+            self._p2 = pokemon_actual
+        else:
+            raise ValueError('El nuevo pokémon debe ser de tipo Pokemon.')
+    
+
+def main():
+    '''
+    The main function that reads from a file and starts the simulation.
+    '''
+    with open(sys.argv[1]) as f:
+        pokemon_text = f.read()
+        simulator = PokemonSimulator()
+        trainer1, trainer2 = simulator.parse_file(pokemon_text)
+        print ("""TODO: Implement the rest of the practice from here. Define classes and functions and
+        maintain the code structured, respecting the object-oriented programming paradigm""")
+    
 
 if __name__ == '__main__':
     main()
