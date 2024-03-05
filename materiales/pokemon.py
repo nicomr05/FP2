@@ -82,7 +82,7 @@ class Pokemon(ABC):
         self._hp = hp
         self._total_hp = total_hp
         self._agility = agility
-        self._pokemon_type = str
+        self._pokemon_type = None
         
     def __str__(self):
         '''
@@ -220,7 +220,7 @@ class Pokemon(ABC):
     def pokemon_type(self) -> str:
         return self._pokemon_type
     
-    @pokemon_type.setter  #Revisar setter
+    @pokemon_type.setter
     def pokemon_type(self, nuevo_tipo):
         if isinstance(nuevo_tipo, str) and len(nuevo_tipo) > 0 and nuevo_tipo in ['Water','Fire','Grass']:
             self._pokemon_type = nuevo_tipo
@@ -300,7 +300,8 @@ class WaterPokemon(Pokemon):
          Modo especial de un pokémon tipo agua en el que
          hace un poco más de daño al atacar.
         '''
-        super().__init__(name, level, strength, defense, hp, total_hp, agility, pokemon_type = 'Water')
+        super().__init__(name, level, strength, defense, hp, total_hp, agility)
+        self._pokemon_type = 'Water'
         self._surge_mode = surge_mode
         
     
@@ -315,7 +316,7 @@ class WaterPokemon(Pokemon):
              True  : si está en modo surge.
              False : si no está en modo surge. 
         '''
-        if self.surge_mode:
+        if self.hp < self.total_hp/2:
             return True
         else:
             return False
@@ -387,6 +388,13 @@ class WaterPokemon(Pokemon):
     @property
     def surge_mode(self) -> str:
         return self._surge_mode
+    
+    @surge_mode.setter
+    def surge_mode(self, nuevo_valor):
+        if isinstance(nuevo_valor, bool):
+            self._surge_mode= nuevo_valor
+        else:
+            raise ValueError('surge_mode debe ser un booleano.')
 
 class FirePokemon(Pokemon):
     '''
@@ -454,7 +462,8 @@ class FirePokemon(Pokemon):
         temperature : float
          Temperatura del pokémon.
         '''
-        super().__init__(name, level, strength, defense, hp, total_hp, agility, pokemon_type = 'Fire')
+        super().__init__(name, level, strength, defense, hp, total_hp, agility)
+        self._pokemon_type = 'Fire'
         self._temperature = temperature
     
     def fire_attack(self, opponent:Pokemon)-> int:
@@ -539,6 +548,13 @@ class FirePokemon(Pokemon):
     @property
     def temperature(self) -> str:
         return self._temperature
+    
+    @temperature.setter
+    def temperature(self, nueva_temp):
+        if isinstance(nueva_temp, float) and nueva_temp >= 0:
+            self._temperature = nueva_temp
+        else:
+            raise ValueError('La temperatura debe ser un número real no negativo.')
 
 class GrassPokemon(Pokemon):
     '''
@@ -606,7 +622,8 @@ class GrassPokemon(Pokemon):
         healing : float
          Curación del pokémon.
         '''
-        super().__init__(name, level, strength, defense, hp, total_hp, agility, healing, pokemon_type = 'Grass')
+        super().__init__(name, level, strength, defense, hp, total_hp, agility)
+        self._pokemon_type = 'Grass'
         self._healing = healing
             
     def grass_attack(self, opponent:Pokemon)-> int:
@@ -683,5 +700,12 @@ class GrassPokemon(Pokemon):
             return -1
     
     @property
-    def healing(self) -> str:
+    def healing(self) -> float:
         return self._healing
+    
+    @healing.setter
+    def healing(self, nueva_cura):
+        if isinstance(nueva_cura, float) and nueva_cura >= 0:
+            self._healing = nueva_cura
+        else:
+            raise ValueError('La curación debe ser un número real no negativo.')
