@@ -109,7 +109,7 @@ class Trainer:
         return self._name
     
     @name.setter
-    def name(self, nuevo_nombre) -> str:
+    def name(self, nuevo_nombre):
         if isinstance(nuevo_nombre, str) and len(nuevo_nombre) > 0:
             self._name = nuevo_nombre
         else:
@@ -120,7 +120,7 @@ class Trainer:
         return self._pokemon
     
     @pokemon.setter
-    def pokemon(self, nuevo_pokemon) -> list:
+    def pokemon(self, nuevo_pokemon):
         if isinstance(nuevo_pokemon, Pokemon):
             self._pokemon.append(nuevo_pokemon)
         else:
