@@ -14,9 +14,12 @@ class TestPokemon(unittest.TestCase):
         This method is called before every individual test method. It initializes three types of Pokemon.
         """
         
-        self.squirtle = WaterPokemon(name="Squirtle", level=5, strength=60, defense=25, hp=75, total_hp=75, agility=10, surge_mode=False)
-        self.bulbasaur = GrassPokemon(name="Bulbasaur",  level=5, strength=60, defense=25, hp=75, total_hp=75, agility=10, healing=0.2)
-        self.charmander = FirePokemon(name="Charmander", level=5, strength=60, defense=25, hp=75, total_hp=75, agility=10, temperature=0.2)
+        self.squirtle = WaterPokemon(name="Squirtle", level=5, strength=60, defense=25, 
+                                     hp=75, total_hp=75, agility=10, surge_mode=False)
+        self.bulbasaur = GrassPokemon(name="Bulbasaur",  level=5, strength=60, defense=25, 
+                                      hp=75, total_hp=75, agility=10, healing=0.2)
+        self.charmander = FirePokemon(name="Charmander", level=5, strength=60, defense=25, 
+                                      hp=75, total_hp=75, agility=10, temperature=0.2)
 
 
     ###########################################################################
@@ -269,7 +272,7 @@ class TestPokemon(unittest.TestCase):
         Surge mode should activate when the Pokemon's HP is less than half of the total.
         """
         # Damage the Pokemon to just above half HP and check surge mode activation
-        self.squirtle.hp = (self.squirtle.hp / 2) + 1
+        self.squirtle.hp = (self.squirtle.hp // 2) + 1
         value = self.squirtle.check_surge_activation()
         self.assertFalse(value, msg="Surge mode should not activate above half HP.")
 
@@ -286,7 +289,7 @@ class TestPokemon(unittest.TestCase):
         expected_final_hp = 34
         opponent = WaterPokemon(name="Squirtle2", level=5, strength=60, defense=25, 
                                 hp=75, total_hp=75, agility=15, surge_mode=False)
-        self.squirtle.hp = (self.squirtle.hp / 2) -1
+        self.squirtle.hp = (self.squirtle.hp // 2) -1
         self.squirtle.water_attack(opponent)
         self.assertEqual(opponent.hp, expected_final_hp, msg="Surge mode water attack against Water-type should reduce HP considering increased effectiveness.")
 
@@ -298,7 +301,7 @@ class TestPokemon(unittest.TestCase):
         expected_final_hp = 64
         opponent = GrassPokemon(name="Bulbasaur2", level=5, strength=60, defense=25, 
                                 hp=75, total_hp=75, agility=15, healing=0.2)
-        self.squirtle.hp = (self.squirtle.hp / 2) -1
+        self.squirtle.hp = (self.squirtle.hp // 2) -1
         self.squirtle.water_attack(opponent)
         self.assertEqual(opponent.hp, expected_final_hp, msg="Surge mode water attack against Grass-type should reduce HP considering increased effectiveness and type disadvantage.")
 
@@ -311,7 +314,7 @@ class TestPokemon(unittest.TestCase):
         expected_final_hp = 4
         opponent = FirePokemon(name="Charmander2", level=5, strength=60, defense=25, 
                                hp=75, total_hp=75, agility=15, temperature=0.2)
-        self.squirtle.hp = (self.squirtle.hp / 2) -1
+        self.squirtle.hp = (self.squirtle.hp // 2) -1
         self.squirtle.water_attack(opponent)
         self.assertEqual(opponent.hp, expected_final_hp, msg="Surge mode water attack against Fire-type should reduce HP considering increased effectiveness and type advantage.")
 
