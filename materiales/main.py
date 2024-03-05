@@ -9,10 +9,12 @@ class PokemonSimulator:
         '''
         Creates a trainer and their pokemons from a given text input.
 
-        Parameters:
+        Parameters
+        ----------
         text (str): Multiline text where the first line is the trainer's name and subsequent lines contain Pokemon details.
         
-        Returns:
+        Returns
+        -------
         trainer : Trainer
          Entrenador creado a partir de la lista de pokémons previamente elaborada.
         '''
@@ -38,15 +40,15 @@ class PokemonSimulator:
             # Creating pokemons based on their type
             if pokemon_type == 'Fire':
                 temperature = details[6].split(': ')[1]
-                pokemon = FirePokemon(pokemon_name, level, strength, defense, hp, total_hp, agility, temperature)
+                pokemon = FirePokemon(name=pokemon_name, level=level, strength=strength, defense=defense, hp=hp, total_hp=total_hp, agility=agility, temperature=temperature)
                 
             elif pokemon_type == 'Grass':
                 healing = details[6].split(': ')[1]
-                pokemon = GrassPokemon(pokemon_name, level, strength, defense, hp, total_hp, agility, healing)
+                pokemon = GrassPokemon(name=pokemon_name, level=level, strength=strength, defense=defense, hp=hp, total_hp=total_hp, agility=agility, healing=healing)
 
             elif pokemon_type == 'Water':
                 surge_mode = False
-                pokemon = WaterPokemon(pokemon_name, level, strength, defense, hp, total_hp, agility, surge_mode)
+                pokemon = WaterPokemon(name=pokemon_name, level=level, strength=strength, defense=defense, hp=hp, total_hp=total_hp, agility=agility, surge_mode=surge_mode)
 
             else: 
                 raise ValueError(f'Invalid Pokemon type: {pokemon_type}')
@@ -56,15 +58,20 @@ class PokemonSimulator:
         trainer = Trainer(name = trainer_name, pokemon = pokemons)
         return trainer
 
-    def parse_file(self, text: str):                                    # Preguntar funcionalidad de esta función
+    def parse_file(self, text: str) -> list:
         '''
-        Parses the given text to create trainers and their pokemons.
+        Crea los entrenadores por separado y les asigna sus pokémons mediante la función
+        create_trainer_and_pokemons().
 
-        Parameters:
-        text (str): The full text to be parsed, representing two trainers and their Pokemon.
+        Parameters
+        ----------
+        text : str
+         The full text to be parsed, representing two trainers and their Pokemon.
 
-        Returns:
-        None: Currently does not return anything. Intended to return a list of Trainer instances in future development.
+        Returns
+        -------
+        list
+         Lista de los entrenadores creados.
         '''
 
         info_trainer_1, info_trainer_2 = text.strip().split("\n\n")
@@ -72,7 +79,7 @@ class PokemonSimulator:
         trainer1 = self.create_trainer_and_pokemons(info_trainer_1)
         trainer2 = self.create_trainer_and_pokemons(info_trainer_2)
 
-        return trainer1, trainer2
+        return [trainer1, trainer2]
 
 
 class Batalla:
@@ -96,7 +103,7 @@ class Batalla:
     
     '''
 
-    def __init__(self, trainer1:Trainer, trainer2:Trainer):
+    def __init__(self, trainer1:Trainer, trainer2:Trainer, round_number=1):
         '''
         Asigna atributos al objeto. 
  
@@ -109,6 +116,7 @@ class Batalla:
         '''
         self._trainer1 = trainer1
         self._trainer2 = trainer2
+        self._round_number = round_number
         self._p1 = Pokemon
         self._p2 = Pokemon
         
@@ -152,10 +160,6 @@ class Batalla:
         '''
         Selecciona los dos primeros pokémons que pelean e imprime un mensaje
         indicativo que muestra los pokémons elegidos.
- 
-        Returns 
-        -------
-        None.
         '''
         self.p1 = self.trainer1.select_first_pokemon()
         self.p2 = self.trainer2.select_first_pokemon()
@@ -163,91 +167,109 @@ class Batalla:
 
     def combate(self):
         '''
-        Gestiona el combate entre dos pokémons dados de ambos entrenadores.
- 
-        Returns 
-        -------
-        None.
+        Gestiona el combate entre dos pokémons dados de ambos entrenadores dependiendo del número de ronda actual.
+        Imprime un mensaje indicativo 
         '''
-        round_number = 1
         while not (self.p1.is_debilitated() or self.p2.is_debilitated()):
-            print(self.str_combate(round_number))
+            print(self.str_combate(self.round_number))
 
-            if round_number % 2 == 1:
-                if self.p1.agility > self.p2.agility and isinstance(self.p1, FirePokemon):
+            if self.round_number % 2 == 1:
+                if isinstance(self.p1, FirePokemon):
+                    type_attack = 'fire_attack'
                     self.p1.fire_attack(self.p2)
 
                 if self.p1.agility > self.p2.agility and isinstance(self.p1, GrassPokemon):            
                     self.p1.grass_attack(self.p2)
 
                 if self.p1.agility > self.p2.agility and isinstance(self.p1, WaterPokemon):            
-                    self.p1.water_attack(self.p2)  
-
-
-
-
-
-
-                if self.p1.agility >= self.p2.agility:
-                    self.p1.type_attack(self.p2)
-                    if self.p2.hp > 0:
-                        self.p2.type_attack(self.p1)
-                else:
-                    self.p2.type_attack(self.p1)
-                    if self.p1.hp > 0:
-                        self.p1.type_attack(self.p2)
-
-
+                    self.p1.water_attack(self.p2)
 
 
             else:
                 self.p1.basic_attack(self.p2)
                 self.p2.basic_attack(self.p1)
             
-            round_number += 1
+            self.round_number += 1
 
+    def prioridad(self):
+        pass
+        
 
     @property
-    def trainer1(self):
+    def trainer1(self) -> Trainer:
         return self._trainer1
     
-    @property
-    def trainer2(self):
-        return self._trainer2
+    @trainer1.setter
+    def trainer1(self, nuevo_entrenador):
+        if isinstance(nuevo_entrenador, Trainer):
+            self._trainer1 = nuevo_entrenador
+        else:
+            raise ValueError('El  entrenador debe ser de tipo Trainer.')
     
     @property
-    def p1(self):
+    def trainer2(self) -> Trainer:
+        return self._trainer2
+    
+    @trainer2.setter
+    def trainer2(self, nuevo_entrenador):
+        if isinstance(nuevo_entrenador, Trainer):
+            self._trainer2 = nuevo_entrenador
+        else:
+            raise ValueError('El entrenador debe ser de tipo Trainer.')
+    
+    @property
+    def round_number(self) -> int:
+        return self._round_number
+    
+    @round_number.setter
+    def round_number(self, nueva_ronda):
+        if isinstance(nueva_ronda, int) and nueva_ronda > 1:
+            self._round_number = nueva_ronda
+        else:
+            raise ValueError('La ronda debe de ser un entero mayor que 1.')
+    
+    @property
+    def p1(self) -> Pokemon:
         return self._p1
 
     @p1.setter
-    def p1(self, pokemon_actual) -> Pokemon:
+    def p1(self, pokemon_actual):
         if isinstance(pokemon_actual, Pokemon):
             self._p1 = pokemon_actual
         else:
-            raise ValueError('El nuevo pokémon debe ser de tipo Pokemon.')
+            raise ValueError('El pokémon debe ser de tipo Pokemon.')
     
     @property
-    def p2(self):
+    def p2(self) -> Pokemon:
         return self._p2
     
     @p2.setter
-    def p2(self, pokemon_actual) -> Pokemon:
+    def p2(self, pokemon_actual):
         if isinstance(pokemon_actual, Pokemon):
             self._p2 = pokemon_actual
         else:
-            raise ValueError('El nuevo pokémon debe ser de tipo Pokemon.')
+            raise ValueError('El pokémon debe ser de tipo Pokemon.')
     
 
 def main():
     '''
-    The main function that reads from a file and starts the simulation.
+    Función principal que lee el archivo y comienza la simulación de la batalla.
     '''
     with open(sys.argv[1]) as f:
         pokemon_text = f.read()
         simulator = PokemonSimulator()
         trainer1, trainer2 = simulator.parse_file(pokemon_text)
-        print ("""TODO: Implement the rest of the practice from here. Define classes and functions and
-        maintain the code structured, respecting the object-oriented programming paradigm""")
+        
+        #Creación de la batalla entre trainer1 y trainer2:
+        batalla = Batalla(trainer1= trainer1, trainer2= trainer2)
+        
+        #Inicio de la batalla entre los dos entrenadores:
+        batalla.inicio()
+        
+        #Combate entre dos pokémons, cada uno siendo de cada entrenador respectivamente:
+        batalla.combate()
+        
+        
     
 
 if __name__ == '__main__':
