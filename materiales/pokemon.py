@@ -33,19 +33,19 @@ class Pokemon(ABC):
  
     Methods 
     ------- 
-    __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str): 
+    __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int): 
         Asigna atributos al objeto.
 
-    __str__():
+    __str__(self) -> str:
         Muestra los atributos del pokémon como un str.
 
-    basic_attack():
+    basic_attack(self, opponent:Pokemon) -> int:
         Reduce los puntos de vida del oponente.
 
-    is_debilitated():
+    is_debilitated(self) -> bool:
         Indica si el pokémon tiene 0 puntos de vida.
 
-    effectiveness():
+    effectiveness(self, opponent:Pokemon) -> int:
         Método abstracto que indica la efectividad que el pokémon del entrenador tiene frente al pokémon rival. 
     '''
 
@@ -82,7 +82,7 @@ class Pokemon(ABC):
         self._hp = hp
         self._total_hp = total_hp
         self._agility = agility
-        self._pokemon_type = None
+        self._pokemon_type = str
         
     def __str__(self):
         '''
@@ -91,9 +91,9 @@ class Pokemon(ABC):
         Returns 
         -------- 
         cadena : str 
-        Atributos del pokémon como strings.
+         Atributos del pokémon como strings.
         '''
-        cadena = '{name}({pokemon_type}) Stats: Level:{level}, ATT: {strength}, DEF: {defense}, AGI: {agility}, HP: {hp}/{total_hp}.' \
+        cadena = '{name}({pokemon_type}) Stats: Level:{level}, ATT: {strength}, DEF: {defense}, AGI: {agility}, HP: {hp}/{total_hp}.'\
                 .format(self.name, self.pokemon_type, self.level, self.strength, self.defense, self.agility, self.hp, self.total_hp)
         return cadena
         
@@ -109,7 +109,7 @@ class Pokemon(ABC):
         Returns 
         -------- 
         damage : int
-         Devuelve las unidades de daño inflingidas al rival. 
+         Unidades de daño inflingidas al rival. 
         '''
         damage = max(1, self.strength - opponent.defense)
         opponent.hp -= damage
@@ -126,9 +126,9 @@ class Pokemon(ABC):
         Returns 
         -------- 
         bool
-            Resultado de comprobar si el pokémon está debilitado.
-            True si está debilitado.
-            False si no está debilitado.
+         Resultado de comprobar si el pokémon está debilitado.
+             True si está debilitado.
+             False si no está debilitado.
         '''
         if self.hp <= 0:
             return True
@@ -261,14 +261,15 @@ class WaterPokemon(Pokemon):
     __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str, surge_mode:bool): 
         Asigna atributos al objeto.
 
-    check_surge_activation():
+    check_surge_activation(self) -> bool:
         Comprueba si el pokémon está en modo surge.
         
-    water_attack(opponent: Pokemon) -> int:
+    water_attack(self, opponent:Pokemon) -> int:
+        Ataque específico de un WaterPokemon.
         Reduce en n unidades la salud del oponente según un factor.
         Además, si el modo surge está activado, el pokémon del entrenador hace un poco más de daño.
 
-    effectiveness():
+    effectiveness(self, opponent:Pokemon) -> int:
         Método abstracto que indica la efectividad que el pokémon del entrenador tiene frente al pokémon rival. 
     '''
     
@@ -427,13 +428,14 @@ class FirePokemon(Pokemon):
     __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str, temperature:float): 
         Asigna atributos al objeto.
 
-    fire_attack():
-        Reduce los puntos de vida del oponente.
+    fire_attack(self, opponent:Pokemon) -> int:
+        Ataque específico de un WaterPokemon.
+        Reduce en n unidades la salud del oponente según un factor.
 
-    embers():
+    embers(self, opponent:Pokemon) -> int:
         Indica si el pokémon tiene 0 puntos de vida.
 
-    effectiveness():
+    effectiveness(self, opponent:Pokemon) -> int:
         Método abstracto que indica la efectividad que el pokémon del entrenador tiene frente al pokémon rival. 
     '''
     
@@ -587,15 +589,16 @@ class GrassPokemon(Pokemon):
     __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, pokemon_type:str, healing:float): 
         Asigna atributos al objeto.
 
-    basic_attack():
-        Reduce los puntos de vida del oponente.
+    grass_attack(self, opponent:Pokemon) -> int:
+        Ataque específico de un GrassPokemon.
+        Reduce en n unidades la salud del oponente según un factor.
 
-    is_debilitated():
-        Indica si el pokémon tiene 0 puntos de vida.
-        
-    effectiveness():
-        Método abstracto que indica la efectividad que el pokémon del entrenador tiene frente al pokémon rival. 
-        '''
+    heal(self) -> int:
+        Cura el pokémon en n unidades sin sobrepasar la vida máxima.
+            
+    effectiveness(self, opponent:Pokemon) -> int:
+        Implementación del método abstracto que indica la efectividad que el pokémon del entrenador tiene frente al pokémon rival. 
+    '''
         
     def __init__(self, name:str, level:int, strength:int, defense:int, hp:int, total_hp:int, agility:int, healing:float):
         '''
@@ -658,12 +661,11 @@ class GrassPokemon(Pokemon):
            
     def heal(self)-> int:
         '''
-        Cura el pokémon un máximo de n unidades.
-        Además, la curación no puede superar los puntos de salud máximos al terminar la curación.
+        Cura el pokémon en n unidades sin sobrepasar la vida máxima.
         
         Returns
         -------
-        int
+        cura : int
          Puntos de vida que ha recuperado el pokémon.
         '''
         cura = int(floor(self.healing*self.hp))
