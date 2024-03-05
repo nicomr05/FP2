@@ -192,7 +192,7 @@ class Pokemon(ABC):
         if isinstance(nueva_defensa, int) and nueva_defensa >= 0:
             self._defense = nueva_defensa
         else:
-            raise ValueError('La defensa debe ser no negativa.')
+            raise ValueError('La defensa debe ser un entero no negativo.')
     
     @property
     def hp(self) -> int:
@@ -200,10 +200,10 @@ class Pokemon(ABC):
     
     @hp.setter
     def hp(self, nueva_vida):
-        if isinstance(nueva_vida, int) and nueva_vida >= 0:
+        if isinstance(nueva_vida, int):
             self._hp = nueva_vida
         else:
-            raise ValueError('La vida debe ser no negativa.')
+            raise ValueError('La vida debe ser un entero.')
     
     @property
     def agility(self) -> int:
@@ -214,7 +214,7 @@ class Pokemon(ABC):
         if isinstance(nueva_agilidad, int) and nueva_agilidad >= 0:
             self._agility = nueva_agilidad
         else:
-            raise ValueError('La agilidad debe ser no negativa.')
+            raise ValueError('La agilidad debe ser un entero no negativo.')
     
     @property
     def pokemon_type(self) -> str:
@@ -225,7 +225,7 @@ class Pokemon(ABC):
         if isinstance(nuevo_tipo, str) and len(nuevo_tipo) > 0 and nuevo_tipo in ['Water','Fire','Grass']:
             self._pokemon_type = nuevo_tipo
         else:
-            raise ValueError('El tipo del pokémon debe ser uno de los siguientes: Water/Fire/Grass')
+            raise ValueError('El tipo del pokémon debe ser un string de entre los siguientes: Water/Fire/Grass')
     
 
 class WaterPokemon(Pokemon):
@@ -251,7 +251,7 @@ class WaterPokemon(Pokemon):
     agility : int
      Agilidad del pokémon.
     pokemon_type : str
-     Tipo de pokémon.
+     Pokémon tipo agua.
     surge_mode : bool
      Modo especial de un pokémon tipo agua en el que
      hace un poco más de daño al atacar.
@@ -305,7 +305,6 @@ class WaterPokemon(Pokemon):
         self._pokemon_type = 'Water'
         self._surge_mode = surge_mode
         
-    
     def check_surge_activation(self)-> bool:
         '''
         Comprueba si el pokémon está en modo surge.
@@ -540,11 +539,11 @@ class FirePokemon(Pokemon):
              Contra un pokémon tipo Fuego:    0 
              Contra un pokémon tipo Agua:    -1
         '''
-        if opponent._pokemon_type() == 'Grass':
+        if opponent.pokemon_type == 'Grass':
             return 1
-        elif opponent._pokemon_type() == 'Fire':
+        elif opponent.pokemon_type == 'Fire':
             return 0
-        elif opponent._pokemon_type() == 'Water':
+        elif opponent.pokemon_type == 'Water':
             return -1
     
     @property
@@ -694,11 +693,11 @@ class GrassPokemon(Pokemon):
              Contra un pokémon tipo Hierba:   0
              Contra un pokémon tipo Fuego:   -1 
         '''
-        if opponent._pokemon_type() == 'Water':
+        if opponent.pokemon_type == 'Water':
             return 1
-        elif opponent._pokemon_type() == 'Grass':
+        elif opponent.pokemon_type == 'Grass':
             return 0
-        elif opponent._pokemon_type() == 'Fire':
+        elif opponent.pokemon_type == 'Fire':
             return -1
     
     @property
