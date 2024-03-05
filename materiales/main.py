@@ -1,4 +1,5 @@
 import sys
+import pandas
 from trainer import Trainer
 from pokemon import Pokemon, FirePokemon, GrassPokemon, WaterPokemon
 
@@ -129,6 +130,8 @@ class Batalla:
         Selecciona los dos primeros pokémons e imprime un
         mensaje indicativo que muestra los pokémons que combatirán.
 
+    prioridad(self) -> :
+
     combate(self):
         Gestiona el combate entre dos pokémons.
     
@@ -188,9 +191,6 @@ class Batalla:
 
         cad_combate = cad_ronda + primer_combatiente + saegundo_combatiente + actions
         return cad_combate
-    
-    def str_ataque(self) -> str:
-        pass
 
     def inicio(self):
         '''
@@ -201,38 +201,53 @@ class Batalla:
         self.p2 = self.trainer2.select_first_pokemon()
         print(self.str_inicio())
 
-    def combate(self):
+    def prioridad(self) -> Pokemon:
+        '''
+        Define qué pokémon atacará primero según la agilidad de ambos contrincantes.
+
+        Returns 
+        ------- 
+        Pokemon
+         Pokémon que atacará primero y, en segunda posición,
+         el pokémon que atacará después.
+        '''
+        if self.p1.agility >= self.p1.agility:
+            return (self.p1, self.p2)
+        elif self.p1.agility < self.p1.agility:
+            return (self.p2, self.p1)
+        
+    def combate(self, atacante:Pokemon, defensor:Pokemon) -> Pokemon:
         '''
         Gestiona el combate entre dos pokémons dados de ambos entrenadores dependiendo
         del número de ronda actual. Además, imprime un mensaje por cada ronda, indicando 
         el estado actual de los pokémons y otro mensaje por cada ataque realizado.
         '''
-        while not (self.p1.is_debilitated() or self.p2.is_debilitated()):
-            
-            print(self.str_combate(self.round_number))
+        print(self.str_combate(self.round_number))
 
-            if self.round_number % 2 == 1:
-                if isinstance(self.p1, FirePokemon):
-                    type_attack = 'fire_attack'
-                    self.p1.fire_attack(self.p2)
+        if self.round_number % 2 == 1:
+            if isinstance(atacante, FirePokemon):
+                type_attack = 'fire_attack'
+                print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{atacante.fire_attack(defensor)} HP: {defensor.hp})')
+                print(f'\n {atacante.name} uses embers on {defensor.name}! (Damage: -{atacante.embers()} HP: {defensor.hp})')
 
-                if isinstance(self.p1, GrassPokemon):
-                    type_attack = 'grass_attack'           
-                    self.p1.grass_attack(self.p2)
+            if isinstance(atacante, GrassPokemon):
+                type_attack = 'grass_attack'           
+                print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{atacante.grass_attack(defensor)} HP: {defensor.hp})')
+                print(f'\n {atacante.name} is healing! (Healing: +{atacante.heal()} HP: {atacante.hp}) ')
 
-                if isinstance(self.p1, WaterPokemon):
-                    type_attack = 'water_attack'
-                    self.p1.water_attack(self.p2)
+            if isinstance(atacante, WaterPokemon):
+                type_attack = 'water_attack'
+                print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{atacante.water_attack(defensor)} HP: {defensor.hp})')
 
             else:
-                self.p1.basic_attack(self.p2)
-                self.p2.basic_attack(self.p1)
-            
-            self.round_number += 1
+                type_attack = 'basic_attack'
+                print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{atacante.water_attack(defensor)} HP: {defensor.hp})')
 
-    def prioridad(self):
-        pass
-        
+        if defensor.is_debilitated():
+            print(f'{defensor.name} is debilitated.')
+            return defensor
+
+        self.round_number += 1
 
     @property
     def trainer1(self) -> Trainer:
@@ -299,17 +314,33 @@ def main():
         simulator = PokemonSimulator()
         trainer1, trainer2 = simulator.parse_file(pokemon_text)
         
-        #Creación de la batalla entre trainer1 y trainer2:
+        # Creación de la batalla entre trainer1 y trainer2:
         batalla = Batalla(trainer1= trainer1, trainer2= trainer2)
         
-        #Inicio de la batalla entre los dos entrenadores:
+        # Inicio de la batalla entre los dos entrenadores:
         batalla.inicio()
         
-        #Combate entre dos pokémons, cada uno siendo de cada entrenador respectivamente:
-        batalla.combate()
+        # Combate entre dos pokémons, uno atacante y otro defensor:
+        atacante = batalla.prioridad()[0]
+        defensor = batalla.prioridad()[1]
+
+        while not (batalla.trainer1.all_debilitated() or batalla.trainer2.all_debilitated()):
+
+            pokemon_debilitado = batalla.combate(atacante= atacante, defensor= defensor)
+            print(f'{pokemon_debilitado} is debilitated')
+            
+            if pokemon_debilitado in batalla.trainer1.pokemon:
+                print(f'{batalla.trainer1.name} chooses {batalla.trainer1.select_next_pokemon()}')
+            if pokemon_debilitado in batalla.trainer2.pokemon:
+                print(f'{batalla.trainer1.name} chooses {batalla.trainer1.select_next_pokemon()}')
         
-        
+        # Si todos los pokémons de alguno de los entrenadores se debilita, imprime un mensaje de victoria:
+        if batalla.trainer2.all_debilitated():
+            ganador = batalla.trainer1
+        if batalla.trainer1.all_debilitated():
+            ganador = batalla.trainer2
     
+        print(f'=================================\nEnd of the Battle: {ganador.name} wins!\n=================================')
 
 if __name__ == '__main__':
     main()
