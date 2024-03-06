@@ -153,8 +153,8 @@ class Batalla:
         self._trainer1 = trainer1
         self._trainer2 = trainer2
         self._round_number = round_number
-        self._p1 = None
-        self._p2 = None
+        self._p1 = Pokemon
+        self._p2 = Pokemon
         
     def str_inicio(self) -> str:
         '''
@@ -165,7 +165,7 @@ class Batalla:
         cad_inicio : str
          Cadena informativa al inicio de la batalla.
         '''
-        cad_inicio = '===============================\nBattle between: {0} vs {1} begins!\n{2} chooses {3}\n{4} chooses {5}\n===============================\n'\
+        cad_inicio = '\n===============================\nBattle between: {0} vs {1} begins!\n{2} chooses {3}\n{4} chooses {5}\n===============================\n'\
         .format(self.trainer1.name, self.trainer2.name, self.trainer1.name, self.p1.name, self.trainer2.name, self.p2.name)
         
         return cad_inicio
@@ -179,7 +179,7 @@ class Batalla:
         cad_combate : str
          Cadena informativa al inicio del combate.
         '''
-        cad_ronda = f'┌───────── Round {round} ─────────┐\n'
+        cad_ronda = f'\n┌───────── Round {round} ─────────┐\n'
 
         primer_combatiente = 'Fighter 1: {0}({1}) Stats: Level:{2}, ATT:{3}, DEF:{4}, AGI:{5}, HP:{6}/{7}.\n'\
             .format(self.p1.name, self.p1.pokemon_type, self.p1.level, self.p1.strength, self.p1.defense, self.p1.agility, self.p1.hp, self.p1.total_hp)
@@ -187,7 +187,7 @@ class Batalla:
         saegundo_combatiente = 'Fighter 2: {0}({1}) Stats: Level:{2}, ATT:{3}, DEF:{4}, AGI:{5}, HP:{6}/{7}.\n'\
             .format(self.p2.name, self.p2.pokemon_type, self.p2.level, self.p2.strength, self.p2.defense, self.p2.agility, self.p2.hp, self.p2.total_hp)
 
-        actions = 'Actions\n'
+        actions = '\nActions:'
 
         cad_combate = cad_ronda + primer_combatiente + saegundo_combatiente + actions
         return cad_combate
@@ -224,31 +224,48 @@ class Batalla:
         '''
         print(self.str_combate(self.round_number))
 
-        if self.round_number % 2 == 1:
-            if isinstance(atacante, FirePokemon):
-                type_attack = 'fire_attack'
-                print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{atacante.fire_attack(defensor)} HP: {defensor.hp})')
-                print(f'\n {atacante.name} uses embers on {defensor.name}! (Damage: -{atacante.embers()} HP: {defensor.hp})')
+        while not (atacante.is_debilitated() or defensor.is_debilitated()):
+            if self.round_number % 2 == 1:
+                if isinstance(atacante, FirePokemon):
+                    type_attack = 'fire_attack'
+                    print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{atacante.fire_attack(defensor)} HP: {defensor.hp})')
+                    if defensor.is_debilitated():
+                        return defensor
+                    print(f'\n {atacante.name} uses embers on {defensor.name}! (Damage: -{atacante.embers()} HP: {defensor.hp})')
+                    if defensor.is_debilitated():
+                        return defensor
+                    
+                if isinstance(atacante, GrassPokemon):
+                    type_attack = 'grass_attack'           
+                    print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{atacante.grass_attack(defensor)} HP: {defensor.hp})')
+                    if defensor.is_debilitated():
+                        return defensor
+                    print(f'\n {atacante.name} is healing! (Healing: +{atacante.heal()} HP: {atacante.hp}) ')
 
-            if isinstance(atacante, GrassPokemon):
-                type_attack = 'grass_attack'           
-                print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{atacante.grass_attack(defensor)} HP: {defensor.hp})')
-                print(f'\n {atacante.name} is healing! (Healing: +{atacante.heal()} HP: {atacante.hp}) ')
-
-            if isinstance(atacante, WaterPokemon):
-                type_attack = 'water_attack'
-                print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{atacante.water_attack(defensor)} HP: {defensor.hp})')
-
+                if isinstance(atacante, WaterPokemon):
+                    type_attack = 'water_attack'
+                    print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{atacante.water_attack(defensor)} HP: {defensor.hp})')
+                    if defensor.is_debilitated():
+                        return defensor
+                    
+                atacante, defensor = defensor, atacante
+                
+                    
             else:
                 type_attack = 'basic_attack'
-                print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{atacante.water_attack(defensor)} HP: {defensor.hp})')
+                print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{atacante.basic_attack(defensor)} HP: {defensor.hp})')
+                if defensor.is_debilitated():
+                    return defensor
+                
+                atacante, defensor = defensor, atacante
+                
+            self.round_number += 1
+            print(self.str_combate(self.round_number))
+                
+            if defensor.is_debilitated():
+                return defensor
 
-        if defensor.is_debilitated():
-            print(f'{defensor.name} is debilitated.')
-            return defensor
-
-        self.round_number += 1
-
+            
     @property
     def trainer1(self) -> Trainer:
         return self._trainer1
@@ -323,16 +340,15 @@ def main():
         # Combate entre dos pokémons, uno atacante y otro defensor:
         atacante = batalla.prioridad()[0]
         defensor = batalla.prioridad()[1]
-
-        while not (batalla.trainer1.all_debilitated() or batalla.trainer2.all_debilitated()):
-
-            pokemon_debilitado = batalla.combate(atacante= atacante, defensor= defensor)
-            print(f'{pokemon_debilitado} is debilitated')
-            
-            if pokemon_debilitado in batalla.trainer1.pokemon:
-                print(f'{batalla.trainer1.name} chooses {batalla.trainer1.select_next_pokemon()}')
-            if pokemon_debilitado in batalla.trainer2.pokemon:
-                print(f'{batalla.trainer1.name} chooses {batalla.trainer1.select_next_pokemon()}')
+        
+        pokemon_debilitado = batalla.combate(atacante= atacante, defensor= defensor)
+        
+        print(f'\n {pokemon_debilitado.name} is debilitated.')
+        
+        if pokemon_debilitado in batalla.trainer2.pokemon:
+            print(f'{batalla.trainer2.name} chooses {batalla.trainer1.select_next_pokemon(batalla.p1).name}!')
+        if pokemon_debilitado in batalla.trainer1.pokemon:
+            print(f'{batalla.trainer1.name} chooses {batalla.trainer1.select_next_pokemon(batalla.p2).name}!')
         
         # Si todos los pokémons de alguno de los entrenadores se debilita, imprime un mensaje de victoria:
         if batalla.trainer2.all_debilitated():

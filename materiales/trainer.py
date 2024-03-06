@@ -95,11 +95,12 @@ class Trainer:
         else:
             efectividad = -1
             for bicho in self.pokemon:
-                if bicho.effectiveness(opponent) > efectividad:
+                if bicho.effectiveness(opponent) > efectividad and not bicho.is_debilitated():
                     efectividad = bicho.effectiveness(opponent)
                     pok = bicho
-                elif bicho.effectiveness(opponent) == efectividad:
+                elif bicho.effectiveness(opponent) == efectividad and not bicho.is_debilitated():
                     if bicho.level > pok.level:
+                        efectividad = bicho.effectiveness(opponent)
                         pok = bicho
                         
             return pok

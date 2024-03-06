@@ -3,7 +3,6 @@ TODO: Implement in this file the Pokemon hierarchy.
 """
 
 from abc import ABC, abstractmethod
-from math import floor
 
 class Pokemon(ABC):
     '''
@@ -352,7 +351,7 @@ class WaterPokemon(Pokemon):
         if self.surge_mode:
             factor += 0.1
         
-        damage = int(floor(max(1, (factor*self.strength) - opponent.defense)))
+        damage = int(max(1, (factor*self.strength) - opponent.defense))
         opponent.hp -= damage
         
         if opponent.hp < 0:
@@ -490,7 +489,7 @@ class FirePokemon(Pokemon):
         elif opponent.pokemon_type == 'Water':
             factor = 0.5 
 
-        damage = int(floor(max(1, (factor*self.strength) - opponent.defense)))
+        damage = int(max(1, (factor*self.strength) - opponent.defense))
         opponent.hp -= damage
         
         if opponent.hp < 0:
@@ -513,7 +512,7 @@ class FirePokemon(Pokemon):
         damage : int
          Daño causado al oponente.
         '''
-        damage = int(floor(self.strength*self.temperature))
+        damage = int(self.strength*self.temperature)
         opponent.hp -= damage
         
         if opponent.hp < 0:
@@ -650,7 +649,7 @@ class GrassPokemon(Pokemon):
         elif opponent.pokemon_type == 'Fire':
             factor = 0.5 
 
-        damage = int(floor(max(1, (factor*self.strength) - opponent.defense)))
+        damage = int(max(1, (factor*self.strength) - opponent.defense))
         opponent.hp -= damage
         
         if opponent.hp < 0:
@@ -667,7 +666,7 @@ class GrassPokemon(Pokemon):
         cura : int
          Puntos de vida que ha recuperado el pokémon.
         '''
-        cura = int(floor(self.healing*self.hp))
+        cura = int(float(self.healing)*self.hp)
         self.hp += cura
         
         if self.hp > self.total_hp:
