@@ -208,8 +208,8 @@ class Batalla:
         Returns 
         ------- 
         Pokemon
-         Pokémon que atacará primero y, en segunda posición,
-         el pokémon que atacará después.
+         Devuelve, en la primera posición el pokémon que atacará primero y,
+         en la segunda posición, el pokémon que atacará después.
         '''
         if self.p1.agility >= self.p1.agility:
             return (self.p1, self.p2)
@@ -257,7 +257,7 @@ class Batalla:
             type_attack = 'water_attack'
             print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{atacante.water_attack(defensor)} HP: {defensor.hp})')
             if defensor.is_debilitated():
-                print(f'{defensor.name} is debilitated.')
+                print(f'\n {defensor.name} is debilitated.')
             return defensor
     
     def ronda_par(self, atacante:Pokemon, defensor:Pokemon) -> Pokemon:
@@ -351,38 +351,47 @@ def main():
         # Inicio de la batalla entre los dos entrenadores:
         batalla.inicio()
         
-        # Combate entre dos pokémons, uno atacante y otro defensor:
-        atacante = batalla.prioridad()[0]
-        defensor = batalla.prioridad()[1]
-        
-        if not batalla.trainer1.all_debilitated() and not batalla.trainer2.all_debilitated():
+        while not batalla.trainer1.all_debilitated() and not batalla.trainer2.all_debilitated():
             
-            while not atacante.is_debilitated() and not defensor.is_debilitated():
-                
-                if batalla.round_number % 2 == 1:
-                    print(batalla.str_combate(batalla.round_number))
-                    batalla.ronda_impar(atacante= atacante, defensor= defensor)
-                    batalla.ronda_impar(atacante= defensor, defensor= atacante)
-                    batalla.round_number += 1
-                
+            # Combate entre dos pokémons, uno atacante y otro defensor:
+            ataca = batalla.prioridad()[0]
+            defiende = batalla.prioridad()[1]
+
+            if batalla.round_number % 2 == 1:
+                print(batalla.str_combate(batalla.round_number))
+                batalla.ronda_impar(atacante= ataca, defensor= defiende)
+                if defiende.is_debilitated():
+                    print(f'\n{batalla.trainer2.name} chooses {batalla.trainer1.select_next_pokemon(batalla.p1).name}!')
+                    batalla.p2 = batalla.trainer2.select_next_pokemon(batalla.p1)
                 else:
-                    print(batalla.str_combate(batalla.round_number))
-                    batalla.ronda_par(atacante= atacante, defensor= defensor)
-                    batalla.ronda_par(atacante= defensor, defensor= atacante)
+                    batalla.ronda_impar(atacante= defiende, defensor= ataca)
                     batalla.round_number += 1
-            
-            if atacante.is_debilitated() and atacante in batalla.trainer1.pokemon:
+                    
+            else:
+                print(batalla.str_combate(batalla.round_number))
+                batalla.ronda_par(atacante= ataca, defensor= defiende)
+                if defiende.is_debilitated():
+                    print(f'\n{batalla.trainer2.name} chooses {batalla.trainer1.select_next_pokemon(batalla.p1).name}!')
+                    batalla.p2 = batalla.trainer2.select_next_pokemon(batalla.p1)
+                else:
+                    batalla.ronda_par(atacante= defiende, defensor= ataca)
+                    batalla.round_number += 1
+                
+            if batalla.p1.is_debilitated():
                 print(f'\n{batalla.trainer1.name} chooses {batalla.trainer1.select_next_pokemon(batalla.p2).name}!')
-            if defensor.is_debilitated() and defensor in batalla.trainer2.pokemon:
+                batalla.p1 = batalla.trainer1.select_next_pokemon(batalla.p2)
+            if batalla.p2.is_debilitated():
                 print(f'\n{batalla.trainer2.name} chooses {batalla.trainer1.select_next_pokemon(batalla.p1).name}!')
-        
-        # Si todos los pokémons de alguno de los entrenadores se debilita, imprime un mensaje de victoria:
-        if batalla.trainer2.all_debilitated():
-            ganador = batalla.trainer1
-        if batalla.trainer1.all_debilitated():
-            ganador = batalla.trainer2
+                batalla.p2 = batalla.trainer2.select_next_pokemon(batalla.p1)
+            
+            # Si todos los pokémons de alguno de los entrenadores se debilita, imprime un mensaje de victoria:
+            if batalla.trainer2.all_debilitated():
+                print(f'=================================\nEnd of the Battle: {batalla.trainer1.name} wins!\n=================================')
+                break
+            if batalla.trainer1.all_debilitated():
+                print(f'=================================\nEnd of the Battle: {batalla.trainer2.name} wins!\n=================================')
+                break
     
-        print(f'=================================\nEnd of the Battle: {ganador.name} wins!\n=================================')
 
 if __name__ == '__main__':
     main()
