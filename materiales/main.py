@@ -6,7 +6,7 @@ Pablo José Pérez Pazos  |   pablo.perez.pazos@udc.es
 
 
 import sys
-import pandas
+#import pandas
 from trainer import Trainer
 from pokemon import Pokemon, FirePokemon, GrassPokemon, WaterPokemon
 
@@ -242,7 +242,7 @@ class Batalla:
          Pokémon que recibe el ataque
         '''
         cura = 0
-        
+
         #lista_damages = {}
         #valores = [atacante.name, atacante.pokemon_type, defensor.name, defensor.pokemon_type, cura, damages]
         #datos.append(valores)
