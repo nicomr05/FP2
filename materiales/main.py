@@ -6,7 +6,7 @@ Pablo José Pérez Pazos  |   pablo.perez.pazos@udc.es
 
 
 import sys
-
+import pandas
 from trainer import Trainer
 from pokemon import Pokemon, FirePokemon, GrassPokemon, WaterPokemon
 
@@ -241,28 +241,41 @@ class Batalla:
         defensor : Pokemon
          Pokémon que recibe el ataque
         '''
+        cura = 0
+        
+        #lista_damages = {}
+        #valores = [atacante.name, atacante.pokemon_type, defensor.name, defensor.pokemon_type, cura, damages]
+        #datos.append(valores)
+
         if isinstance(atacante, FirePokemon):
+            damages2 = 0
             type_attack = 'fire_attack'
-            print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{atacante.fire_attack(defensor)} HP: {defensor.hp})')
+            damages = atacante.fire_attack(defensor)
+            print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{damages} HP: {defensor.hp})')
             if defensor.is_debilitated():
                 print(f'\n {defensor.name} is debilitated.')
                 return defensor
-            print(f'\n {atacante.name} uses embers on {defensor.name}! (Damage: -{atacante.embers(defensor)} HP: {defensor.hp})')
+            damages2 = atacante.embers(defensor)
+            print(f'\n {atacante.name} uses embers on {defensor.name}! (Damage: -{damages2} HP: {defensor.hp})')
             if defensor.is_debilitated():
                 print(f'\n {defensor.name} is debilitated.')
+            damages += damages2
             return defensor
                     
         if isinstance(atacante, GrassPokemon):
-            type_attack = 'grass_attack'           
-            print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{atacante.grass_attack(defensor)} HP: {defensor.hp})')
-            print(f'\n {atacante.name} is healing! (Healing: +{atacante.heal()} HP: {atacante.hp}) ')
+            type_attack = 'grass_attack'
+            damages = atacante.grass_attack(defensor)         
+            print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{damages} HP: {defensor.hp})')
+            cura = atacante.heal()
+            print(f'\n {atacante.name} is healing! (Healing: +{cura} HP: {atacante.hp}) ')
             if defensor.is_debilitated():
                 print(f'\n {defensor.name} is debilitated.')
             return defensor
 
         if isinstance(atacante, WaterPokemon):
             type_attack = 'water_attack'
-            print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{atacante.water_attack(defensor)} HP: {defensor.hp})')
+            damages = atacante.water_attack(defensor)
+            print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{damages} HP: {defensor.hp})')
             if defensor.is_debilitated():
                 print(f'\n {defensor.name} is debilitated.')
             return defensor
@@ -280,8 +293,10 @@ class Batalla:
         defensor : Pokemon 
          Pokémon que recibe el ataque.
         '''
+        cura = 0
         type_attack = 'basic_attack'
-        print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{atacante.basic_attack(defensor)} HP: {defensor.hp})')
+        damages = atacante.basic_attack(defensor)
+        print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{damages} HP: {defensor.hp})')
         if defensor.is_debilitated():
             print(f'\n {defensor.name} is debilitated.')
         return defensor
