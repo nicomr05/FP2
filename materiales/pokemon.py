@@ -1,6 +1,9 @@
-"""
-TODO: Implement in this file the Pokemon hierarchy.
-"""
+'''
+Trabajo por:
+Nicolás Muñiz Rodríguez |   nicolas.muniz@udc.es
+Pablo José Pérez Pazos  |   pablo.perez.pazos@udc.es 
+'''
+
 
 from abc import ABC, abstractmethod
 
