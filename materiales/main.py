@@ -165,7 +165,7 @@ class Batalla:
         cad_inicio : str
          Cadena informativa al inicio de la batalla.
         '''
-        cad_inicio = '===============================\nBattle between: {0} vs {1} begins!\n{2} chooses {3}\n{4} chooses {5}\n==============================='\
+        cad_inicio = '===============================\nBattle between: {0} vs {1} begins!\n{2} chooses {3}\n{4} chooses {5}\n===============================\n'\
         .format(self.trainer1.name, self.trainer2.name, self.trainer1.name, self.p1.name, self.trainer2.name, self.p2.name)
         
         return cad_inicio
