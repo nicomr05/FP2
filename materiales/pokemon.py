@@ -666,7 +666,7 @@ class GrassPokemon(Pokemon):
         cura : int
          Puntos de vida que ha recuperado el pokémon.
         '''
-        cura = int(float(self.healing)*self.hp)
+        cura = int(self.healing*self.hp)
         self.hp += cura
         
         if self.hp > self.total_hp:
