@@ -57,7 +57,7 @@ class Trainer:
          Resultado de comprobar si todos los pokémons del entrenador están debilitados (T/F).
         '''
         for bicho in self.pokemon:
-            if bicho.hp <= 0:
+            if bicho.hp > 0:
                 return False
         return True
         

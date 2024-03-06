@@ -1,5 +1,5 @@
 import sys
-import pandas
+
 from trainer import Trainer
 from pokemon import Pokemon, FirePokemon, GrassPokemon, WaterPokemon
 
@@ -153,8 +153,8 @@ class Batalla:
         self._trainer1 = trainer1
         self._trainer2 = trainer2
         self._round_number = round_number
-        self._p1 = Pokemon
-        self._p2 = Pokemon
+        self._p1 = None
+        self._p2 = None
         
     def str_inicio(self) -> str:
         '''
