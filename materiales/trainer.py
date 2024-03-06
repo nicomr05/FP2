@@ -93,19 +93,21 @@ class Trainer:
         pok : Pokemon
          Pokémon que mejor se ajuste a la batalla.
         '''
+        assert not self.all_debilitated(), 'Todos debilitados'
         if self.all_debilitated():
             return None
         else:
-            efectividad = -1
+            efectividad = -2
             for bicho in self.pokemon:
                 if not bicho.is_debilitated() and bicho.effectiveness(opponent) > efectividad:
                     efectividad = bicho.effectiveness(opponent)
+                    
                     pok = bicho
                 elif not bicho.is_debilitated() and bicho.effectiveness(opponent) == efectividad:
                     if bicho.level >= pok.level:
                         efectividad = bicho.effectiveness(opponent)
                         pok = bicho
-                        
+                
             return pok
             
     

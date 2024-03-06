@@ -368,8 +368,11 @@ def main():
                 print(batalla.str_combate(batalla.round_number))
                 batalla.ronda_impar(atacante= ataca, defensor= defiende)
                 if defiende.is_debilitated():
-                    print(f'\n{batalla.trainer2.name} chooses {batalla.trainer1.select_next_pokemon(batalla.p1).name}!')
-                    batalla.p2 = batalla.trainer2.select_next_pokemon(batalla.p1)
+                    try:
+                        batalla.p2 = batalla.trainer2.select_next_pokemon(batalla.p1)
+                        print(f'\n{batalla.trainer2.name} chooses {batalla.trainer1.select_next_pokemon(batalla.p1).name}!')
+                    except:
+                        break
                 else:
                     batalla.ronda_impar(atacante= defiende, defensor= ataca)
                     batalla.round_number += 1
@@ -378,26 +381,36 @@ def main():
                 print(batalla.str_combate(batalla.round_number))
                 batalla.ronda_par(atacante= ataca, defensor= defiende)
                 if defiende.is_debilitated():
-                    print(f'\n{batalla.trainer2.name} chooses {batalla.trainer1.select_next_pokemon(batalla.p1).name}!')
-                    batalla.p2 = batalla.trainer2.select_next_pokemon(batalla.p1)
+                    try:
+                        batalla.p2 = batalla.trainer2.select_next_pokemon(batalla.p1)
+                        print(f'\n{batalla.trainer2.name} chooses {batalla.trainer1.select_next_pokemon(batalla.p1).name}!')
+                    except:
+                        break
                 else:
                     batalla.ronda_par(atacante= defiende, defensor= ataca)
                     batalla.round_number += 1
                 
             if batalla.p1.is_debilitated():
-                print(f'\n{batalla.trainer1.name} chooses {batalla.trainer1.select_next_pokemon(batalla.p2).name}!')
-                batalla.p1 = batalla.trainer1.select_next_pokemon(batalla.p2)
+                try:
+                    batalla.p1 = batalla.trainer1.select_next_pokemon(batalla.p2)
+                    print(f'\n{batalla.trainer1.name} chooses {batalla.trainer1.select_next_pokemon(batalla.p2).name}!')
+                except:
+                    break
+                    
             if batalla.p2.is_debilitated():
-                print(f'\n{batalla.trainer2.name} chooses {batalla.trainer1.select_next_pokemon(batalla.p1).name}!')
-                batalla.p2 = batalla.trainer2.select_next_pokemon(batalla.p1)
-            
+                try:
+                    batalla.p2 = batalla.trainer2.select_next_pokemon(batalla.p1)
+                    print(f'\n{batalla.trainer2.name} chooses {batalla.trainer1.select_next_pokemon(batalla.p1).name}!')
+                except:
+                    break
+                
             # Si todos los pokémons de alguno de los entrenadores se debilita, imprime un mensaje de victoria:
-            if batalla.trainer2.all_debilitated():
-                print(f'=================================\nEnd of the Battle: {batalla.trainer1.name} wins!\n=================================')
-                break
-            if batalla.trainer1.all_debilitated():
-                print(f'=================================\nEnd of the Battle: {batalla.trainer2.name} wins!\n=================================')
-                break
+        if batalla.trainer2.all_debilitated():
+            print(f'\n=================================\nEnd of the Battle: {batalla.trainer1.name} wins!\n=================================')
+                
+        if batalla.trainer1.all_debilitated():
+            print(f'\n=================================\nEnd of the Battle: {batalla.trainer2.name} wins!\n=================================')
+                
     
 
 if __name__ == '__main__':
