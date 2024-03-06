@@ -243,7 +243,7 @@ class Batalla:
             print(f'\n {atacante.name} uses embers on {defensor.name}! (Damage: -{atacante.embers(defensor)} HP: {defensor.hp})')
             if defensor.is_debilitated():
                 print(f'\n {defensor.name} is debilitated.')
-                return defensor
+            return defensor
                     
         if isinstance(atacante, GrassPokemon):
             type_attack = 'grass_attack'           
@@ -251,14 +251,14 @@ class Batalla:
             print(f'\n {atacante.name} is healing! (Healing: +{atacante.heal()} HP: {atacante.hp}) ')
             if defensor.is_debilitated():
                 print(f'\n {defensor.name} is debilitated.')
-                return defensor
+            return defensor
 
         if isinstance(atacante, WaterPokemon):
             type_attack = 'water_attack'
             print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{atacante.water_attack(defensor)} HP: {defensor.hp})')
             if defensor.is_debilitated():
                 print(f'{defensor.name} is debilitated.')
-                return defensor
+            return defensor
     
     def ronda_par(self, atacante:Pokemon, defensor:Pokemon) -> Pokemon:
         '''
@@ -277,7 +277,7 @@ class Batalla:
         print(f'\n {atacante.name} uses a {type_attack} on {defensor.name}! (Damage: -{atacante.basic_attack(defensor)} HP: {defensor.hp})')
         if defensor.is_debilitated():
             print(f'\n {defensor.name} is debilitated.')
-            return defensor
+        return defensor
 
 
     @property
@@ -343,10 +343,10 @@ def main():
     with open(sys.argv[1]) as f:
         pokemon_text = f.read()
         simulator = PokemonSimulator()
-        trainer1, trainer2 = simulator.parse_file(pokemon_text)
+        tr1, tr2 = simulator.parse_file(pokemon_text)
         
         # Creación de la batalla entre trainer1 y trainer2:
-        batalla = Batalla(trainer1= trainer1, trainer2= trainer2)
+        batalla = Batalla(trainer1= tr1, trainer2= tr2)
         
         # Inicio de la batalla entre los dos entrenadores:
         batalla.inicio()
@@ -355,24 +355,26 @@ def main():
         atacante = batalla.prioridad()[0]
         defensor = batalla.prioridad()[1]
         
-        while not (batalla.trainer1.all_debilitated() or batalla.trainer2.all_debilitated()):
+        if not batalla.trainer1.all_debilitated() and not batalla.trainer2.all_debilitated():
             
-            if atacante.is_debilitated() or defensor.is_debilitated():
+            while not atacante.is_debilitated() and not defensor.is_debilitated():
                 
                 if batalla.round_number % 2 == 1:
+                    print(batalla.str_combate(batalla.round_number))
                     batalla.ronda_impar(atacante= atacante, defensor= defensor)
                     batalla.ronda_impar(atacante= defensor, defensor= atacante)
                     batalla.round_number += 1
-                    print(batalla.str_combate(batalla.round_number))
                 
                 else:
+                    print(batalla.str_combate(batalla.round_number))
                     batalla.ronda_par(atacante= atacante, defensor= defensor)
                     batalla.ronda_par(atacante= defensor, defensor= atacante)
                     batalla.round_number += 1
-                    print(batalla.str_combate(batalla.round_number))
             
-            print(f'{batalla.trainer2.name} chooses {batalla.trainer1.select_next_pokemon(batalla.p1).name}!')
-            print(f'{batalla.trainer1.name} chooses {batalla.trainer1.select_next_pokemon(batalla.p2).name}!')
+            if atacante.is_debilitated() and atacante in batalla.trainer1.pokemon:
+                print(f'\n{batalla.trainer1.name} chooses {batalla.trainer1.select_next_pokemon(batalla.p2).name}!')
+            if defensor.is_debilitated() and defensor in batalla.trainer2.pokemon:
+                print(f'\n{batalla.trainer2.name} chooses {batalla.trainer1.select_next_pokemon(batalla.p1).name}!')
         
         # Si todos los pokémons de alguno de los entrenadores se debilita, imprime un mensaje de victoria:
         if batalla.trainer2.all_debilitated():
