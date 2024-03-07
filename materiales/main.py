@@ -421,10 +421,10 @@ def main():
                 
             # Si todos los pokémons de alguno de los entrenadores se debilita, imprime un mensaje de victoria:
         if batalla.trainer2.all_debilitated():
-            print(f'\n=================================\nEnd of the Battle: {batalla.trainer1.name} wins!\n=================================')
+            print(f'\n==========================================\n\nEnd of the Battle: {batalla.trainer1.name} wins!\n\n==========================================')
                 
         if batalla.trainer1.all_debilitated():
-            print(f'\n=================================\nEnd of the Battle: {batalla.trainer2.name} wins!\n=================================')
+            print(f'\n==========================================\n\nEnd of the Battle: {batalla.trainer2.name} wins!\n\n==========================================')
                 
     
 
