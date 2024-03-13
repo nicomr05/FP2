@@ -89,3 +89,75 @@ class ArrayQueue:
             s += "\t" + self._data[i].__str__() + "\n"
         s += "]\n"
         return s
+
+class Proceso:
+    '''
+    Clase abstracta para un proceso.
+    '''
+    def __init__(self, ID_proceso:str, ID_usuario:str, recurso:str, tiempo_estimado:str, tiempo_real:int):
+        self._ID_proceso = ID_proceso
+        self._ID_usuario = ID_usuario
+        self._recurso = recurso
+        self._tiempo_estimado = tiempo_estimado
+        self._tiempo_real = tiempo_real
+
+    
+    @property
+    def ID_proceso(self) -> str:
+        return self._ID_proceso
+    
+    @property
+    def ID_usuario(self) -> str:
+        return self._ID_usuario
+    
+    @property
+    def recurso(self) -> str:
+        return self._recurso
+    
+    @property
+    def tiempo_estimado(self) -> str:
+        return self._tiempo_estimado
+    
+    @property
+    def tiempo_real(self) -> int:
+        return self._tiempo_real
+    
+    @ID_proceso.setter
+    def ID_proceso(self, nueva_ID):
+        if isinstance(nueva_ID, str) and len(nueva_ID) > 0:
+            self._ID_proceso = nueva_ID
+        else:
+            ValueError('La ID de proceso tiene que ser un string de longitud mayor que 0.')
+
+    @ID_usuario.setter
+    def ID_usuario(self, nueva_ID):
+        if isinstance(nueva_ID, str) and len(nueva_ID) > 0:
+            self._ID_usuario = nueva_ID
+        else:
+            ValueError('La ID de usuario tiene que ser un string de longitud mayor que 0.')
+
+    @recurso.setter
+    def recurso(self, nuevo_recurso):
+        if isinstance(nuevo_recurso, str) and len(nuevo_recurso) > 0 and nuevo_recurso in ['cpu','gpu']:
+            self._recurso = nuevo_recurso
+        else:
+            ValueError('El tipo de recurso tiene que ser o "cpu" o "gpu".')
+            
+    @tiempo_estimado.setter
+    def tiempo_estimado(self, nuevo_tiempo):
+        if isinstance(nuevo_tiempo, str) and len(nuevo_tiempo) > 0 and nuevo_tiempo in ['long','short']:
+            self._tiempo_estimado = nuevo_tiempo
+        else:
+            ValueError('El tiempo estimado tiene que ser o "long" o "short".')
+    
+    @tiempo_real.setter
+    def tiempo_real(self, nuevo_tiempo):
+        if isinstance(nuevo_tiempo, int) and nuevo_tiempo > 0:
+            self._tiempo_real = nuevo_tiempo
+        else:
+            ValueError('El tiempo estimado tiene que ser un string de longitud mayor que 0.')
+
+class GestorColas:
+    
+    def __init__(self):
+        pass
