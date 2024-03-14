@@ -102,7 +102,12 @@ class Proceso:
         self._tiempo_real = tiempo_real
     
     def __str__(self) -> str:
-        return f'{self.ID_proceso}'
+        cadena = f'{self.ID_proceso}'
+        cadena += f'    {self.ID_usuario}'
+        cadena += f'    {self.recurso}'
+        cadena += f'    {self.tiempo_estimado}'
+        cadena += f' ({self.tiempo_real})'
+        return cadena
 
     
     @property
@@ -162,5 +167,16 @@ class Proceso:
 
 class GestorColas:
     
-    def __init__(self):
-        pass
+    def __init__(self, procesos):
+        self._procesos = procesos
+
+    @property
+    def procesos(self) -> list:
+        return self._procesos
+    
+    @procesos.setter
+    def procesos(self, nueva_lista):
+        if isinstance(nueva_lista, list) and len(nueva_lista) > 0:
+            self._procesos = nueva_lista
+        else:
+            ValueError('La lista de procesos debe ser una lista con elementos.')
