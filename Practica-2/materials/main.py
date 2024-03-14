@@ -1,16 +1,17 @@
-from array_queue import Proceso
+import sys
+from array_queue import Proceso, GestorColas
 
 class SimuladorProcesos:
     
     def crear_procesos(self, texto:str):
         
         lista_procesos = []
-        lineas = texto.split(sep= '\n')
+        lineas = texto.split('\n')
         
-        for linea in lineas:
+        for linea in lineas[0:-1]:
             
-            partes_linea = linea.split(sep= ' ')
-            
+            partes_linea = linea.split(' ')
+
             ID_proceso = partes_linea[0]
             ID_usuario = partes_linea[1]
             recurso = partes_linea[2]
@@ -21,19 +22,22 @@ class SimuladorProcesos:
             
             lista_procesos.append(proceso)
         
-        return lista_procesos
+        gestor = GestorColas(procesos= lista_procesos)
+        
+        return gestor
     
 
 def main():
     '''
     Función principal que lee el archivo y ejecuta la simulación de los procesos.
     '''
-    pass
+    with open(sys.argv[1]) as f:
+        texto_procesos = f.read()
+        
+        simulador = SimuladorProcesos()
+        
+        for i in simulador.crear_procesos(texto_procesos).procesos:
+            print(i)
 
 if __name__ == '__main__':
-    
-    tx = 'eiHf3b9i user1007 gpu short 13\neDh3xk9e user1005 gpu short 6\na5NgkKZV user1009 cpu short 5\nAyzruXkM user1003 cpu long 15\nXb7g5R2Z user1005 gpu long 7\ncBJTLcaL user1002 gpu short 3'
-
-    lista = SimuladorProcesos().crear_procesos(tx)
-    for i in lista:
-        print(i)
+    main()
