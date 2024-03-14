@@ -100,6 +100,9 @@ class Proceso:
         self._recurso = recurso
         self._tiempo_estimado = tiempo_estimado
         self._tiempo_real = tiempo_real
+    
+    def __str__(self) -> str:
+        return f'{self.ID_proceso}'
 
     
     @property
