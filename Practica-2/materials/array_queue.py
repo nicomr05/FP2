@@ -93,8 +93,52 @@ class ArrayQueue:
 class Proceso:
     '''
     Clase abstracta para un proceso.
+    Esta clase tiene por atributos un identificador para el proceso y otro para
+    el usuario que lo requiere, un marcador para el tipo de recurso que necesita
+    el proceso, el tiempo necesario estimado para la completación del proceso y
+    el tiempo real que costará procesarlo en unidades enteras.
+    
+    Attributes 
+    ---------- 
+    ID_proceso : str
+     Identificador de un proceso.
+    ID_usuario : str
+     Identificador de un usuario.
+    recurso : str
+     Tipo de recurso (CPU/GPU).
+    tiempo_estimado : str
+     Aproximación del tiempo que durará una instrucción.
+    tiempo_real : int
+     Unidades de tiempo que realmente le costarán a la máquina.
+    
+    Methods 
+    ------- 
+    __init__(self): 
+        Asigna atributos al objeto.
+    __str__(self) -> None:
+        Devuelve un string informativo sobre el proceso y todos sus atributos.
     '''
     def __init__(self, ID_proceso:str, ID_usuario:str, recurso:str, tiempo_estimado:str, tiempo_real:int):
+        '''
+        Clase abstracta para un proceso.
+        Esta clase tiene por atributos un identificador para el proceso y otro para
+        el usuario que lo requiere, un marcador para el tipo de recurso que necesita
+        el proceso, el tiempo necesario estimado para la completación del proceso y
+        el tiempo real que costará procesarlo en unidades enteras.
+        
+        Parameters 
+        ---------- 
+        ID_proceso : str
+         Identificador de un proceso.
+        ID_usuario : str
+         Identificador de un usuario.
+        recurso : str
+         Tipo de recurso (CPU/GPU).
+        tiempo_estimado : str
+         Aproximación del tiempo que durará una instrucción.
+        tiempo_real : int
+         Unidades de tiempo que realmente le costarán a la máquina.
+        '''
         self._ID_proceso = ID_proceso
         self._ID_usuario = ID_usuario
         self._recurso = recurso
@@ -166,17 +210,69 @@ class Proceso:
             ValueError('El tiempo estimado tiene que ser un string de longitud mayor que 0.')
 
 class GestorColas:
+    '''
+    Clase del gestor de colas, que organiza los procesos en 4 colas según el recurso necesario,
+    gestiona las penalizaciones de los usuarios y el almacenamiento temporal de los procesos en
+    ejecución en cada recurso.
+    '''
+    def __init__(self, buffer:list, cpu_short:ArrayQueue, cpu_long:ArrayQueue, gpu_short:ArrayQueue, gpu_long:ArrayQueue):
+        self._buffer = buffer
+        self._cpu_short = cpu_short
+        self._cpu_long = cpu_long
+        self._gpu_short = gpu_short
+        self._gpu_long = gpu_long
     
-    def __init__(self, procesos):
-        self._procesos = procesos
-
     @property
-    def procesos(self) -> list:
-        return self._procesos
+    def buffer(self) -> list:
+        return self._buffer
     
-    @procesos.setter
-    def procesos(self, nueva_lista):
+    @property
+    def cpu_short(self) -> list:
+        return self._cpu_short
+    
+    @property
+    def cpu_long(self) -> list:
+        return self._cpu_long
+    
+    @property
+    def gpu_short(self) -> list:
+        return self._gpu_short
+    
+    @property
+    def gpu_long(self) -> list:
+        return self._gpu_long
+    
+    @buffer.setter
+    def buffer(self, nueva_lista):
         if isinstance(nueva_lista, list) and len(nueva_lista) > 0:
-            self._procesos = nueva_lista
+            self._buffer = nueva_lista
         else:
-            ValueError('La lista de procesos debe ser una lista con elementos.')
+            ValueError('El buffer debe ser una lista con elementos.')
+    
+    @cpu_short.setter
+    def cpu_short(self, nueva_lista):
+        if isinstance(nueva_lista, list) and len(nueva_lista) > 0:
+            self._cpu_short = nueva_lista
+        else:
+            ValueError('La lista debe tener elementos.')
+    
+    @cpu_long.setter
+    def cpu_long(self, nueva_lista):
+        if isinstance(nueva_lista, list) and len(nueva_lista) > 0:
+            self._cpu_long = nueva_lista
+        else:
+            ValueError('La lista debe tener elementos.')
+    
+    @gpu_short.setter
+    def gpu_short(self, nueva_lista):
+        if isinstance(nueva_lista, list) and len(nueva_lista) > 0:
+            self._gpu_short = nueva_lista
+        else:
+            ValueError('La lista debe tener elementos.')
+    
+    @gpu_long.setter
+    def gpu_long(self, nueva_lista):
+        if isinstance(nueva_lista, list) and len(nueva_lista) > 0:
+            self._gpu_long = nueva_lista
+        else:
+            ValueError('La lista debe tener elementos.')

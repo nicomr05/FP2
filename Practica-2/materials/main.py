@@ -1,14 +1,26 @@
 import sys
-from array_queue import Proceso, GestorColas
+from array_queue import ArrayQueue, Proceso, GestorColas
 
 class SimuladorProcesos:
+    '''
+    Clase del simulador de procesos, que extraerá información de un archivo de texto y
+    creará los procesos a ejecutar.
     
+    Attributes 
+    ---------- 
+    
+ 
+    Methods 
+    ------- 
+    metodo1(param1): 
+        Una línea de resumen. 
+    '''
     def crear_procesos(self, texto:str):
         
-        lista_procesos = []
+        cola_entrada = ArrayQueue()
         lineas = texto.split('\n')
         
-        for linea in lineas[0:-1]:
+        for linea in lineas[0:-1]: # Siempre hay una línea vacía al final del archivo, por lo que no la cogeremos.
             
             partes_linea = linea.split(' ')
 
@@ -20,11 +32,9 @@ class SimuladorProcesos:
             
             proceso = Proceso(ID_proceso= ID_proceso, ID_usuario= ID_usuario, recurso= recurso, tiempo_estimado= tiempo_estimado, tiempo_real= tiempo_real)
             
-            lista_procesos.append(proceso)
+            cola_entrada.enqueue(proceso)
         
-        gestor = GestorColas(procesos= lista_procesos)
-        
-        return gestor
+        return GestorColas(buffer= cola_entrada)
     
 
 def main():
@@ -36,7 +46,7 @@ def main():
         
         simulador = SimuladorProcesos()
         
-        for i in simulador.crear_procesos(texto_procesos).procesos:
+        for i in simulador.crear_procesos(texto_procesos).buffer:
             print(i)
 
 if __name__ == '__main__':
