@@ -215,7 +215,7 @@ class GestorColas:
     gestiona las penalizaciones de los usuarios y el almacenamiento temporal de los procesos en
     ejecución en cada recurso.
     '''
-    def __init__(self, buffer:list, cpu_short:ArrayQueue, cpu_long:ArrayQueue, gpu_short:ArrayQueue, gpu_long:ArrayQueue):
+    def __init__(self, buffer:ArrayQueue, cpu_short:ArrayQueue, cpu_long:ArrayQueue, gpu_short:ArrayQueue, gpu_long:ArrayQueue):
         self._buffer = buffer
         self._cpu_short = cpu_short
         self._cpu_long = cpu_long
@@ -223,56 +223,56 @@ class GestorColas:
         self._gpu_long = gpu_long
     
     @property
-    def buffer(self) -> list:
+    def buffer(self) -> ArrayQueue:
         return self._buffer
     
     @property
-    def cpu_short(self) -> list:
+    def cpu_short(self) -> ArrayQueue:
         return self._cpu_short
     
     @property
-    def cpu_long(self) -> list:
+    def cpu_long(self) -> ArrayQueue:
         return self._cpu_long
     
     @property
-    def gpu_short(self) -> list:
+    def gpu_short(self) -> ArrayQueue:
         return self._gpu_short
     
     @property
-    def gpu_long(self) -> list:
+    def gpu_long(self) -> ArrayQueue:
         return self._gpu_long
     
     @buffer.setter
     def buffer(self, nueva_lista):
-        if isinstance(nueva_lista, list) and len(nueva_lista) > 0:
+        if isinstance(nueva_lista, ArrayQueue) and len(nueva_lista) > 0:
             self._buffer = nueva_lista
         else:
             ValueError('El buffer debe ser una lista con elementos.')
     
     @cpu_short.setter
-    def cpu_short(self, nueva_lista):
-        if isinstance(nueva_lista, list) and len(nueva_lista) > 0:
-            self._cpu_short = nueva_lista
+    def cpu_short(self, nueva_cola):
+        if isinstance(nueva_cola, ArrayQueue) and len(nueva_cola) > 0:
+            self._cpu_short = nueva_cola
         else:
-            ValueError('La lista debe tener elementos.')
+            ValueError('La cola debe ser una ArrayQueue no vacía.')
     
     @cpu_long.setter
-    def cpu_long(self, nueva_lista):
-        if isinstance(nueva_lista, list) and len(nueva_lista) > 0:
-            self._cpu_long = nueva_lista
+    def cpu_long(self, nueva_cola):
+        if isinstance(nueva_cola, ArrayQueue) and len(nueva_cola) > 0:
+            self._cpu_long = nueva_cola
         else:
-            ValueError('La lista debe tener elementos.')
+            ValueError('La cola debe ser una ArrayQueue no vacía.')
     
     @gpu_short.setter
-    def gpu_short(self, nueva_lista):
-        if isinstance(nueva_lista, list) and len(nueva_lista) > 0:
-            self._gpu_short = nueva_lista
+    def gpu_short(self, nueva_cola):
+        if isinstance(nueva_cola, ArrayQueue) and len(nueva_cola) > 0:
+            self._gpu_short = nueva_cola
         else:
-            ValueError('La lista debe tener elementos.')
+            ValueError('La cola debe ser una ArrayQueue no vacía.')
     
     @gpu_long.setter
-    def gpu_long(self, nueva_lista):
-        if isinstance(nueva_lista, list) and len(nueva_lista) > 0:
-            self._gpu_long = nueva_lista
+    def gpu_long(self, nueva_cola):
+        if isinstance(nueva_cola, ArrayQueue) and len(nueva_cola) > 0:
+            self._gpu_long = nueva_cola
         else:
-            ValueError('La lista debe tener elementos.')
+            ValueError('La cola debe ser una ArrayQueue no vacía.')
