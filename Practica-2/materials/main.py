@@ -75,10 +75,20 @@ def main():
         gestor = GestorColas()
         
         for i in len(cola_principal):
+            
             proceso_actual = cola_principal.dequeue()
+            
             if proceso_actual.recurso == 'CPU':
                 if proceso_actual.tiempo_estimado == 'short': # No detecta que el proceso actual sea de tipo Proceso.
                     gestor.buffer['CPU']['short']
+                if proceso_actual.tiempo_estimado == 'long': # No detecta que el proceso actual sea de tipo Proceso.
+                    gestor.buffer['CPU']['long']
+                    
+            if proceso_actual.recurso == 'GPU':
+                if proceso_actual.tiempo_estimado == 'short': # No detecta que el proceso actual sea de tipo Proceso.
+                    gestor.buffer['GPU']['short']
+                if proceso_actual.tiempo_estimado == 'long': # No detecta que el proceso actual sea de tipo Proceso.
+                    gestor.buffer['GPU']['long']
             
             simulador.tiempo += 1
         
