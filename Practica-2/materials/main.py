@@ -6,17 +6,31 @@ class SimuladorProcesos:
     Clase del simulador de procesos, que extraerá información de un archivo de texto y
     creará los procesos a ejecutar.
     
-    Attributes 
-    ---------- 
-    
- 
     Methods 
     ------- 
-    metodo1(param1): 
-        Una línea de resumen. 
-    '''
-    def crear_procesos(self, texto:str):
+    __init__(self):
+        Asigna atributos al objeto.   
         
+    crear_procesos(self, texto:str): 
+        Crea los procesos a partir de un archivo de texto.
+    '''
+    def __init__(self):
+        '''
+        Clase del simulador de procesos, que extraerá información de un archivo de texto y
+        creará los procesos a ejecutar.
+        '''
+        self._tiempo = 0
+    
+    def crear_procesos(self, texto:str):
+        '''
+        Función que extrae las lineas de un string, crea los procesos a ejecutar
+        mediante la clase Proceso y los mete en una cola de entrada de procesos.
+        
+        Parameters
+        ----------
+        texto : str
+         String con las líneas que contienen la información de los procesos.
+        '''
         cola_entrada = ArrayQueue()
         lineas = texto.split('\n')
         
@@ -34,7 +48,18 @@ class SimuladorProcesos:
             
             cola_entrada.enqueue(proceso)
         
-        return GestorColas(buffer= cola_entrada)
+        return cola_entrada
+    
+    @property
+    def tiempo(self) -> int:
+        return self._tiempo
+    
+    @tiempo.setter
+    def tiempo(self, nuevo_tiempo):
+        if isinstance(nuevo_tiempo, int) and nuevo_tiempo >= 0:
+            self._tiempo = nuevo_tiempo
+        else:
+            ValueError('El tiempo debe ser un entero positivo.')
     
 
 def main():
@@ -45,9 +70,18 @@ def main():
         texto_procesos = f.read()
         
         simulador = SimuladorProcesos()
+        cola_principal = simulador.crear_procesos(texto_procesos)
         
-        for i in simulador.crear_procesos(texto_procesos).buffer:
-            print(i)
+        gestor = GestorColas()
+        
+        for i in len(cola_principal):
+            proceso_actual = cola_principal.dequeue()
+            if proceso_actual.recurso == 'CPU':
+                if proceso_actual.tiempo_estimado == 'short': # No detecta que el proceso actual sea de tipo Proceso.
+                    gestor.buffer['CPU']['short']
+            
+            simulador.tiempo += 1
+        
 
 if __name__ == '__main__':
     main()
