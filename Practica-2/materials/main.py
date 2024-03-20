@@ -86,10 +86,15 @@ def main():
             
             print(f'Proceso añadido a cola de ejecución: {proceso_actual}')
             
-            gestor.ejecutar(proceso_actual, simulador.tiempo)
-            if proceso_actual.ID_usuario not in gestor.penalizados and proceso_actual.tiempo_real > 5 and proceso_actual.tiempo_estimado == 'short':
-                gestor.penalizados.append(proceso_actual.ID_usuario)
-                
+            
+            if proceso_actual.ID_usuario not in gestor.penalizados:
+                gestor.ejecutar(proceso_actual, simulador.tiempo)
+                if proceso_actual.ID_usuario not in gestor.penalizados and proceso_actual.tiempo_real > 5 and proceso_actual.tiempo_estimado == 'short':
+                    gestor.penalizados.append(proceso_actual.ID_usuario)
+            
+            else:
+                gestor.buffer[proceso_actual.recurso]['long'].dequeue()
+            
             print(gestor.penalizados)
             
             proceso_actual.tiempo_entrada = simulador.tiempo

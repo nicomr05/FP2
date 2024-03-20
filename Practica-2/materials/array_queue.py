@@ -250,21 +250,16 @@ class GestorColas:
         gestiona las penalizaciones de los usuarios y el almacenamiento temporal de los procesos en
         ejecución en cada recurso.
         '''
-        cpu_short = ArrayQueue()
-        cpu_long = ArrayQueue()
-        gpu_short = ArrayQueue()
-        gpu_long = ArrayQueue()
-        
         self._penalizados = []
         
         self._buffer = {
             'cpu':{
-                'short':cpu_short,
-                'long': cpu_long
+                'short':ArrayQueue(),
+                'long': ArrayQueue()
             },
             'gpu':{
-                'short':gpu_short,
-                'long': gpu_long
+                'short':ArrayQueue(),
+                'long': ArrayQueue()
             }
         }
         
@@ -299,16 +294,12 @@ class GestorColas:
     def ejecutar(self, proceso:Proceso, tiempo:int) -> Proceso:
         '''
         '''
-        if proceso.ID_usuario not in self.penalizados:
-            if self.ejecucion[proceso.recurso][proceso.tiempo_estimado] != None and self.proceso_terminado(proceso, tiempo):
-                self.ejecucion[proceso.recurso][proceso.tiempo_estimado] = proceso
-                return proceso
+        if self.ejecucion[proceso.recurso][proceso.tiempo_estimado] != None and self.proceso_terminado(proceso, tiempo):
+            self.ejecucion[proceso.recurso][proceso.tiempo_estimado] = proceso
+            return proceso
             
-            elif self.ejecucion[proceso.recurso][proceso.tiempo_estimado] == None:
-                self.ejecucion[proceso.recurso][proceso.tiempo_estimado] = proceso
-                return proceso
-        else:
-            self.buffer[proceso.recurso]['long'] = proceso
+        elif self.ejecucion[proceso.recurso][proceso.tiempo_estimado] == None:
+            self.ejecucion[proceso.recurso][proceso.tiempo_estimado] = proceso
             return proceso
     
     @property
