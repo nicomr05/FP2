@@ -20,7 +20,6 @@ class SimuladorProcesos:
         creará los procesos a ejecutar.
         '''
         self._tiempo = 0
-        self._penalizados = []
     
     def crear_procesos(self, texto:str):
         '''
@@ -44,11 +43,11 @@ class SimuladorProcesos:
             
             partes_linea = linea.split(' ')
 
-            ID_proceso = partes_linea[0]
-            ID_usuario = partes_linea[1]
-            recurso = partes_linea[2]
-            tiempo_estimado = partes_linea[3]
-            tiempo_real = partes_linea[4]
+            ID_proceso = str(partes_linea[0])
+            ID_usuario = str(partes_linea[1])
+            recurso = str(partes_linea[2])
+            tiempo_estimado = str(partes_linea[3])
+            tiempo_real = int(partes_linea[4])
             
             proceso = Proceso(ID_proceso= ID_proceso, ID_usuario= ID_usuario, recurso= recurso, tiempo_estimado= tiempo_estimado, tiempo_real= tiempo_real)
             
@@ -85,10 +84,13 @@ def main():
             proceso_actual = cola_principal.dequeue()
             proceso_actual = gestor.add_proceso(proceso_actual)
             
-            gestor.ejecutar(proceso_actual, simulador.tiempo)
+            print(f'Proceso añadido a cola de ejecución: {proceso_actual}')
             
-            print('Proceso añadido a cola de ejecución: {TActual}{IDProceso}{IDUsuario} {Tipo}{TiempoEstimadoEjecución}'.\
-                format(simulador.tiempo, proceso_actual.ID_proceso, proceso_actual.ID_usuario, proceso_actual.recurso, proceso_actual.tiempo_estimado))
+            gestor.ejecutar(proceso_actual, simulador.tiempo)
+            if proceso_actual.ID_usuario not in gestor.penalizados and proceso_actual.tiempo_real > 5 and proceso_actual.tiempo_estimado == 'short':
+                gestor.penalizados.append(proceso_actual.ID_usuario)
+                
+            print(gestor.penalizados)
             
             proceso_actual.tiempo_entrada = simulador.tiempo
             simulador.tiempo += 1

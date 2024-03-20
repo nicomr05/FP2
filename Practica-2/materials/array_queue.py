@@ -149,10 +149,9 @@ class Proceso:
     
     def __str__(self) -> str:
         cadena =  f'{self.ID_proceso}'
-        cadena += f'    {self.ID_usuario}'
-        cadena += f'    {self.recurso}'
-        cadena += f'    {self.tiempo_estimado}'
-        cadena += f'    {self.tiempo_entrada}'
+        cadena += f'\t{self.ID_usuario}'
+        cadena += f'\t{self.recurso}'
+        cadena += f'\t{self.tiempo_estimado}'
         cadena += f' ({self.tiempo_real})'
         return cadena
 
@@ -256,29 +255,31 @@ class GestorColas:
         gpu_short = ArrayQueue()
         gpu_long = ArrayQueue()
         
+        self._penalizados = []
+        
         self._buffer = {
-            'CPU':{
+            'cpu':{
                 'short':cpu_short,
                 'long': cpu_long
             },
-            'GPU':{
+            'gpu':{
                 'short':gpu_short,
                 'long': gpu_long
             }
         }
         
         self._ejecucion = {
-            'CPU':{
+            'cpu':{
                 'short':None,
                 'long': None
             },
-            'GPU':{
+            'gpu':{
                 'short':None,
                 'long': None
             }
         }
     
-    def add_proceso(self, proceso:Proceso):
+    def add_proceso(self, proceso:Proceso) -> Proceso:
         '''
         
         Parameters
@@ -289,15 +290,25 @@ class GestorColas:
         
         return proceso
     
-    def ejecutar(self, proceso:Proceso, tipo:str, longitud:str, tiempo:int):
+    def proceso_terminado(self, proceso:Proceso, tiempo:int) -> bool:
+        if tiempo >= proceso.tiempo_arranque + proceso.tiempo_real:
+            return True
+        else:
+            return False
+    
+    def ejecutar(self, proceso:Proceso, tiempo:int) -> Proceso:
         '''
         '''
-        if self.ejecucion[tipo][longitud] != None and tiempo >= proceso.tiempo_arranque + proceso.tiempo_real:
-            self.ejecucion[tipo][longitud] = proceso
-            return proceso
-        
-        elif self.ejecucion[tipo][longitud] == None:
-            self.ejecucion[tipo][longitud] = proceso
+        if proceso.ID_usuario not in self.penalizados:
+            if self.ejecucion[proceso.recurso][proceso.tiempo_estimado] != None and self.proceso_terminado(proceso, tiempo):
+                self.ejecucion[proceso.recurso][proceso.tiempo_estimado] = proceso
+                return proceso
+            
+            elif self.ejecucion[proceso.recurso][proceso.tiempo_estimado] == None:
+                self.ejecucion[proceso.recurso][proceso.tiempo_estimado] = proceso
+                return proceso
+        else:
+            self.buffer[proceso.recurso]['long'] = proceso
             return proceso
     
     @property
@@ -307,3 +318,7 @@ class GestorColas:
     @property
     def ejecucion(self) -> dict:
         return self._ejecucion
+    
+    @property
+    def penalizados(self) -> list:
+        return self._penalizados
