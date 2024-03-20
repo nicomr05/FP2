@@ -20,6 +20,7 @@ class SimuladorProcesos:
         creará los procesos a ejecutar.
         '''
         self._tiempo = 0
+        self._penalizados = []
     
     def crear_procesos(self, texto:str):
         '''
@@ -30,6 +31,11 @@ class SimuladorProcesos:
         ----------
         texto : str
          String con las líneas que contienen la información de los procesos.
+        
+        Returns
+        -------
+        cola_entrada : ArrayQueue
+         Cola de registro con los procesos a ejecutar.
         '''
         cola_entrada = ArrayQueue()
         lineas = texto.split('\n')
@@ -74,22 +80,17 @@ def main():
         
         gestor = GestorColas()
         
-        for i in len(cola_principal):
+        while not cola_principal.is_empty():
             
             proceso_actual = cola_principal.dequeue()
+            proceso_actual = gestor.add_proceso(proceso_actual)
             
-            if proceso_actual.recurso == 'CPU':
-                if proceso_actual.tiempo_estimado == 'short': # No detecta que el proceso actual sea de tipo Proceso.
-                    gestor.buffer['CPU']['short']
-                if proceso_actual.tiempo_estimado == 'long': # No detecta que el proceso actual sea de tipo Proceso.
-                    gestor.buffer['CPU']['long']
-                    
-            if proceso_actual.recurso == 'GPU':
-                if proceso_actual.tiempo_estimado == 'short': # No detecta que el proceso actual sea de tipo Proceso.
-                    gestor.buffer['GPU']['short']
-                if proceso_actual.tiempo_estimado == 'long': # No detecta que el proceso actual sea de tipo Proceso.
-                    gestor.buffer['GPU']['long']
+            gestor.ejecutar(proceso_actual, simulador.tiempo)
             
+            print('Proceso añadido a cola de ejecución: {TActual}{IDProceso}{IDUsuario} {Tipo}{TiempoEstimadoEjecución}'.\
+                format(simulador.tiempo, proceso_actual.ID_proceso, proceso_actual.ID_usuario, proceso_actual.recurso, proceso_actual.tiempo_estimado))
+            
+            proceso_actual.tiempo_entrada = simulador.tiempo
             simulador.tiempo += 1
         
 

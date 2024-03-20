@@ -144,12 +144,15 @@ class Proceso:
         self._recurso = recurso
         self._tiempo_estimado = tiempo_estimado
         self._tiempo_real = tiempo_real
+        self._tiempo_arranque = 0
+        self._tiempo_entrada = 0
     
     def __str__(self) -> str:
-        cadena = f'{self.ID_proceso}'
+        cadena =  f'{self.ID_proceso}'
         cadena += f'    {self.ID_usuario}'
         cadena += f'    {self.recurso}'
         cadena += f'    {self.tiempo_estimado}'
+        cadena += f'    {self.tiempo_entrada}'
         cadena += f' ({self.tiempo_real})'
         return cadena
 
@@ -173,6 +176,14 @@ class Proceso:
     @property
     def tiempo_real(self) -> int:
         return self._tiempo_real
+    
+    @property
+    def tiempo_arranque(self) -> int:
+        return self._tiempo_arranque
+    
+    @property
+    def tiempo_entrada(self) -> int:
+        return self._tiempo_entrada
     
     @ID_proceso.setter
     def ID_proceso(self, nueva_ID):
@@ -207,7 +218,21 @@ class Proceso:
         if isinstance(nuevo_tiempo, int) and nuevo_tiempo > 0:
             self._tiempo_real = nuevo_tiempo
         else:
-            ValueError('El tiempo estimado tiene que ser un string de longitud mayor que 0.')
+            ValueError('El tiempo real tiene que ser un entero positivo.')
+    
+    @tiempo_arranque.setter
+    def tiempo_arranque(self, nuevo_tiempo):
+        if isinstance(nuevo_tiempo, int) and nuevo_tiempo > 0:
+            self._tiempo_arranque = nuevo_tiempo
+        else:
+            ValueError('El tiempo de arranque tiene que ser un entero positivo.')
+    
+    @tiempo_entrada.setter
+    def tiempo_entrada(self, nuevo_tiempo):
+        if isinstance(nuevo_tiempo, int) and nuevo_tiempo > 0:
+            self._tiempo_entrada = nuevo_tiempo
+        else:
+            ValueError('El tiempo de entrada tiene que ser un entero positivo.')
 
 class GestorColas:
     '''
@@ -241,15 +266,44 @@ class GestorColas:
                 'long': gpu_long
             }
         }
+        
+        self._ejecucion = {
+            'CPU':{
+                'short':None,
+                'long': None
+            },
+            'GPU':{
+                'short':None,
+                'long': None
+            }
+        }
     
+    def add_proceso(self, proceso:Proceso):
+        '''
+        
+        Parameters
+        ----------
+        
+        '''
+        self.buffer[proceso.recurso][proceso.tiempo_estimado] = proceso
+        
+        return proceso
+    
+    def ejecutar(self, proceso:Proceso, tipo:str, longitud:str, tiempo:int):
+        '''
+        '''
+        if self.ejecucion[tipo][longitud] != None and tiempo >= proceso.tiempo_arranque + proceso.tiempo_real:
+            self.ejecucion[tipo][longitud] = proceso
+            return proceso
+        
+        elif self.ejecucion[tipo][longitud] == None:
+            self.ejecucion[tipo][longitud] = proceso
+            return proceso
     
     @property
     def buffer(self) -> dict:
         return self._buffer
     
-    @buffer.setter
-    def buffer(self, nuevo_dic):
-        if isinstance(nuevo_dic, dict) and len(nuevo_dic) > 0:
-            self._buffer = nuevo_dic
-        else:
-            ValueError('El buffer debe ser un diccionario con elementos.')
+    @property
+    def ejecucion(self) -> dict:
+        return self._ejecucion
