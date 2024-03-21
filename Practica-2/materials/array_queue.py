@@ -148,6 +148,17 @@ class Proceso:
         self._tiempo_entrada = 0
     
     def __str__(self) -> str:
+        '''
+        Función que se llama al intentar hacer un print() sobre un objeto Proceso.
+        Muestra la ID del proceso, la ID del usuario, el recurso necesario para ejecutar
+        el proceso, el tiempo estimado para completarlo (short/long) y las unidades de
+        tiempo necesarias para completar la ejecución.
+
+        Returns
+        -------
+        cadena : str
+         String informativo de un Proceso.
+        '''
         cadena =  f'{self.ID_proceso}'
         cadena += f'\t{self.ID_usuario}'
         cadena += f'\t{self.recurso}'
