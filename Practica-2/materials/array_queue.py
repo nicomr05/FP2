@@ -109,16 +109,20 @@ class Proceso:
     tiempo_estimado : str
      Aproximación del tiempo que durará una instrucción.
     tiempo_real : int
-     Unidades de tiempo que realmente le costarán a la máquina.
+     Unidades de tiempo que realmente le costarán a la máquina ejecutar el proceso.
+    tiempo_arranque : int
+     Momento en unidades de tiempo en el que se inició la ejecución del proceso.
+    tiempo_entrada : int
+     Momento en unidades de tiempo en el que el proceso entró a la cola de ejecución.
     
     Methods 
     ------- 
-    __init__(self): 
+    __init__(self) -> None: 
         Asigna atributos al objeto.
-    __str__(self) -> None:
+    __str__(self) -> str:
         Devuelve un string informativo sobre el proceso y todos sus atributos.
     '''
-    def __init__(self, ID_proceso:str, ID_usuario:str, recurso:str, tiempo_estimado:str, tiempo_real:int):
+    def __init__(self, ID_proceso:str, ID_usuario:str, recurso:str, tiempo_estimado:str, tiempo_real:int) -> None:
         '''
         Clase abstracta para un proceso.
         Esta clase tiene por atributos un identificador para el proceso y otro para
@@ -139,13 +143,13 @@ class Proceso:
         tiempo_real : int
          Unidades de tiempo que realmente le costarán a la máquina.
         '''
-        self._ID_proceso = ID_proceso
-        self._ID_usuario = ID_usuario
-        self._recurso = recurso
-        self._tiempo_estimado = tiempo_estimado
-        self._tiempo_real = tiempo_real
-        self._tiempo_arranque = 0
-        self._tiempo_entrada = 0
+        self._ID_proceso: str = ID_proceso
+        self._ID_usuario: str = ID_usuario
+        self._recurso: str = recurso
+        self._tiempo_estimado: str = tiempo_estimado
+        self._tiempo_real: int = tiempo_real
+        self._tiempo_arranque: int = 0
+        self._tiempo_entrada: int = 0
     
     def __str__(self) -> str:
         '''
@@ -255,15 +259,15 @@ class GestorColas:
     __init__(self):
         Asigna atributos al objeto.
     '''
-    def __init__(self):
+    def __init__(self) -> None:
         '''
         Clase del gestor de colas, que organiza los procesos en 4 colas según el recurso necesario,
         gestiona las penalizaciones de los usuarios y el almacenamiento temporal de los procesos en
         ejecución en cada recurso.
         '''
-        self._penalizados = []
+        self._penalizados: list = []
 
-        self._buffer = {
+        self._buffer: dict[str, dict[str, ArrayQueue]] = {
             'cpu':{
                 'short':ArrayQueue(),
                 'long': ArrayQueue()
@@ -274,7 +278,7 @@ class GestorColas:
             }
         }
         
-        self._ejecucion = {
+        self._ejecucion: dict[str, dict] = {
             'cpu':{
                 'short':None,
                 'long': None
@@ -287,10 +291,18 @@ class GestorColas:
     
     def add_proceso(self, proceso:Proceso) -> Proceso:
         '''
+        Función que añade un proceso a una cola de ejecución según el recurso que requiera y
+        la duración aproximada del proceso.
         
         Parameters
         ----------
+        proceso : Proceso
+         Proceso que se quiere añadir.
         
+        Returns
+        -------
+        Proceso
+         Mismo proceso que se añade
         '''
         self.buffer[proceso.recurso][proceso.tiempo_estimado].enqueue(proceso)
         
@@ -298,6 +310,18 @@ class GestorColas:
     
     def proceso_terminado(self, proceso:Proceso, tiempo:int) -> bool:
         '''
+        Función que nos permite revisar si un proceso ha terminado de ejecutarse.
+
+        Parameters
+        ----------
+        proceso : Proceso
+         Proceso del que se quiere comprobar si se ha terminado su ejecución.
+        tiempo : int
+         Tiempo en el que se quiere realizar la comprobación.
+
+        Returns
+        -------
+        bool
         '''
         if tiempo >= proceso.tiempo_arranque + proceso.tiempo_real:
             return True
@@ -306,12 +330,31 @@ class GestorColas:
     
     def ejecutar(self, proceso:Proceso, tiempo:int) -> Proceso:
         '''
+        Función que inserta un proceso en el diccionario de ejecución correspondiente según
+        el tipo de recurso que necesita el proceso y la duración aproximada del mismo.
+        Esto ocurre únicamente cuando no hay ya un proceso en ejecución en la cola correspondiente.
+
+        Parameters
+        ----------
+        proceso : Proceso
+         Proceso que se quiere ejecutar.
+        tiempo : int
+         Tiempo en el que se comprobará que el proceso anterior finalizó. 
+         
+        Returns
+        -------
+        Proceso
+         Mismo proceso que se ejecuta.
         '''
-        if self.ejecucion[proceso.recurso][proceso.tiempo_estimado] is not None and self.proceso_terminado(proceso, tiempo):
+        if self.ejecucion[proceso.recurso][proceso.tiempo_estimado] is not None and \
+        self.proceso_terminado(self.ejecucion[proceso.recurso][proceso.tiempo_estimado], tiempo):
+            
             self.ejecucion[proceso.recurso][proceso.tiempo_estimado] = proceso
             return proceso
+        
             
         elif self.ejecucion[proceso.recurso][proceso.tiempo_estimado] is None:
+
             self.ejecucion[proceso.recurso][proceso.tiempo_estimado] = proceso
             return proceso
     
