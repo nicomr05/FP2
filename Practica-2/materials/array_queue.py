@@ -251,7 +251,7 @@ class GestorColas:
         ejecución en cada recurso.
         '''
         self._penalizados = []
-        
+
         self._buffer = {
             'cpu':{
                 'short':ArrayQueue(),
@@ -281,11 +281,13 @@ class GestorColas:
         ----------
         
         '''
-        self.buffer[proceso.recurso][proceso.tiempo_estimado] = proceso
+        self.buffer[proceso.recurso][proceso.tiempo_estimado].enqueue(proceso)
         
         return proceso
     
     def proceso_terminado(self, proceso:Proceso, tiempo:int) -> bool:
+        '''
+        '''
         if tiempo >= proceso.tiempo_arranque + proceso.tiempo_real:
             return True
         else:
@@ -294,11 +296,11 @@ class GestorColas:
     def ejecutar(self, proceso:Proceso, tiempo:int) -> Proceso:
         '''
         '''
-        if self.ejecucion[proceso.recurso][proceso.tiempo_estimado] != None and self.proceso_terminado(proceso, tiempo):
+        if self.ejecucion[proceso.recurso][proceso.tiempo_estimado] is not None and self.proceso_terminado(proceso, tiempo):
             self.ejecucion[proceso.recurso][proceso.tiempo_estimado] = proceso
             return proceso
             
-        elif self.ejecucion[proceso.recurso][proceso.tiempo_estimado] == None:
+        elif self.ejecucion[proceso.recurso][proceso.tiempo_estimado] is None:
             self.ejecucion[proceso.recurso][proceso.tiempo_estimado] = proceso
             return proceso
     
@@ -313,3 +315,10 @@ class GestorColas:
     @property
     def penalizados(self) -> list:
         return self._penalizados
+
+if __name__ == '__main__':
+    G = GestorColas()
+    G.add_proceso(p := Proceso('NN3DwNEU','user1007','cpu','short',4))
+    for r in G.buffer.keys():
+        for l in G.buffer[r].keys():
+            print(G.buffer[r][l])

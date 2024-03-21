@@ -89,16 +89,27 @@ def main():
             
             if proceso_actual.ID_usuario not in gestor.penalizados:
                 gestor.ejecutar(proceso_actual, simulador.tiempo)
+                
                 if proceso_actual.ID_usuario not in gestor.penalizados and proceso_actual.tiempo_real > 5 and proceso_actual.tiempo_estimado == 'short':
                     gestor.penalizados.append(proceso_actual.ID_usuario)
             
             else:
-                gestor.buffer[proceso_actual.recurso]['long'].dequeue()
+                proceso_erroneo = gestor.buffer[proceso_actual.recurso]['short'].dequeue()
+                gestor.buffer[proceso_erroneo.recurso]['long'].enqueue(proceso_erroneo)
             
             print(gestor.penalizados)
             
+            if gestor.proceso_terminado(proceso_actual, simulador.tiempo):
+                gestor.ejecucion[proceso_actual.recurso][proceso_actual.tiempo_estimado] = None
+            
             proceso_actual.tiempo_entrada = simulador.tiempo
             simulador.tiempo += 1
+        
+        #Comprobador de los elementos de diccionario de ejecución:
+        print()
+        for r in gestor.ejecucion.keys():
+            for l in gestor.ejecucion[r].keys():
+                print(gestor.ejecucion[r][l])
         
 
 if __name__ == '__main__':
