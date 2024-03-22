@@ -167,7 +167,6 @@ class Proceso:
         cadena += f'\t{self.ID_usuario}'
         cadena += f'\t{self.recurso}'
         cadena += f'\t{self.tiempo_estimado}'
-        cadena += f' ({self.tiempo_real})'
         return cadena
 
     
@@ -289,7 +288,7 @@ class GestorColas:
             }
         }
     
-    def add_proceso(self, proceso:Proceso) -> Proceso:
+    def add_proceso_en_cola_ejecucion(self, proceso:Proceso) -> Proceso:
         '''
         Función que añade un proceso a una cola de ejecución según el recurso que requiera y
         la duración aproximada del proceso.
@@ -357,6 +356,14 @@ class GestorColas:
 
             self.ejecucion[proceso.recurso][proceso.tiempo_estimado] = proceso
             return proceso
+        
+    def ejecucion_vacio(self):
+        for recurso in self.ejecucion.keys():
+            for longitud in self.ejecucion[recurso].keys():
+                if self.ejecucion[recurso][longitud] is not None:
+                    
+                    return False
+        return True
     
     @property
     def buffer(self) -> dict:

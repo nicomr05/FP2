@@ -37,7 +37,7 @@ class SimuladorProcesos:
          Cola de registro con los procesos a ejecutar.
         '''
         cola_entrada: ArrayQueue = ArrayQueue()
-        lineas: str = texto.split('\n')
+        lineas: str = str(texto).split('\n')
         
         for linea in lineas[0:-1]: # Siempre hay una línea vacía al final del archivo, por lo que no la cogeremos.
             
@@ -53,6 +53,7 @@ class SimuladorProcesos:
             
             cola_entrada.enqueue(proceso)
         
+        print(cola_entrada)
         return cola_entrada
     
     @property
@@ -82,28 +83,32 @@ def main() -> None:
         while not cola_principal.is_empty():
             
             proceso_actual: Proceso = cola_principal.dequeue()
-            gestor.add_proceso(proceso_actual)
-            
+            gestor.add_proceso_en_cola_ejecucion(proceso_actual)
+            proceso_actual.tiempo_entrada = simulador.tiempo
+
             print(f'Proceso añadido a cola de ejecución: {proceso_actual}')
 
-            if proceso_actual.ID_usuario not in gestor.penalizados:
-                gestor.ejecutar(proceso_actual, simulador.tiempo)
+            while not gestor.ejecucion_vacio():
+                if proceso_actual.ID_usuario not in gestor.penalizados:
+                    gestor.ejecutar(proceso_actual, simulador.tiempo)
+                    
+                    if proceso_actual.ID_usuario not in gestor.penalizados and proceso_actual.tiempo_real > 5 and proceso_actual.tiempo_estimado == 'short':
+                        gestor.penalizados.append(proceso_actual.ID_usuario)
+                        print(f'Penalización activa: {simulador.tiempo} {proceso_actual.ID_usuario}')
                 
-                if proceso_actual.ID_usuario not in gestor.penalizados and proceso_actual.tiempo_real > 5 and proceso_actual.tiempo_estimado == 'short':
-                    gestor.penalizados.append(proceso_actual.ID_usuario)
-            
-            else:
-                proceso_erroneo: Proceso = gestor.buffer[proceso_actual.recurso]['short'].dequeue()
-                gestor.buffer[proceso_erroneo.recurso]['long'].enqueue(proceso_erroneo)
-                gestor.penalizados.remove(proceso_erroneo.ID_usuario)
-            
-            print(gestor.penalizados)
-            
-            if gestor.proceso_terminado(proceso_actual, simulador.tiempo):
-                gestor.ejecucion[proceso_actual.recurso][proceso_actual.tiempo_estimado] = None
-            
-            proceso_actual.tiempo_entrada = simulador.tiempo
-            simulador.tiempo += 1
+                else:
+                    proceso_erroneo: Proceso = gestor.buffer[proceso_actual.recurso]['short'].dequeue()
+                    gestor.buffer[proceso_erroneo.recurso]['long'].enqueue(proceso_erroneo)
+                    gestor.penalizados.remove(proceso_erroneo.ID_usuario)
+                
+                print(gestor.penalizados)
+                
+                if gestor.proceso_terminado(proceso_actual, simulador.tiempo):
+                    gestor.ejecucion[proceso_actual.recurso][proceso_actual.tiempo_estimado] = None
+                    print(f'{simulador.tiempo} {proceso_actual} {proceso_actual.tiempo_entrada} {proceso_actual.tiempo_entrada} {proceso_actual.tiempo_arranque}')
+                
+                
+                simulador.tiempo += 1
         
         #Comprobador de los elementos de diccionario de ejecución:
         print()
