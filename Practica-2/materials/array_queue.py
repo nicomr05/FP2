@@ -160,7 +160,7 @@ class Proceso:
 
         Returns
         -------
-        cadena : str
+        str
          String informativo de un Proceso.
         '''
         cadena =  f'{self.ID_proceso}'

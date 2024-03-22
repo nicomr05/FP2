@@ -41,7 +41,8 @@ class SimuladorProcesos:
         
         for linea in lineas[0:-1]: # Siempre hay una línea vacía al final del archivo, por lo que no la cogeremos.
             
-            partes_linea: str = str(linea.split(' '))
+            partes_linea: str = str(linea).split()
+            
             ID_proceso: str = str(partes_linea[0])
             ID_usuario: str = str(partes_linea[1])
             recurso: str = str(partes_linea[2])
@@ -94,6 +95,7 @@ def main() -> None:
             else:
                 proceso_erroneo: Proceso = gestor.buffer[proceso_actual.recurso]['short'].dequeue()
                 gestor.buffer[proceso_erroneo.recurso]['long'].enqueue(proceso_erroneo)
+                gestor.penalizados.remove(proceso_erroneo.ID_usuario)
             
             print(gestor.penalizados)
             
