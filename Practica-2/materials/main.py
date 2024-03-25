@@ -115,6 +115,10 @@ def main() -> None:
         for r in gestor.ejecucion.keys():
             for l in gestor.ejecucion[r].keys():
                 print(gestor.ejecucion[r][l])
+        print()
+        for r in gestor.buffer.keys():
+            for l in gestor.buffer[r].keys():
+                print(gestor.buffer[r][l])
         
 
 if __name__ == '__main__':
