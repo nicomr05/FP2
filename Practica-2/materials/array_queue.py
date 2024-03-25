@@ -301,7 +301,7 @@ class GestorColas:
         Returns
         -------
         Proceso
-         Mismo proceso que se añade
+         Mismo proceso que se añade.
         '''
         self.buffer[proceso.recurso][proceso.tiempo_estimado].enqueue(proceso)
         
@@ -323,6 +323,7 @@ class GestorColas:
         bool
         '''
         if tiempo >= proceso.tiempo_arranque + proceso.tiempo_real:
+            print(f'Proceso terminado: {tiempo} {proceso} {proceso.tiempo_entrada} {proceso.tiempo_entrada} {proceso.tiempo_arranque}')
             return True
         else:
             return False
@@ -344,24 +345,64 @@ class GestorColas:
         -------
         Proceso
          Mismo proceso que se ejecuta.
-        '''
+        '''             
         if self.ejecucion[proceso.recurso][proceso.tiempo_estimado] is not None and \
         self.proceso_terminado(self.ejecucion[proceso.recurso][proceso.tiempo_estimado], tiempo):
-            
+                    
             self.ejecucion[proceso.recurso][proceso.tiempo_estimado] = proceso
             return proceso
-        
-            
+                
+                    
         elif self.ejecucion[proceso.recurso][proceso.tiempo_estimado] is None:
 
             self.ejecucion[proceso.recurso][proceso.tiempo_estimado] = proceso
             return proceso
+    
+    def penalizar(self, proceso:Proceso, tiempo:int) -> None:
+        '''
+        Función que añade al usuario que requiere el proceso indicado a la lista de penalizados.
         
-    def ejecucion_vacio(self):
+        Parameters
+        ----------
+        proceso : Proceso
+         Proceso del que se saca la información del usuario
+        tiempo : int
+         Unidades de tiempo actuales que se muestran al aplicar
+         la penalización del usuario.
+        
+        Returns
+        -------
+        None
+        '''
+        if proceso.ID_usuario not in self.penalizados and proceso.tiempo_real > 5 and proceso.tiempo_estimado == 'short':
+            self.penalizados.append(proceso.ID_usuario)
+            print(f'Penalización aplicada: {tiempo} {proceso.ID_usuario}')
+        
+    def ejecucion_is_empty(self) -> bool:
+        '''
+        Función que comprueba si el diccionario de ejecución está vacío.
+        
+        Returns
+        -------
+        bool
+        '''
         for recurso in self.ejecucion.keys():
             for longitud in self.ejecucion[recurso].keys():
                 if self.ejecucion[recurso][longitud] is not None:
-                    
+                    return False
+        return True
+    
+    def buffer_is_empty(self) -> bool:
+        '''
+        Función que comprueba si el buffer está vacío.
+        
+        Returns
+        -------
+        bool
+        '''
+        for recurso in self.buffer.keys():
+            for longitud in self.buffer[recurso].keys():
+                if not self.buffer[recurso][longitud].is_empty():
                     return False
         return True
     
