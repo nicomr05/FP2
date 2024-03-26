@@ -102,16 +102,22 @@ class Proceso:
     ---------- 
     ID_proceso : str
      Identificador de un proceso.
+     
     ID_usuario : str
      Identificador de un usuario.
+     
     recurso : str
      Tipo de recurso (CPU/GPU).
+     
     tiempo_estimado : str
      Aproximación del tiempo que durará una instrucción.
+     
     tiempo_real : int
      Unidades de tiempo que realmente le costarán a la máquina ejecutar el proceso.
+     
     tiempo_arranque : int
      Momento en unidades de tiempo en el que se inició la ejecución del proceso.
+     
     tiempo_entrada : int
      Momento en unidades de tiempo en el que el proceso entró a la cola de ejecución.
     
@@ -119,6 +125,7 @@ class Proceso:
     ------- 
     __init__(self) -> None: 
         Asigna atributos al objeto.
+        
     __str__(self) -> str:
         Devuelve un string informativo sobre el proceso y todos sus atributos.
     '''
@@ -130,18 +137,30 @@ class Proceso:
         el proceso, el tiempo necesario estimado para la completación del proceso y
         el tiempo real que costará procesarlo en unidades enteras.
         
-        Parameters 
+        Attributes
         ---------- 
         ID_proceso : str
          Identificador de un proceso.
+         
         ID_usuario : str
          Identificador de un usuario.
+         
         recurso : str
          Tipo de recurso (CPU/GPU).
+         
         tiempo_estimado : str
          Aproximación del tiempo que durará una instrucción.
+         
         tiempo_real : int
          Unidades de tiempo que realmente le costarán a la máquina.
+        
+        Methods 
+        ------- 
+        __init__(self) -> None: 
+            Asigna atributos al objeto.
+            
+        __str__(self) -> str:
+            Devuelve un string informativo sobre el proceso y todos sus atributos.
         '''
         self._ID_proceso: str = ID_proceso
         self._ID_usuario: str = ID_usuario
@@ -255,18 +274,65 @@ class GestorColas:
     
     Methods 
     ------- 
-    __init__(self):
+    __init__(self) -> None:
         Asigna atributos al objeto.
+        
+    add_proceso_en_cola_ejecucion(self, proceso:Proceso) -> Proceso:
+        Añade un proceso a la cola de ejecución correspondiente según la duración aproximada del
+        mismo y el recurso que requiera.
+        
+    proceso_terminado(self, proceso:Proceso, tiempo:int) -> bool:
+        Nos permite revisar si un proceso ha terminado de ejecutarse.
+        
+    ejecutar(self, proceso:Proceso, tiempo:int) -> Proceso:
+        Inserta un proceso en el diccionario de ejecución correspondiente según el
+        tipo de recurso que necesita el proceso y la duración aproximada del mismo.
+        Esto ocurre únicamente cuando no hay ya un proceso en ejecución en la cola
+        correspondiente.
+        
+    penalizar(self, proceso:Proceso, tiempo:int) -> None:
+        Añade al usuario del proceso indicado al conjunto de penalizados únicamente
+        si el tiempo estimado del proceso es "short" y el tiempo que duró su ejecución fue mayor
+        que cinco unidades.
+        
+    ejecucion_is_empty(self) -> bool:
+        Comprueba si el diccionario de ejecución no está vacío.
     '''
     def __init__(self) -> None:
         '''
         Clase del gestor de colas, que organiza los procesos en 4 colas según el recurso necesario,
         gestiona las penalizaciones de los usuarios y el almacenamiento temporal de los procesos en
         ejecución en cada recurso.
-        '''
-        self._penalizados: list = []
+        
+        Methods 
+        ------- 
+        __init__(self) -> None:
+            Asigna atributos al objeto.
 
-        self._buffer: dict[str, dict[str, ArrayQueue]] = {
+        add_proceso_en_cola_ejecucion(self, proceso:Proceso) -> Proceso:
+            Añade un proceso a la cola de ejecución correspondiente según la duración aproximada del
+            mismo y el recurso que requiera.
+
+        proceso_terminado(self, proceso:Proceso, tiempo:int) -> bool:
+            Nos permite revisar si un proceso ha terminado de ejecutarse.
+
+        ejecutar(self, proceso:Proceso, tiempo:int) -> Proceso:
+            Inserta un proceso en el diccionario de ejecución correspondiente según el
+            tipo de recurso que necesita el proceso y la duración aproximada del mismo.
+            Esto ocurre únicamente cuando no hay ya un proceso en ejecución en la cola
+            correspondiente.
+
+        penalizar(self, proceso:Proceso, tiempo:int) -> None:
+            Añade al usuario del proceso indicado al conjunto de penalizados únicamente
+            si el tiempo estimado del proceso es "short" y el tiempo que duró su ejecución fue mayor
+            que cinco unidades.
+
+        ejecucion_is_empty(self) -> bool:
+            Comprueba si el diccionario de ejecución no está vacío.
+        '''
+        self._penalizados: set[str] = set()
+
+        self._buffer: dict[str, dict[str, ArrayQueue[Proceso]]] = {
             'cpu':{
                 'short':ArrayQueue(),
                 'long': ArrayQueue()
@@ -277,7 +343,7 @@ class GestorColas:
             }
         }
         
-        self._ejecucion: dict[str, dict] = {
+        self._ejecucion: dict[str, dict[str, None|Proceso]] = {
             'cpu':{
                 'short':None,
                 'long': None
@@ -321,9 +387,11 @@ class GestorColas:
         Returns
         -------
         bool
+         True si el proceso ha terminado.
+         False si el proceso no ha terminado aún.
         '''
         if tiempo >= proceso.tiempo_arranque + proceso.tiempo_real:
-            print(f'Proceso terminado: {tiempo} {proceso} {proceso.tiempo_entrada} {proceso.tiempo_entrada} {proceso.tiempo_arranque}')
+            print(f'Proceso terminado: {tiempo} {proceso} {proceso.tiempo_entrada} {proceso.tiempo_arranque} {tiempo - proceso.tiempo_arranque}\n')
             return True
         else:
             return False
@@ -339,70 +407,56 @@ class GestorColas:
         proceso : Proceso
          Proceso que se quiere ejecutar.
         tiempo : int
-         Tiempo en el que se comprobará que el proceso anterior finalizó. 
-         
+         Tiempo de arranque del proceso.
+        
         Returns
         -------
         Proceso
          Mismo proceso que se ejecuta.
-        '''             
-        if self.ejecucion[proceso.recurso][proceso.tiempo_estimado] is not None and \
-        self.proceso_terminado(self.ejecucion[proceso.recurso][proceso.tiempo_estimado], tiempo):
-                    
+        '''
+        if self.ejecucion[proceso.recurso][proceso.tiempo_estimado] is None:
+            proceso.tiempo_arranque = tiempo
             self.ejecucion[proceso.recurso][proceso.tiempo_estimado] = proceso
+            
             return proceso
-                
-                    
-        elif self.ejecucion[proceso.recurso][proceso.tiempo_estimado] is None:
-
-            self.ejecucion[proceso.recurso][proceso.tiempo_estimado] = proceso
-            return proceso
+        
+        return proceso
     
     def penalizar(self, proceso:Proceso, tiempo:int) -> None:
         '''
-        Función que añade al usuario que requiere el proceso indicado a la lista de penalizados.
+        Función que añade al usuario del proceso indicado al conjunto de penalizados únicamente
+        si el tiempo estimado del proceso es "short" y el tiempo que duró su ejecución fue mayor
+        que cinco unidades.
         
         Parameters
         ----------
         proceso : Proceso
-         Proceso del que se saca la información del usuario
+         Proceso del que se saca la información del usuario.
         tiempo : int
-         Unidades de tiempo actuales que se muestran al aplicar
-         la penalización del usuario.
+         Unidades de tiempo actuales.
         
         Returns
         -------
         None
         '''
-        if proceso.ID_usuario not in self.penalizados and proceso.tiempo_real > 5 and proceso.tiempo_estimado == 'short':
-            self.penalizados.append(proceso.ID_usuario)
-            print(f'Penalización aplicada: {tiempo} {proceso.ID_usuario}')
+        if tiempo - proceso.tiempo_arranque > 5 and proceso.tiempo_estimado == 'short':
+            self.penalizados.add(proceso.ID_usuario)
+            
+            print(f'Penalización aplicada: {tiempo} {proceso.ID_usuario}\n')
         
     def ejecucion_is_empty(self) -> bool:
         '''
-        Función que comprueba si el diccionario de ejecución está vacío.
+        Función que comprueba si el diccionario de ejecución no está vacío.
         
         Returns
         -------
         bool
+         True si el diccionario ejecucion está vacío.
+         False si el diccionario ejecucion no está vacío.
         '''
         for recurso in self.ejecucion.keys():
             for longitud in self.ejecucion[recurso].keys():
                 if self.ejecucion[recurso][longitud] is not None:
-                    return False
-        return True
-    
-    def buffer_is_empty(self) -> bool:
-        '''
-        Función que comprueba si el buffer está vacío.
-        
-        Returns
-        -------
-        bool
-        '''
-        for recurso in self.buffer.keys():
-            for longitud in self.buffer[recurso].keys():
-                if not self.buffer[recurso][longitud].is_empty():
                     return False
         return True
     
@@ -415,12 +469,5 @@ class GestorColas:
         return self._ejecucion
     
     @property
-    def penalizados(self) -> list:
+    def penalizados(self) -> set[str]:
         return self._penalizados
-
-if __name__ == '__main__':
-    G = GestorColas()
-    G.add_proceso(p := Proceso('NN3DwNEU','user1007','cpu','short',4))
-    for r in G.buffer.keys():
-        for l in G.buffer[r].keys():
-            print(G.buffer[r][l])

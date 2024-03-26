@@ -1,4 +1,5 @@
 import sys
+import time
 from array_queue import ArrayQueue, Proceso, GestorColas
 
 class SimuladorProcesos:
@@ -8,16 +9,24 @@ class SimuladorProcesos:
     
     Methods 
     ------- 
-    __init__(self):
+    __init__(self) -> None:
         Asigna atributos al objeto.   
         
-    crear_procesos(self, texto:str): 
+    crear_procesos(self, texto:str) -> ArrayQueue: 
         Crea los procesos a partir de un archivo de texto.
     '''
     def __init__(self) -> None:
         '''
         Clase del simulador de procesos, que extraerá información de un archivo de texto y
         creará los procesos a ejecutar.
+
+        Methods 
+        ------- 
+        __init__(self) -> None:
+            Asigna atributos al objeto.   
+
+        crear_procesos(self, texto:str) -> ArrayQueue: 
+            Crea los procesos a partir de un archivo de texto.
         '''
         self._tiempo: int = 0
     
@@ -53,7 +62,6 @@ class SimuladorProcesos:
             
             cola_entrada.enqueue(proceso)
         
-        print(cola_entrada)
         return cola_entrada
     
     @property
@@ -71,6 +79,10 @@ class SimuladorProcesos:
 def main() -> None:
     '''
     Función principal que lee el archivo y ejecuta la simulación de los procesos.
+    
+    Returns
+    -------
+    None
     '''
     with open(sys.argv[1]) as f:
         texto_procesos: str = f.read()
@@ -80,53 +92,55 @@ def main() -> None:
         
         gestor = GestorColas()
         
-        while not cola_principal.is_empty():
+        while not cola_principal.is_empty() or not gestor.ejecucion_is_empty():
             
-            simulador.tiempo += 1
+            simulador.tiempo += 1 # Iniciamos el contador y hacemos que se repita en cada iteración.
             
-            proceso_actual: Proceso = cola_principal.dequeue()
-            gestor.add_proceso_en_cola_ejecucion(proceso_actual)
-            proceso_actual.tiempo_entrada = simulador.tiempo
+            if not cola_principal.is_empty():
+                proceso_actual: Proceso = cola_principal.dequeue() # Extraemos el primer proceso de la cola de registro.
+                gestor.add_proceso_en_cola_ejecucion(proceso_actual) # Añadimos ese mismo proceso a la cola de ejecución correspondiente.
+                proceso_actual.tiempo_entrada = simulador.tiempo # Fijamos el tiempo de entrada del proceso como el tiempo actual.
 
-            print(f'Proceso añadido a cola de ejecución: {proceso_actual}')
-
-        while not gestor.buffer_is_empty():
+                print(f'Proceso añadido a cola de ejecución: {proceso_actual}\n')
             
-            for recurso in gestor.buffer.keys():
+            for recurso in gestor.ejecucion.keys(): # Comprobamos si existe algún proceso que haya terminado su ejecución. Si es así, lo eliminamos del diccionario.
+                for longitud in gestor.ejecucion[recurso].keys():
+                    if gestor.ejecucion[recurso][longitud] is not None and gestor.proceso_terminado(gestor.ejecucion[recurso][longitud], simulador.tiempo):
+                        gestor.penalizar(gestor.ejecucion[recurso][longitud], simulador.tiempo) # Comprobamos si el usuario correspondiente al proceso terminado debe ser penalizado.
+                        gestor.ejecucion[recurso][longitud] = None # Eliminamos el proceso terminado.
+
+            
+            for recurso in gestor.buffer.keys(): 
                 for longitud in gestor.buffer[recurso].keys():
-                    print(gestor.buffer[recurso][longitud])
-                    if not gestor.buffer[recurso][longitud].is_empty():
-                        gestor.ejecutar(gestor.buffer[recurso][longitud].first(), simulador.tiempo)
-                        break
-                
-                                    
-            if proceso_actual.ID_usuario not in gestor.penalizados:
-                gestor.ejecutar(proceso_actual, simulador.tiempo)
-                gestor.penalizar(proceso_actual, simulador)
                     
-            else:
-                proceso_erroneo: Proceso = gestor.buffer[proceso_actual.recurso]['short'].dequeue()
-                gestor.buffer[proceso_erroneo.recurso]['long'].enqueue(proceso_erroneo)
-                gestor.penalizados.remove(proceso_erroneo.ID_usuario)
+                    if not gestor.buffer[recurso][longitud].is_empty():
+                        
+                        proceso_a_ejecutar: Proceso = gestor.buffer[recurso][longitud].first() # Seleccionamos el primer proceso de la cola de ejecución correspondiente.
+                        
+                        if proceso_a_ejecutar.ID_usuario in gestor.penalizados and gestor.buffer[recurso].keys() == 'short': # Si el proceso estaba asignado a la cola errónea lo quitaremos de la misma y lo pasaremos a la cola correcta.
+                            gestor.buffer[proceso_a_ejecutar.recurso]['long'].enqueue(proceso_a_ejecutar)
+                            gestor.penalizados.remove(proceso_a_ejecutar.ID_usuario)
+                        
+                        else:
+                            gestor.ejecutar(proceso_a_ejecutar, simulador.tiempo) # Ejecutamos el 
+                            gestor.buffer[proceso_a_ejecutar.recurso][proceso_a_ejecutar.tiempo_estimado].dequeue() # Eliminamos el último elemento del buffer.
                 
             for usuario in gestor.penalizados:
                 print(f'Penalización activa: {simulador.tiempo} {usuario}\n')
-
-                
-                
-        # Bucles que muestran los elementos de los diccionarios de
-        # colas de ejecución y ejecución respectivamente:
-        
-        print()
-        for r in gestor.buffer.keys():
-            for l in gestor.buffer[r].keys():
-                print(gestor.buffer[r][l])
-                
-        print()
-        for r in gestor.ejecucion.keys():
-            for l in gestor.ejecucion[r].keys():
-                print(gestor.ejecucion[r][l])
-        
+            
+            # Bucles que muestran los elementos de los diccionarios de colas de ejecución y ejecución respectivamente:
+            print()
+            for r in gestor.buffer.keys():
+                for l in gestor.buffer[r].keys():
+                    print(gestor.buffer[r][l])
+            
+            print()
+            for r in gestor.ejecucion.keys():
+                for l in gestor.ejecucion[r].keys():
+                    print(gestor.ejecucion[r][l])
+            
+            time.sleep(1)
+            
 
 if __name__ == '__main__':
     main()
