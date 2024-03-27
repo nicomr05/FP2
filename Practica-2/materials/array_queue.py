@@ -183,9 +183,9 @@ class Proceso:
          String informativo de un Proceso.
         '''
         cadena =  f'{self.ID_proceso}'
-        cadena += f'\t{self.ID_usuario}'
-        cadena += f'\t{self.recurso}'
-        cadena += f'\t{self.tiempo_estimado}'
+        cadena += f'  {self.ID_usuario}'
+        cadena += f'  {self.recurso}'
+        cadena += f'  {self.tiempo_estimado}'
         return cadena
 
     
@@ -328,7 +328,7 @@ class GestorColas:
             que cinco unidades.
 
         ejecucion_is_empty(self) -> bool:
-            Comprueba si el diccionario de ejecución no está vacío.
+            Comprueba si el diccionario de ejecución está vacío.
         '''
         self._penalizados: set[str] = set()
 
@@ -370,7 +370,8 @@ class GestorColas:
          Mismo proceso que se añade.
         '''
         self.buffer[proceso.recurso][proceso.tiempo_estimado].enqueue(proceso)
-        
+        print(f'Proceso añadido a cola de ejecución: {proceso}\n')
+
         return proceso
     
     def proceso_terminado(self, proceso:Proceso, tiempo:int) -> bool:
@@ -391,7 +392,7 @@ class GestorColas:
          False si el proceso no ha terminado aún.
         '''
         if tiempo >= proceso.tiempo_arranque + proceso.tiempo_real:
-            print(f'Proceso terminado: {tiempo} {proceso} {proceso.tiempo_entrada} {proceso.tiempo_arranque} {tiempo - proceso.tiempo_arranque}\n')
+            print(f'Proceso terminado:\nTiempo actual: {tiempo}\nProceso: {proceso}\nTiempo de entrada: {proceso.tiempo_entrada}\nTiempo de arranque: {proceso.tiempo_arranque}\n{tiempo - proceso.tiempo_arranque}\n')
             return True
         else:
             return False
@@ -446,7 +447,7 @@ class GestorColas:
         
     def ejecucion_is_empty(self) -> bool:
         '''
-        Función que comprueba si el diccionario de ejecución no está vacío.
+        Función que comprueba si el diccionario de ejecución está vacío.
         
         Returns
         -------
@@ -457,6 +458,22 @@ class GestorColas:
         for recurso in self.ejecucion.keys():
             for longitud in self.ejecucion[recurso].keys():
                 if self.ejecucion[recurso][longitud] is not None:
+                    return False
+        return True
+    
+    def buffer_is_empty(self) -> bool:
+        '''
+        Función que comprueba si el buffer está vacío.
+        
+        Returns
+        -------
+        bool
+         True si el diccionario ejecucion está vacío.
+         False si el diccionario ejecucion no está vacío.
+        '''
+        for recurso in self.buffer.keys():
+            for longitud in self.buffer[recurso].keys():
+                if self.buffer[recurso][longitud] is not None:
                     return False
         return True
     
