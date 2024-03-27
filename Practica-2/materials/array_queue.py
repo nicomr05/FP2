@@ -392,8 +392,11 @@ class GestorColas:
          False si el proceso no ha terminado aún.
         '''
         if tiempo >= proceso.tiempo_arranque + proceso.tiempo_real:
+            
             print(f'Proceso terminado:\nTiempo actual: {tiempo}\nProceso: {proceso}\nTiempo de entrada: {proceso.tiempo_entrada}\nTiempo de arranque: {proceso.tiempo_arranque}\n{tiempo - proceso.tiempo_arranque}\n')
+
             return True
+        
         else:
             return False
     
