@@ -1,3 +1,8 @@
+'''
+Nicolás Muñiz Rodríguez : nicolas.muniz@udc.es
+Pablo José Pérez Pazos : pablo.perez.pazos@udc.es
+'''
+
 # Copyright 2013, Michael H. Goldwasser
 #
 # Developed for use with the book:

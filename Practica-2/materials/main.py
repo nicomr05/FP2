@@ -1,3 +1,8 @@
+'''
+Nicolás Muñiz Rodríguez : nicolas.muniz@udc.es
+Pablo José Pérez Pazos : pablo.perez.pazos@udc.es
+'''
+
 import sys
 from time import sleep
 from array_queue import ArrayQueue, Proceso, GestorColas
@@ -124,19 +129,6 @@ def main() -> None:
                         else:
                             gestor.ejecutar(proceso_a_ejecutar, simulador.tiempo) # Ejecutamos el proceso seleccionado
                             gestor.buffer[proceso_a_ejecutar.recurso][proceso_a_ejecutar.tiempo_estimado].dequeue() # Eliminamos el último proceso del buffer.
-            
-            
-        # Bucles que muestran los elementos de los diccionarios de colas de ejecución y ejecución respectivamente:
-        '''
-        print()
-        for r in gestor.buffer.keys():
-            for l in gestor.buffer[r].keys():
-                print(gestor.buffer[r][l])
-        print()
-        for r in gestor.ejecucion.keys():
-            for l in gestor.ejecucion[r].keys():
-                print(gestor.ejecucion[r][l])
-        '''
 
 if __name__ == '__main__':
     main()
