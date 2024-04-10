@@ -6,10 +6,6 @@ Pablo José Pérez Pazos : pablo.perez.pazos@udc.es
 from array_ordered_positional_list import ArrayOrderedPositionalList
 import sys
 
-def main() -> None:
-    NotImplemented('NotImplemented')
-
-
 class Pelicula:
     '''
     '''
