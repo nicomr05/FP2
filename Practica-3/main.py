@@ -16,14 +16,14 @@ class Pelicula:
 
         Parameters
         ----------
-        título : str
-            Título de la película
-        director/a : str
-            Director de la película
-        año de estreno : int
-            Año de estreno de la película
-        puntuación media : int
-            Puntuación media de la película
+        titulo : str
+         Título de la película.
+        director : str
+         Director de la película.
+        anho_estreno : int
+         Año de estreno de la película.
+        puntuacion_media : int
+         Puntuación media de la película.
         '''
         self._director = director
         self._titulo = titulo
@@ -33,10 +33,10 @@ class Pelicula:
     def __str__(self) -> str:
         '''
         '''
-        cadena: str = f'{self.director} '
-        cadena += f'{self.titulo} '
-        cadena += f'{self.anho_estreno} '
-        cadena += f'{self.puntuacion_media} '
+        cadena: str = f'{self.director} | '
+        cadena += f'{self.titulo} | '
+        cadena += f'{self.anho_estreno} | '
+        cadena += f'{self.puntuacion_media}'
         
         return cadena
     
@@ -144,8 +144,13 @@ def main():
         simulador: SimuladorPeliculas = SimuladorPeliculas()
         lista_peliculas: ArrayOrderedPositionalList = simulador.crear_peliculas(texto_peliculas)
         
-        for pos in lista_peliculas:
-            print(pos)
+        for pelicula1 in lista_peliculas:
+            for pelicula2 in lista_peliculas:
+                if pelicula1 == pelicula2:
+                    pelicula1: Pelicula = Pelicula
+                    lista_peliculas.delete(pelicula1)
+
+        print(lista_peliculas)
 
 if __name__ == '__main__':
     main()
