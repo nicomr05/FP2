@@ -32,6 +32,7 @@ class Pelicula:
     
     def __str__(self) -> str:
         '''
+        Implementación del método mágico "str".
         '''
         cadena: str = f'{self.director} | '
         cadena += f'{self.titulo} | '
@@ -42,6 +43,16 @@ class Pelicula:
     
     def __eq__(self, pelicula:'Pelicula') -> bool:
         '''
+        Implementación del método mágico "==".
+        
+        Parameters
+        ----------
+        pelicula : Pelicula
+         Película sobre la que se quiere comprobar la igualdad.
+        
+        Returns
+        -------
+        bool
         '''
         if self.director == pelicula.director:
             return True
@@ -56,6 +67,16 @@ class Pelicula:
     
     def __gt__(self, pelicula:'Pelicula') -> bool:
         '''
+        Implementación del método mágico ">".
+        
+        Parameters
+        ----------
+        pelicula : Pelicula
+         Película sobre la que se quiere comprobar la desigualdad.
+        
+        Returns
+        -------
+        bool
         '''
         if self.director > pelicula.director:
             return True
@@ -70,6 +91,16 @@ class Pelicula:
 
     def __lt__(self, pelicula:'Pelicula') -> bool:
         '''
+        Implementación del método mágico "<".
+        
+        Parameters
+        ----------
+        pelicula : Pelicula
+         Película sobre la que se quiere comprobar la desigualdad.
+        
+        Returns
+        -------
+        bool
         '''
         if self.director < pelicula.director:
             return True
@@ -84,6 +115,16 @@ class Pelicula:
     
     def __ge__(self, pelicula:'Pelicula') -> bool:
         '''
+        Implementación del método mágico ">=".
+        
+        Parameters
+        ----------
+        pelicula : Pelicula
+         Película sobre la que se quiere comprobar la (des)igualdad.
+        
+        Returns
+        -------
+        bool
         '''
         if self.director >= pelicula.director:
             return True
@@ -115,7 +156,7 @@ class Pelicula:
 class SimuladorPeliculas:
     '''
     '''
-    def crear_peliculas(self, texto:str) -> ArrayOrderedPositionalList:
+    def crear_lista_peliculas(self, texto:str) -> ArrayOrderedPositionalList:
         '''
         '''
         lista_peliculas: ArrayOrderedPositionalList = ArrayOrderedPositionalList()
@@ -134,23 +175,35 @@ class SimuladorPeliculas:
             lista_peliculas.add(pelicula)
         
         return lista_peliculas
+    
+    def eliminar_repetidos(self, lista_ordenada:ArrayOrderedPositionalList) -> ArrayOrderedPositionalList:
+        '''
+        '''
+        for posicion_i in range(len(lista_ordenada)):
+            for posicion_j in range(len(lista_ordenada)):
+                print(posicion_i, posicion_j)
+                if lista_ordenada.get_element(posicion_i) == lista_ordenada.get_element(posicion_j):
+                    lista_ordenada.delete(posicion_j)
+        
+        return lista_ordenada
 
 def main():
     '''
     '''
-    with open(sys.argv[1]) as f:
+    with open(sys.argv[1], 'r', encoding='utf-8') as f:
         texto_peliculas: str = f.read()
         
         simulador: SimuladorPeliculas = SimuladorPeliculas()
-        lista_peliculas: ArrayOrderedPositionalList = simulador.crear_peliculas(texto_peliculas)
+        lista_peliculas_original: ArrayOrderedPositionalList = simulador.crear_lista_peliculas(texto_peliculas) # Creamos la lista de películas con repetidos
+        lista_peliculas_procesada: ArrayOrderedPositionalList = simulador.eliminar_repetidos(lista_peliculas_original) # Procesamos la lista de películas para eliminar repetidos
         
-        for pelicula1 in lista_peliculas:
-            for pelicula2 in lista_peliculas:
-                if pelicula1 == pelicula2:
-                    pelicula1: Pelicula = Pelicula
-                    lista_peliculas.delete(pelicula1)
+        
+        for i in lista_peliculas_original:
+            print(i)
+        
+        for j in lista_peliculas_procesada:
+            print(j)
 
-        print(lista_peliculas)
 
 if __name__ == '__main__':
     main()
