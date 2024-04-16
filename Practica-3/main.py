@@ -4,6 +4,7 @@ Pablo José Pérez Pazos : pablo.perez.pazos@udc.es
 '''
 
 from array_ordered_positional_list import ArrayOrderedPositionalList
+from linked_ordered_positional_list import LinkedOrderedPositionalList
 import sys
 
 class Pelicula:
@@ -179,13 +180,71 @@ class SimuladorPeliculas:
     def eliminar_repetidos(self, lista_ordenada:ArrayOrderedPositionalList) -> ArrayOrderedPositionalList:
         '''
         '''
-        for posicion_i in range(len(lista_ordenada)):
-            for posicion_j in range(len(lista_ordenada)):
-                print(posicion_i, posicion_j)
-                if lista_ordenada.get_element(posicion_i) == lista_ordenada.get_element(posicion_j):
-                    lista_ordenada.delete(posicion_j)
+        for posicion in range(1, len(lista_ordenada) - 1, 1):
+            if lista_ordenada.get_element(posicion) in lista_ordenada:
+                lista_ordenada.delete(posicion)
         
         return lista_ordenada
+    
+    def menu(self, lista_original:ArrayOrderedPositionalList) -> None:
+        '''
+        '''
+        opciones = [1,2,3,'Q']
+        
+        menu  = '\n-----------------------------------------'
+        menu += '\n1 - Mostrar todas las películas'
+        menu += '\n2 - Buscar películas de un director'
+        menu += '\n3 - Buscar películas de un año concreto'
+        menu += '\nQ - Salir del menú'
+        menu += '\n-----------------------------------------'
+
+        print(menu) # Imprimimos las opciones a elegir
+        
+        respuesta: int|str = int(input('\nEscoge una opción: ')) # Solicitamos la opción dentro del menú
+
+        while respuesta in opciones:
+
+            if respuesta == 1:
+                print()
+
+                for pelicula in lista_original:
+                    print(pelicula)
+                continue
+            
+            elif respuesta == 2:
+                director: str = str(input('\nIntroduce el director que deseas buscar: '))
+
+                if isinstance(director, str) and len(director) > 0:
+                    print()
+                    for pelicula in lista_original:
+                        if pelicula.director == director:
+                            print(pelicula)
+                    print()
+                    continue
+                
+                else:
+                    print('Los caracteres introducidos deben ser una cadena de texto no vacía.')
+
+            elif respuesta == 3:
+                anho: int = int(input('\nIntroduce el año de las películas que deseas buscar: '))
+
+                if isinstance(anho, int) and anho > 0:
+                    print()
+                    for pelicula in lista_original:
+                        if pelicula.anho_estreno == anho:
+                            print(pelicula)
+                    print()
+                    continue
+                
+                else:
+                    print('El año introducido debe ser un entero positivo.')
+
+            elif respuesta == 'Q':
+                print('Cerrando...')
+                break
+
+        if respuesta not in opciones:
+            print('\nLa opción no se encuentra en la lista.\n')
 
 def main():
     '''
@@ -195,14 +254,9 @@ def main():
         
         simulador: SimuladorPeliculas = SimuladorPeliculas()
         lista_peliculas_original: ArrayOrderedPositionalList = simulador.crear_lista_peliculas(texto_peliculas) # Creamos la lista de películas con repetidos
-        lista_peliculas_procesada: ArrayOrderedPositionalList = simulador.eliminar_repetidos(lista_peliculas_original) # Procesamos la lista de películas para eliminar repetidos
+        #lista_peliculas_procesada: ArrayOrderedPositionalList = simulador.eliminar_repetidos(lista_peliculas_original) # Procesamos la lista de películas para eliminar repetidos
         
-        
-        for i in lista_peliculas_original:
-            print(i)
-        
-        for j in lista_peliculas_procesada:
-            print(j)
+        simulador.menu(lista_peliculas_original)
 
 
 if __name__ == '__main__':
