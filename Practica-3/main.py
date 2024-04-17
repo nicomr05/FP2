@@ -2,10 +2,14 @@
 Nicolás Muñiz Rodríguez : nicolas.muniz@udc.es
 Pablo José Pérez Pazos : pablo.perez.pazos@udc.es
 '''
+from sys import argv
 
-from array_ordered_positional_list import ArrayOrderedPositionalList
-from linked_ordered_positional_list import LinkedOrderedPositionalList
-import sys
+tipo = True #Cambiar a 'False' si se quiere cambiar el tipo de lista ordenada
+
+if tipo:
+    from array_ordered_positional_list import ArrayOrderedPositionalList as ListaOrdenada
+else:
+    from linked_ordered_positional_list import LinkedOrderedPositionalList as ListaOrdenada
 
 class Pelicula:
     '''
@@ -144,10 +148,10 @@ class Pelicula:
 class SimuladorPeliculas:
     '''
     '''
-    def crear_lista_peliculas(self, texto:str) -> ArrayOrderedPositionalList:
+    def crear_lista_peliculas(self, texto:str) -> ListaOrdenada:
         '''
         '''
-        lista_peliculas: ArrayOrderedPositionalList = ArrayOrderedPositionalList()
+        lista_peliculas: ListaOrdenada = ListaOrdenada()
         lineas: str = str(texto).split('\n')
         
         for linea in lineas:
@@ -164,19 +168,20 @@ class SimuladorPeliculas:
         
         return lista_peliculas
     
-    def eliminar_repetidos(self, lista_ordenada:ArrayOrderedPositionalList) -> ArrayOrderedPositionalList:
+    def eliminar_repetidos(self, lista_ordenada:ListaOrdenada) -> ListaOrdenada:
         '''
         '''
-        for posicion in range(len(lista_ordenada)):
-            if lista_ordenada.get_element(posicion) == lista_ordenada.after(posicion):
-                lista_ordenada.delete(posicion)
-        
-        return lista_ordenada
+        nueva_lista = ListaOrdenada() 
     
-    def menu(self, lista_original:ArrayOrderedPositionalList) -> None:
+    def menu(self, lista_original:ListaOrdenada) -> None:
         '''
-        '''
+        Imprime por pantalla el menú de opciones para navegar entre las películas.s
         
+        Parameters 
+        ---------- 
+        lista : tipo 
+         Descripción.
+        '''
         linea = '-'*50
         
         menu  = f'\n{linea}'
@@ -200,7 +205,7 @@ class SimuladorPeliculas:
                     print(pelicula)
             
             elif respuesta == 'B' or respuesta == 'b':
-                director: str = str(input('Introduce el director que deseas buscar (Formato: Apellido, Nombre): '))
+                director: str = str(input('Introduce el director que deseas buscar (Formato de búsqueda: Apellido, Nombre): '))
                 print('\nPelículas disponibles:')
                 if isinstance(director, str) and len(director) > 0:
                     for pelicula in lista_original:
@@ -233,17 +238,20 @@ class SimuladorPeliculas:
 def main():
     '''
     '''
-    with open(sys.argv[1], 'r', encoding='utf-8') as f:
+    with open(argv[1], 'r', encoding='utf-8') as f:
         texto_peliculas: str = f.read()
         
         simulador: SimuladorPeliculas = SimuladorPeliculas()
-        lista_peliculas_original: ArrayOrderedPositionalList = simulador.crear_lista_peliculas(texto_peliculas) # Creamos la lista de películas con repetidos
-        #lista_peliculas_procesada: ArrayOrderedPositionalList = simulador.eliminar_repetidos(lista_peliculas_original) # Procesamos la lista de películas para eliminar repetidos
+        lista_peliculas_original: ListaOrdenada = simulador.crear_lista_peliculas(texto_peliculas) # Creamos la lista de películas con repetidos
+        lista_peliculas_procesada: ListaOrdenada = simulador.eliminar_repetidos(lista_peliculas_original) # Procesamos la lista de películas para eliminar repetidos
         
-        simulador.menu(lista_peliculas_original)
+        #simulador.menu(lista_peliculas_original)
 
-#    with open('peliculas_ordenadas.txt', 'w', encoding='utf-8') as g:
-#        g.
+        print(lista_peliculas_procesada)
+        
+        with open('peliculas_ordenadas.txt', 'w', encoding='utf-8') as g:
+            for pelicula in lista_peliculas_procesada:
+                g.write(f'{pelicula.director}; {pelicula.titulo}; {pelicula.anho_estreno}; {pelicula.puntuacion_media}\n')
 
 if __name__ == '__main__':
     main()
