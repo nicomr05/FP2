@@ -127,7 +127,7 @@ class Pelicula:
         -------
         bool
         '''
-        return self == pelicula or self > pelicula
+        return (self == pelicula or self > pelicula)
     
     @property
     def director(self) -> str:
@@ -171,7 +171,19 @@ class SimuladorPeliculas:
     def eliminar_repetidos(self, lista_ordenada:ListaOrdenada) -> ListaOrdenada:
         '''
         '''
-        nueva_lista = ListaOrdenada() 
+        nueva_lista: ListaOrdenada = ListaOrdenada()
+
+        for posicion in range(1, len(lista_ordenada)):
+            pelicula: Pelicula = lista_ordenada.get_element(posicion)
+            pelicula_anterior: Pelicula = lista_ordenada.get_element(lista_ordenada.before(posicion))
+
+            if pelicula not in nueva_lista:
+                if pelicula >= pelicula_anterior:
+                    nueva_lista.add(pelicula)
+                else:
+                    nueva_lista.add(pelicula_anterior)
+
+        return nueva_lista
     
     def menu(self, lista_original:ListaOrdenada) -> None:
         '''
@@ -181,6 +193,10 @@ class SimuladorPeliculas:
         ---------- 
         lista : tipo 
          Descripción.
+        
+        Returns
+        -------
+        None
         '''
         linea = '-'*50
         
@@ -228,30 +244,37 @@ class SimuladorPeliculas:
                     print('El año introducido debe ser un entero positivo.')
 
             elif respuesta == 'Q' or respuesta == 'q':
-                print('\nSaliendo...\n')
+                print('\n  Saliendo...\n')
                 break
 
             elif respuesta not in opciones:
                 print('La opción no se encuentra en la lista.')
             
 
-def main():
+def main() -> None:
     '''
+    Función principal que lee el archivo de texto, crea los objetos Pelicula y los añade ordenándolos automáticamente.
+    Además, crea un nuevo archivo de texto sin películas repetidas.
+
+    Returns
+    -------
+    None
     '''
-    with open(argv[1], 'r', encoding='utf-8') as f:
-        texto_peliculas: str = f.read()
+    with open(argv[1], 'r', encoding='utf-8') as archivo:
+        texto_peliculas: str = archivo.read()
         
         simulador: SimuladorPeliculas = SimuladorPeliculas()
         lista_peliculas_original: ListaOrdenada = simulador.crear_lista_peliculas(texto_peliculas) # Creamos la lista de películas con repetidos
-        lista_peliculas_procesada: ListaOrdenada = simulador.eliminar_repetidos(lista_peliculas_original) # Procesamos la lista de películas para eliminar repetidos
         
-        #simulador.menu(lista_peliculas_original)
+        simulador.menu(lista_peliculas_original)
 
-        print(lista_peliculas_procesada)
         
-        with open('peliculas_ordenadas.txt', 'w', encoding='utf-8') as g:
+        with open('peliculas_sin_repetidos.txt', 'w', encoding='utf-8') as archivo_sin_repetidos: # Creamos un nuevo archivo sin 
+            
+            lista_peliculas_procesada: ListaOrdenada = simulador.eliminar_repetidos(lista_peliculas_original) # Procesamos la lista de películas para eliminar repetidos
+            
             for pelicula in lista_peliculas_procesada:
-                g.write(f'{pelicula.director}; {pelicula.titulo}; {pelicula.anho_estreno}; {pelicula.puntuacion_media}\n')
-
+                archivo_sin_repetidos.write(f'{pelicula.director}; {pelicula.titulo}; {pelicula.anho_estreno}; {pelicula.puntuacion_media}\n')
+        
 if __name__ == '__main__':
     main()
