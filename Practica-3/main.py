@@ -11,7 +11,7 @@ class Pelicula:
     '''
     '''
     
-    def __init__(self, titulo:str, director:str, anho_estreno:int, puntuacion_media:float):       
+    def __init__(self, director:str, titulo:str, anho_estreno:int, puntuacion_media:float):       
         '''
         
 
@@ -55,13 +55,9 @@ class Pelicula:
         -------
         bool
         '''
-        if self.director == pelicula.director:
-            return True
-        
-        elif self.anho_estreno == pelicula.anho_estreno:
-            return True
-        
-        elif self.titulo == pelicula.titulo:
+        if self.director == pelicula.director and \
+           self.anho_estreno == pelicula.anho_estreno and \
+           self.titulo == pelicula.titulo:
             return True
         
         return False
@@ -79,14 +75,14 @@ class Pelicula:
         -------
         bool
         '''
-        if self.director > pelicula.director:
-            return True
+        if self.director != pelicula.director:
+            return self.director > pelicula.director
         
-        elif self.anho_estreno > pelicula.anho_estreno:
-            return True
+        elif self.anho_estreno != pelicula.anho_estreno:
+            return self.anho_estreno > pelicula.anho_estreno
         
-        elif self.titulo > pelicula.titulo:
-            return True
+        elif self.titulo != pelicula.titulo:
+            return self.titulo > pelicula.titulo
         
         return False
 
@@ -103,14 +99,14 @@ class Pelicula:
         -------
         bool
         '''
-        if self.director < pelicula.director:
-            return True
+        if self.director != pelicula.director:
+            return self.director < pelicula.director
         
-        elif self.anho_estreno < pelicula.anho_estreno:
-            return True
+        elif self.anho_estreno != pelicula.anho_estreno:
+            return self.anho_estreno < pelicula.anho_estreno
         
-        elif self.titulo < pelicula.titulo:
-            return True
+        elif self.titulo != pelicula.titulo:
+            return self.titulo < pelicula.titulo
         
         return False
     
@@ -127,16 +123,7 @@ class Pelicula:
         -------
         bool
         '''
-        if self.director >= pelicula.director:
-            return True
-        
-        elif self.anho_estreno >= pelicula.anho_estreno:
-            return True
-        
-        elif self.titulo >= pelicula.titulo:
-            return True
-        
-        return False
+        return self == pelicula or self > pelicula
     
     @property
     def director(self) -> str:
@@ -171,7 +158,7 @@ class SimuladorPeliculas:
             anho_estreno: int = int(partes_linea[2])
             puntuacion_media: float = float(partes_linea[3])
             
-            pelicula: Pelicula = Pelicula(director= director, titulo= titulo, anho_estreno= anho_estreno, puntuacion_media= puntuacion_media)
+            pelicula: Pelicula = Pelicula(director, titulo, anho_estreno, puntuacion_media)
 
             lista_peliculas.add(pelicula)
         
@@ -180,8 +167,8 @@ class SimuladorPeliculas:
     def eliminar_repetidos(self, lista_ordenada:ArrayOrderedPositionalList) -> ArrayOrderedPositionalList:
         '''
         '''
-        for posicion in range(1, len(lista_ordenada) - 1, 1):
-            if lista_ordenada.get_element(posicion) in lista_ordenada:
+        for posicion in range(len(lista_ordenada)):
+            if lista_ordenada.get_element(posicion) == lista_ordenada.after(posicion):
                 lista_ordenada.delete(posicion)
         
         return lista_ordenada
@@ -189,62 +176,59 @@ class SimuladorPeliculas:
     def menu(self, lista_original:ArrayOrderedPositionalList) -> None:
         '''
         '''
-        opciones = [1,2,3,'Q']
         
-        menu  = '\n-----------------------------------------'
-        menu += '\n1 - Mostrar todas las películas'
-        menu += '\n2 - Buscar películas de un director'
-        menu += '\n3 - Buscar películas de un año concreto'
-        menu += '\nQ - Salir del menú'
-        menu += '\n-----------------------------------------'
-
-        print(menu) # Imprimimos las opciones a elegir
+        linea = '-'*50
         
-        respuesta: int|str = int(input('\nEscoge una opción: ')) # Solicitamos la opción dentro del menú
+        menu  = f'\n{linea}'
+        menu += '\nA - Mostrar todas las películas'
+        menu += '\nB - Buscar películas de un director'
+        menu += '\nC - Buscar películas de un año concreto'
+        menu += '\n\nQ - Salir del menú'
+        menu += f'\n{linea}'
+        
+        opciones = 'AaBbCcQq'
+        
+        while True:
 
-        while respuesta in opciones:
-
-            if respuesta == 1:
-                print()
-
+            print(menu) # Imprimimos las opciones a elegir
+            respuesta: str = str(input('\nEscoge una opción: ')) # Solicitamos la opción dentro del menú
+            
+            print('\n' + linea + '\n')
+            
+            if respuesta == 'A' or respuesta == 'a':
                 for pelicula in lista_original:
                     print(pelicula)
-                continue
             
-            elif respuesta == 2:
-                director: str = str(input('\nIntroduce el director que deseas buscar: '))
-
+            elif respuesta == 'B' or respuesta == 'b':
+                director: str = str(input('Introduce el director que deseas buscar (Formato: Apellido, Nombre): '))
+                print('\nPelículas disponibles:')
                 if isinstance(director, str) and len(director) > 0:
-                    print()
                     for pelicula in lista_original:
                         if pelicula.director == director:
                             print(pelicula)
-                    print()
-                    continue
                 
                 else:
                     print('Los caracteres introducidos deben ser una cadena de texto no vacía.')
 
-            elif respuesta == 3:
-                anho: int = int(input('\nIntroduce el año de las películas que deseas buscar: '))
-
+            elif respuesta == 'C' or respuesta == 'c':
+                anho: int = int(input('Introduce el año de las películas que deseas buscar: '))
+                print('\nPelículas disponibles:')
+                
                 if isinstance(anho, int) and anho > 0:
-                    print()
                     for pelicula in lista_original:
                         if pelicula.anho_estreno == anho:
                             print(pelicula)
-                    print()
-                    continue
                 
                 else:
                     print('El año introducido debe ser un entero positivo.')
 
-            elif respuesta == 'Q':
-                print('Cerrando...')
+            elif respuesta == 'Q' or respuesta == 'q':
+                print('\nSaliendo...\n')
                 break
 
-        if respuesta not in opciones:
-            print('\nLa opción no se encuentra en la lista.\n')
+            elif respuesta not in opciones:
+                print('La opción no se encuentra en la lista.')
+            
 
 def main():
     '''
@@ -258,6 +242,8 @@ def main():
         
         simulador.menu(lista_peliculas_original)
 
+#    with open('peliculas_ordenadas.txt', 'w', encoding='utf-8') as g:
+#        g.
 
 if __name__ == '__main__':
     main()
