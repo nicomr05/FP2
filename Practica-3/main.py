@@ -3,8 +3,9 @@ Nicolás Muñiz Rodríguez : nicolas.muniz@udc.es
 Pablo José Pérez Pazos : pablo.perez.pazos@udc.es
 '''
 from sys import argv
+import pandas as pd
 
-tipo = False #Cambiar a 'False' si se quiere cambiar el tipo de lista ordenada
+tipo = True #Cambiar a 'False' si se quiere cambiar el tipo de lista ordenada
 
 if tipo:
     from array_ordered_positional_list import ArrayOrderedPositionalList as ListaOrdenada
@@ -253,7 +254,7 @@ class SimuladorPeliculas:
         nueva_lista: ListaOrdenada = ListaOrdenada()
 
         for posicion in range(1, len(lista_ordenada)):
-            print(posicion)
+            
             pelicula: Pelicula = lista_ordenada.get_element(posicion)
             pelicula_anterior: Pelicula = lista_ordenada.get_element(lista_ordenada.before(posicion))
 
@@ -285,6 +286,8 @@ class SimuladorPeliculas:
         menu += '\nA - Mostrar todas las películas'
         menu += '\nB - Buscar películas de un director'
         menu += '\nC - Buscar películas de un año concreto'
+        menu += '\nD - Crear archivo de texto sin películas repetidas'
+        menu += '\nE - Mostrar estadísticas'
         menu += '\n\nQ - Salir del menú'
         menu += f'\n{linea}'
         
@@ -324,14 +327,82 @@ class SimuladorPeliculas:
                 else:
                     print('El año introducido debe ser un entero positivo.')
 
+            elif respuesta == 'D' or respuesta == 'd':
+                with open('peliculas_sin_repetidos.txt', 'w', encoding='utf-8') as archivo_sin_repetidos: # Creamos un nuevo archivo sin películas repetidas
+            
+                    lista_peliculas_procesada: ListaOrdenada = self.eliminar_repetidos(lista_original) # Procesamos la lista de películas para eliminar repetidos y la guardamos en una variable
+
+                    for pelicula in lista_peliculas_procesada:
+                        archivo_sin_repetidos.write(f'{pelicula.director}; {pelicula.titulo}; {pelicula.anho_estreno}; {pelicula.puntuacion_media}\n')
+            
+            elif respuesta == 'E' or respuesta == 'e':
+                
+                lista_peliculas_procesada: ListaOrdenada = self.eliminar_repetidos(lista_original) # Procesamos la lista de películas para eliminar repetidos y la guardamos en una variable
+                
+                datos = Pandas()
+                datos.estad_totales(lista_peliculas_procesada)
+            
             elif respuesta == 'Q' or respuesta == 'q':
                 print('\n  Saliendo...\n')
                 break
 
             elif respuesta not in opciones:
                 print('La opción no se encuentra en la lista.')
-            
 
+class Pandas:
+    '''
+    '''
+    def __init__(self) -> None:
+        '''
+        '''
+        self._df = pd.DataFrame(columns=['Director', 'Título', 'Fecha', 'Puntuación'])
+    
+    def estad_totales(self, lista:ListaOrdenada) -> tuple:
+        '''
+        '''
+        for pelicula in lista:
+            fila: dict = {'Director':pelicula.director, 'Titulo':pelicula.titulo, 'Fecha':pelicula.anho_estreno, 'Puntuación':pelicula.puntuacion_media}
+            self.df.append(fila)
+        
+        return (self.numero_directores(), self.media_director(), self.media_anho())
+            
+    def numero_directores(self) -> None:
+        '''
+        '''
+        group_col = 'Director'
+        target_col = 'Título'
+        data_directores = self.df.count(group_col).agg({target_col: ['count']})
+        print ("#############################################")
+        print ("    Número de películas por director    ")
+        print ("#############################################\n")
+        print (data_directores)
+    
+    def media_director(self) -> None:
+        '''
+        '''
+        group_col = 'Director'
+        target_col = 'Puntuación'
+        data_directores = self.df.groupby(group_col).agg({target_col: ['mean']})
+        print ("#############################################")
+        print ("    Puntuación media agrupada por director   ")
+        print ("#############################################\n")
+        print (data_directores)
+    
+    def media_anho(self) -> None:
+        '''
+        '''
+        group_col = 'Director'
+        target_col = 'Fecha'
+        data_directores = self.df.groupby(group_col).agg({target_col: ['mean']})
+        print ("#############################################")
+        print ("    Puntuación agrupada por año         ")
+        print ("#############################################\n")
+        print (data_directores)
+
+    @property
+    def df(self) -> pd.DataFrame:
+        return self._df
+    
 def main() -> None:
     '''
     Función principal que lee el archivo de texto, crea los objetos Pelicula y los añade ordenándolos automáticamente.
@@ -349,13 +420,6 @@ def main() -> None:
         
         simulador.menu(lista_peliculas_original) #Mostramos el menú y ejecutamos la función del menú (implementación más arriba).
 
-        
-        with open('peliculas_sin_repetidos.txt', 'w', encoding='utf-8') as archivo_sin_repetidos: # Creamos un nuevo archivo sin películas repetidas
-            
-            lista_peliculas_procesada: ListaOrdenada = simulador.eliminar_repetidos(lista_peliculas_original) # Procesamos la lista de películas para eliminar repetidos
-            
-            for pelicula in lista_peliculas_procesada:
-                archivo_sin_repetidos.write(f'{pelicula.director}; {pelicula.titulo}; {pelicula.anho_estreno}; {pelicula.puntuacion_media}\n')
         
 if __name__ == '__main__':
     main()
