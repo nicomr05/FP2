@@ -6,7 +6,7 @@ from sys import argv
 from time import sleep
 import pandas as pd
 
-tipo = True #Cambiar a 'False' si se quiere cambiar el tipo de lista ordenada
+tipo = False #Cambiar a 'False' si se quiere cambiar el tipo de lista ordenada
 
 if tipo:
     from array_ordered_positional_list import ArrayOrderedPositionalList as ListaOrdenada
@@ -257,10 +257,12 @@ class SimuladorPeliculas:
         ListaOrdenada
          Lista ordenada de las películas (ArrayPositionalList o LinkedPositionalList) sin películas repetidas.
         '''
-        copia_lista: ListaOrdenada = lista_ordenada
-        nueva_lista: ListaOrdenada = ListaOrdenada()
+        copia_lista: ListaOrdenada = ListaOrdenada() # Lista ordenada que servirá de copia de la original, para no modificarla.
+        nueva_lista: ListaOrdenada = ListaOrdenada() # Lista vacía sin repetidos que es la que devolverá la función.
         
-    
+        for pelicula in lista_ordenada:
+            copia_lista.add(pelicula)
+
         while True:
             
             posicion_pelicula: Pelicula = copia_lista.first()
