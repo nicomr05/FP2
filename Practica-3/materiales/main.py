@@ -3,6 +3,7 @@ Nicolás Muñiz Rodríguez : nicolas.muniz@udc.es
 Pablo José Pérez Pazos : pablo.perez.pazos@udc.es
 '''
 from sys import argv
+from time import sleep
 import pandas as pd
 
 tipo = True #Cambiar a 'False' si se quiere cambiar el tipo de lista ordenada
@@ -11,6 +12,7 @@ if tipo:
     from array_ordered_positional_list import ArrayOrderedPositionalList as ListaOrdenada
 else:
     from linked_ordered_positional_list import LinkedOrderedPositionalList as ListaOrdenada
+
 
 class Pelicula:
     '''
@@ -187,6 +189,7 @@ class Pelicula:
     def puntuacion_media(self) -> int:
         return self._puntuacion_media
 
+
 class SimuladorPeliculas:
     '''
     Clase del simulador de gestión de películas, que extrae información de un string y la convierte en películas,
@@ -243,27 +246,48 @@ class SimuladorPeliculas:
 
         Parameters
         ----------
-        ListaOrdenada
+        lista_ordenada : ListaOrdenada
          Lista ordenada de las películas (ArrayPositionalList o LinkedPositionalList) de la que se quieren eliminar las películas repetidas.
-
+        tipo_lista : bool
+         True si es una ArrayPositionalList
+         False si es una LinkedPositionalList
+        
         Returns
         -------
         ListaOrdenada
          Lista ordenada de las películas (ArrayPositionalList o LinkedPositionalList) sin películas repetidas.
         '''
-        nueva_lista: ListaOrdenada = ListaOrdenada()
+        copia_lista: ListaOrdenada = ListaOrdenada() # Lista ordenada que servirá de copia de la original, para no modificarla.
+        nueva_lista: ListaOrdenada = ListaOrdenada() # Lista vacía sin repetidos que es la que devolverá la función.
+        
+        for pelicula in lista_ordenada:
+            copia_lista.add(pelicula)
 
-        for posicion in range(1, len(lista_ordenada)):
+        while True:
             
-            pelicula: Pelicula = lista_ordenada.get_element(posicion)
-            pelicula_anterior: Pelicula = lista_ordenada.get_element(lista_ordenada.before(posicion))
+            posicion_pelicula: Pelicula = copia_lista.first()
+            posicion_pelicula_posterior: Pelicula = copia_lista.after(posicion_pelicula)
 
-            if pelicula not in nueva_lista:
-                if pelicula >= pelicula_anterior:
-                    nueva_lista.add(pelicula)
-                else:
-                    nueva_lista.add(pelicula_anterior)
+            primera: Pelicula = copia_lista.get_element(posicion_pelicula)
+            segunda: Pelicula = copia_lista.get_element(posicion_pelicula_posterior)
 
+
+            if primera.anho_estreno == segunda.anho_estreno:
+                if copia_lista.last() == posicion_pelicula_posterior:
+                    nueva_lista.add(segunda)
+                    break
+
+                copia_lista.delete(posicion_pelicula)
+
+            else:
+                if copia_lista.last() == posicion_pelicula_posterior:
+                    nueva_lista.add(primera)
+                    nueva_lista.add(segunda)
+                    break
+
+                nueva_lista.add(primera)
+                copia_lista.delete(posicion_pelicula)
+                        
         return nueva_lista
     
     def menu(self, lista_original:ListaOrdenada) -> None:
@@ -328,12 +352,18 @@ class SimuladorPeliculas:
                     print('El año introducido debe ser un entero positivo.')
 
             elif respuesta == 'D' or respuesta == 'd':
+                
+                print('Creando archivo...\n')
                 with open('peliculas_sin_repetidos.txt', 'w', encoding='utf-8') as archivo_sin_repetidos: # Creamos un nuevo archivo sin películas repetidas
             
                     lista_peliculas_procesada: ListaOrdenada = self.eliminar_repetidos(lista_original) # Procesamos la lista de películas para eliminar repetidos y la guardamos en una variable
 
                     for pelicula in lista_peliculas_procesada:
                         archivo_sin_repetidos.write(f'{pelicula.director}; {pelicula.titulo}; {pelicula.anho_estreno}; {pelicula.puntuacion_media}\n')
+                
+                sleep(0.5)
+                print('Archivo creado.')
+                sleep(0.25)
             
             elif respuesta == 'E' or respuesta == 'e':
                 
@@ -349,60 +379,109 @@ class SimuladorPeliculas:
             elif respuesta not in opciones:
                 print('La opción no se encuentra en la lista.')
 
+
 class Pandas:
     '''
+    Clase que gestiona las estadísticas de las películas y las muestra por pantalla.
+
+    Methods
+    -------
+    __init__(self) -> None:
+        Asigna atributos al objeto.
+
+    estad_totales(self, lista:ListaOrdenada) -> tuple:
+        Recoge los valores de cada película y los añade al dataframe como diccionario.
+        Luego devuelve una tupla con las estadísticas que se solicitaron.
+
+    peliculas_por_director(self) -> None:
+        Cuenta el número de películas por director/a.
+
+    media_director(self) -> None:
+        Realiza la media de la puntuación por director/a.
+
+    media_por_anho(self) -> None:
+        Realiza la media por año de estreno.
     '''
     def __init__(self) -> None:
         '''
+        Asigna atributos al objeto.
+
+        Returns
+        -------
+        None
         '''
-        self._df = pd.DataFrame(columns=['Director', 'Título', 'Fecha', 'Puntuación'])
+        self._dataframe = pd.DataFrame(columns=['Director', 'Título', 'Fecha', 'Puntuación'])
     
     def estad_totales(self, lista:ListaOrdenada) -> tuple:
         '''
+        Método que recoge los valores de cada película y los añade al dataframe como diccionario.
+        Luego devuelve una tupla con las estadísticas que se solicitaron.
+
+        Returns
+        -------
+        tuple
+         Tupla con tres valores: número de películas por director, media de puntuación del
+         director y la media de puntuación por año.
         '''
         for pelicula in lista:
-            fila: dict = {'Director':pelicula.director, 'Titulo':pelicula.titulo, 'Fecha':pelicula.anho_estreno, 'Puntuación':pelicula.puntuacion_media}
-            self.df.append(fila)
+            fila: dict = {'Director':pelicula.director, 'Título':pelicula.titulo, 'Fecha':pelicula.anho_estreno, 'Puntuación':pelicula.puntuacion_media}
+            self.dataframe.loc[len(self.dataframe)] = fila # Añadimos cada diccionario al dataframe. Intentamos hacerlo con append pero daba error.
         
-        return (self.numero_directores(), self.media_director(), self.media_anho())
+        return (self.peliculas_por_director(), self.media_director(), self.media_por_anho())
             
-    def numero_directores(self) -> None:
+    def peliculas_por_director(self) -> None:
         '''
+        Método que cuenta el número de películas por director/a.
+
+        Returns
+        -------
+        None
         '''
         group_col = 'Director'
         target_col = 'Título'
-        data_directores = self.df.count(group_col).agg({target_col: ['count']})
-        print ("#############################################")
-        print ("    Número de películas por director    ")
+        data_directores = self.dataframe.groupby(group_col).agg({target_col: ['count']})
+        print ("\n\n#############################################")
+        print ("    Número de películas por director         ")
         print ("#############################################\n")
         print (data_directores)
     
     def media_director(self) -> None:
         '''
+        Método que realiza la media de la puntuación por director/a.
+
+        Returns
+        -------
+        None
         '''
         group_col = 'Director'
         target_col = 'Puntuación'
-        data_directores = self.df.groupby(group_col).agg({target_col: ['mean']})
-        print ("#############################################")
+        data_directores = self.dataframe.groupby(group_col).agg({target_col: ['mean']})
+        print ("\n\n#############################################")
         print ("    Puntuación media agrupada por director   ")
         print ("#############################################\n")
         print (data_directores)
     
-    def media_anho(self) -> None:
+    def media_por_anho(self) -> None:
         '''
+        Método que realiza la media por año de estreno.
+
+        Returns
+        -------
+        None
         '''
-        group_col = 'Director'
-        target_col = 'Fecha'
-        data_directores = self.df.groupby(group_col).agg({target_col: ['mean']})
-        print ("#############################################")
-        print ("    Puntuación agrupada por año         ")
+        group_col = 'Fecha'
+        target_col = 'Puntuación'
+        data_directores = self.dataframe.groupby(group_col).agg({target_col: ['mean']})
+        print ("\n\n#############################################")
+        print ("    Puntuación media agrupada por año        ")
         print ("#############################################\n")
         print (data_directores)
 
     @property
-    def df(self) -> pd.DataFrame:
-        return self._df
+    def dataframe(self) -> pd.DataFrame:
+        return self._dataframe
     
+
 def main() -> None:
     '''
     Función principal que lee el archivo de texto, crea los objetos Pelicula y los añade ordenándolos automáticamente.
