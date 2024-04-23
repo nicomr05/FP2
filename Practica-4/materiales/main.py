@@ -4,21 +4,24 @@ Pablo José Pérez Pazos : pablo.perez.pazos@udc.es
 '''
 
 from sys import argv
-import pandas as pd
 
-class Pandas:
+class SimuladorCursos:
     '''
     '''
-    NotImplemented('Implementar Pandas.')
+    NotImplemented('Implementar Simulador.')
+    
 
 def main() -> None:
     '''
-    Función principal.
+    Función principal que lee el archivo de texto y crea los objetos Curso.
     
     Returns
     -------
     None
     '''
+    with open(argv[1], 'r', encoding='utf-8') as archivo:
+        texto_cursos: str = archivo.read()
+        
 
 if __name__ == '__main__':
     main()
