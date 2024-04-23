@@ -28,8 +28,6 @@ class Curso:
     -------
     __init__(self, nombre:str, duracion:int, estudiantes:int, nivel:str, idioma:str, precio:float) -> None:
         Asigna atributos al objeto.
-    
-    
     '''
    
     def __init__(self, nombre:str, duracion:int, estudiantes:int, nivel:str, idioma:str, precio:float) -> None:       

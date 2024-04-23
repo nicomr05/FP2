@@ -3,6 +3,7 @@ Nicolás Muñiz Rodríguez : nicolas.muniz@udc.es
 Pablo José Pérez Pazos : pablo.perez.pazos@udc.es
 '''
 
+from avl_tree import AVL
 import pandas as pd
 
 class Pandas:
@@ -16,9 +17,9 @@ class Pandas:
         -------
         None
         '''
-        self._dataframe = pd.DataFrame(columns=['Director', 'Título', 'Fecha', 'Puntuación'])
+        self._dataframe = pd.DataFrame(columns=['Nombre', 'Duracion', 'Estudiantes', 'Nivel', 'Idioma', 'precio'])
     
-    def estad_totales(self, lista) -> tuple:
+    def estad_totales(self, arbol:AVL) -> tuple:
         '''
         Método que recoge los valores de cada película y los añade al dataframe como diccionario.
         Luego devuelve una tupla con las estadísticas que se solicitaron.
@@ -29,8 +30,8 @@ class Pandas:
          Tupla con tres valores: número de películas por director, media de puntuación del
          director y la media de puntuación por año.
         '''
-        for pelicula in lista:
-            fila: dict = {'Director':pelicula.director, 'Título':pelicula.titulo, 'Fecha':pelicula.anho_estreno, 'Puntuación':pelicula.puntuacion_media}
+        for curso in arbol:
+            fila: dict = {'Director':curso.nombre}
             self.dataframe.loc[len(self.dataframe)] = fila # Añadimos cada diccionario al dataframe. Intentamos hacerlo con append pero daba error.
         
         return (self.peliculas_por_director(), self.media_director(), self.media_por_anho())
