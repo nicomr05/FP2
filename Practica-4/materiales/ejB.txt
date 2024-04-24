@@ -1,4 +1,12 @@
-#nombre,duracion,participantes,level,language,precio
+# nombre,duracion,participantes,level,language,precio
 JavaScript,30,25,B,Gal,16.00
 Rust,90,12,A,Cas,20.00
-# Añadir líneas siguiendo el formato
+Rust,60,10,B,Cas,15.00
+C,110,50,A,Cas,9.00
+Phyton,90,50,B,Ing,18.00
+JavaScript,50,20,B,Gal,14.50
+Phyton,75,25,B,Ing,22.00
+C,150,25,A,Cas,10.00
+SQL,60,75,C,Ing,18.00
+SQL,60,100,A,Cas,16.50
+# AÃ±adir lineas siguiendo el formato

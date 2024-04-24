@@ -1,4 +1,12 @@
-#nombre,duracion,participantes,level,language,precio
+# nombre,duracion,participantes,level,language,precio
 Rust,60,10,A,Cas,15.00
 C,120,30,A,Cas,8.00
-# Añadir líneas siguiendo el formato
+Phyton,90,50,B,Ing,18.00
+Rust,40,20,C,Gal,13.50
+Phyton,75,25,B,Ing,22.00
+C,150,15,B,Gal,10.00
+SQL,80,80,A,Cas,14.00
+SQL,60,100,A,Cas,16.50
+Phyton,30,15,B,Cas,12.50
+Perl,45,30,C,Ing,15.00
+# AÃ±adir lineas siguiendo el formato

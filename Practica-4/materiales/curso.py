@@ -55,6 +55,25 @@ class Curso:
         self._nivel = nivel
         self._idioma = idioma
         self._precio= precio
+    
+    def __str__(self) -> str:
+        '''
+        Implementación del método mágico "str".
+        Imprime un string informativo del curso.
+
+        Returns
+        -------
+        str
+         String informativo del curso.
+        '''
+        cadena: str = f'{self._nombre} | '
+        cadena += f'{self._duracion} | '
+        cadena += f'{self._estudiantes} | '
+        cadena += f'{self._nivel} | '
+        cadena += f'{self._idioma} | '
+        cadena += f'{self._precio}'
+        
+        return cadena
 
     @property
     def nombre(self) -> str:

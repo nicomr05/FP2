@@ -36,9 +36,9 @@ class Pandas:
             fila: dict = {'Nombre':curso.nombre, 'Duracion':curso.duracion, 'Estudiantes':curso.estudiantes, 'Nivel':curso.nivel, 'Idioma':curso.idioma, 'Precio':curso.precio}
             self.dataframe.loc[len(self.dataframe)] = fila # Añadimos cada diccionario al dataframe. Intentamos hacerlo con append pero daba error.
         
-        return (self.peliculas_por_director(), self.media_director(), self.media_por_anho())
+        return (self.estudiantes_por_idioma(), self.media_estudiantes_nivel(), self.ingresos_totales())
             
-    def peliculas_por_director(self) -> None:
+    def estudiantes_por_idioma(self) -> None:
         '''
         Método que cuenta el número de películas por director/a.
 
@@ -58,7 +58,7 @@ class Pandas:
         print ('#'*n)
         print ('\n',f'{data_directores}', sep='')
     
-    def media_director(self) -> None:
+    def media_estudiantes_nivel(self) -> None:
         '''
         Método que realiza la media de la puntuación por director/a.
 
@@ -78,7 +78,7 @@ class Pandas:
         print ('#'*n)
         print ('\n',f'{data_directores}', sep='')
     
-    def media_por_anho(self) -> None:
+    def ingresos_totales(self) -> None:
         '''
         Método que realiza la media por año de estreno.
 
