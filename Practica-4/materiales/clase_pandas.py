@@ -28,8 +28,8 @@ class Pandas:
         Returns
         -------
         tuple
-         Tupla con tres valores: número de películas por director, media de puntuación del
-         director y la media de puntuación por año.
+         Tupla con tres valores: número de estudiantes por idioma, nº medio de estudiantes
+         por nivel y los ingresos totales posibles.
         '''
         for curso in arbol:
             curso: Curso
@@ -40,7 +40,7 @@ class Pandas:
             
     def estudiantes_por_idioma(self) -> None:
         '''
-        Método que cuenta el número de películas por director/a.
+        Método que cuenta el número de estudiantes por idioma.
 
         Returns
         -------
@@ -60,7 +60,7 @@ class Pandas:
     
     def media_estudiantes_nivel(self) -> None:
         '''
-        Método que realiza la media de la puntuación por director/a.
+        Método que muestra el número medio de estudiantes por nivel.
 
         Returns
         -------
@@ -80,7 +80,7 @@ class Pandas:
     
     def ingresos_totales(self) -> None:
         '''
-        Método que realiza la media por año de estreno.
+        Método que muestra los ingresos totales posibles..
 
         Returns
         -------

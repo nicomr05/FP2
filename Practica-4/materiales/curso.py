@@ -50,11 +50,12 @@ class Curso:
          Precio del curso. 
         '''
         self._nombre = nombre
-        self._duracion= duracion
+        self._duracion = duracion
         self._estudiantes = estudiantes
         self._nivel = nivel
         self._idioma = idioma
-        self._precio= precio
+        self._precio = precio
+        self._clave = f'{self._nombre}_{self._nivel}_{self._idioma}'
     
     def __str__(self) -> str:
         '''
@@ -71,9 +72,29 @@ class Curso:
         cadena += f'{self._estudiantes} | '
         cadena += f'{self._nivel} | '
         cadena += f'{self._idioma} | '
-        cadena += f'{self._precio}'
+        cadena += f'{self._precio}€'
         
         return cadena
+    
+    def __eq__(self, curso:'Curso') -> bool:
+        '''
+        Implementación del método mágico "==".
+        
+        Parameters
+        ----------
+        curso : Curso
+         Curso sobre la que se quiere comprobar la igualdad.
+        
+        Returns
+        -------
+        bool
+        '''
+        if self.nombre == curso.nombre:
+            if self.nivel == curso.nivel:
+                if self.idioma == curso.idioma:
+                    return True
+        
+        return False
 
     @property
     def nombre(self) -> str:
@@ -98,3 +119,7 @@ class Curso:
     @property
     def precio(self) -> str:
         return self._precio
+    
+    @property
+    def clave(self) -> str:
+        return self._clave

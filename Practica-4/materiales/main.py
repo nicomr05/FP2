@@ -19,22 +19,22 @@ class SimuladorCursos:
     
     
     '''
-    def crear_arboles_cursos(self) -> AVL:
+    def crear_arboles_cursos(self) -> tuple[AVL,AVL]:
         '''
-        Método que permite leer un string de texto con la información de las los cursos
-        que se quieren organizar.
+        Método que permite leer dos archivos de texto con la información de las los cursos
+        que se quieren organizar y los mete en dos árboles A y B respectivamente.
 
         Returns
         -------
-        AVL
-         Árbol de los cursos.
+        tuple[AVL,AVL]
+         Tupla de los dos árboles de cursos.
         '''
-        arbol_cursos1: AVL = AVL()
-        arbol_cursos2: AVL = AVL()
+        arbol_cursos_A: AVL = AVL()
+        arbol_cursos_B: AVL = AVL()
         
-        with open(argv[1], 'r', encoding='utf-8') as archivo1:
-            texto1: str = archivo1.read()
-            lineas: str = str(texto1).split('\n')[1:len(lineas)-1]
+        with open(argv[1], 'r', encoding='utf-8') as archivoA:
+            texto1: str = archivoA.read()
+            lineas: str = str(texto1).split('\n')[1:len(lineas)-1] # Leemos el archivo
             
             for linea in lineas:
                 partes_linea: str = str(linea).split(',')
@@ -46,12 +46,12 @@ class SimuladorCursos:
                 idioma: str = str(partes_linea[4])
                 precio: float = float(partes_linea[5])
 
-                curso: Curso = Curso(nombre, duracion, estudiantes, nivel, idioma, precio)
+                cursoA: Curso = Curso(nombre, duracion, estudiantes, nivel, idioma, precio)
+                
+                arbol_cursos_A[cursoA.clave] = cursoA
 
-                arbol_cursos1.children(curso) # No se puede hacer simplemente "add".
-
-        with open(argv[2], 'r', encoding='utf-8') as archivo1:
-            texto2: str = archivo1.read()
+        with open(argv[2], 'r', encoding='utf-8') as archivoB:
+            texto2: str = archivoB.read()
             lineas: str = str(texto2).split('\n')[1:len(lineas)-1]
             
             for linea in lineas:
@@ -64,11 +64,11 @@ class SimuladorCursos:
                 idioma: str = str(partes_linea[4])
                 precio: float = float(partes_linea[5])
 
-                curso: Curso = Curso(nombre, duracion, estudiantes, nivel, idioma, precio)
+                cursoB: Curso = Curso(nombre, duracion, estudiantes, nivel, idioma, precio)
+                
+                arbol_cursos_B[cursoB.clave] = cursoB
 
-                arbol_cursos1.add(curso)
-
-        return arbol_cursos1, arbol_cursos2
+        return (arbol_cursos_A, arbol_cursos_B)
     
     def oferta_agregada(self) -> AVL:
         '''
@@ -77,39 +77,65 @@ class SimuladorCursos:
     def oferta_comun(self) -> AVL:
         '''
         '''
-        
     
+    def opcion_leer_archivos(self) -> None:
+        '''
+        Método que permite elegir entre leer o no leer los ficheros de texto.
+        
+        Returns
+        -------
+        None
+        '''
+        linea = '-'*50
+        texto = '¿Leer ficheros de los cursos A y B? (Y/N)'
+        
+        print(f'\n{linea}\n{texto}\n{linea}')
+        
+        eleccion: str = str(input('\nResponde aquí: '))
+        
+        while True:
+            if eleccion.upper() == 'Y':
+                print('\n  Leyendo ficheros...')
+                return True
+            
+            elif eleccion.upper() == 'N':
+                print('\n  Saliendo...')
+                return False
+            
+            else:
+                print('\n  Respuesta no válida.')
+        
+        
     def menu(self) -> None:
         '''
         '''
         linea = '-'*50
         
         menu  = f'\n{linea}'
-        menu += '\nA - Leer ficheros de los cursos'
-        menu += '\nB - Realizar la operación "oferta agregada"'
-        menu += '\nC - Realizar la operación "oferta común"'
-        menu += '\nD - Mostrar estadísticas'
+        menu += '\nA - Realizar la operación "oferta agregada"'
+        menu += '\nB - Realizar la operación "oferta común"'
+        menu += '\nC - Mostrar estadísticas'
         menu += '\n\nQ - Salir del menú'
         menu += f'\n{linea}'
         
         opciones = 'AaBbCcQq'
         
-        while True:
-            
+        valor: bool = self.opcion_leer_archivos()
+        
+        while valor:
             print(menu) # Imprimimos las opciones a elegir
             respuesta: str = str(input('\nEscoge una opción: ')) # Solicitamos la opción dentro del menú
             print('\n' + linea + '\n')
             
-            if respuesta.upper() == 'A':
-                self.crear_arboles_cursos()
+            self.crear_arboles_cursos()
             
-            elif respuesta.upper() == 'B':
+            if respuesta.upper() == 'A':
                 self.oferta_agregada()
             
-            elif respuesta.upper() == 'C':
+            elif respuesta.upper() == 'B':
                 self.oferta_comun()
             
-            elif respuesta.upper() == 'D':
+            elif respuesta.upper() == 'C':
                 Pandas().estad_totales()
             
             elif respuesta.upper() == 'Q':
