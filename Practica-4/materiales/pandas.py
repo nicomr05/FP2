@@ -5,6 +5,7 @@ Pablo José Pérez Pazos : pablo.perez.pazos@udc.es
 
 from avl_tree import AVL
 import pandas as pd
+from curso import Curso
 
 class Pandas:
     '''
@@ -31,7 +32,8 @@ class Pandas:
          director y la media de puntuación por año.
         '''
         for curso in arbol:
-            fila: dict = {'Director':curso.nombre}
+            curso: Curso
+            fila: dict = {'Nombre':curso.nombre, 'Duracion':curso.duracion, 'Estudiantes':curso.estudiantes, 'Nivel':curso.nivel, 'Idioma':curso.idioma, 'Precio':curso.precio}
             self.dataframe.loc[len(self.dataframe)] = fila # Añadimos cada diccionario al dataframe. Intentamos hacerlo con append pero daba error.
         
         return (self.peliculas_por_director(), self.media_director(), self.media_por_anho())
@@ -44,13 +46,17 @@ class Pandas:
         -------
         None
         '''
-        group_col = 'Director'
-        target_col = 'Título'
+        group_col: str = 'Idioma'
+        target_col: str = 'Estudiantes'
         data_directores = self.dataframe.groupby(group_col).agg({target_col: ['count']})
-        print ("\n\n#############################################")
-        print ("    Número de películas por director         ")
-        print ("#############################################\n")
-        print (data_directores)
+        
+        cad: str = 'Número de estudiantes por idioma'
+        n: int = 50
+
+        print ('\n','#'*n, sep='')
+        print (f'{cad:^n}')
+        print ('#'*n)
+        print ('\n',f'{data_directores}', sep='')
     
     def media_director(self) -> None:
         '''
@@ -60,13 +66,17 @@ class Pandas:
         -------
         None
         '''
-        group_col = 'Director'
-        target_col = 'Puntuación'
+        group_col: str = 'Nivel'
+        target_col: str = 'Estudiantes'
         data_directores = self.dataframe.groupby(group_col).agg({target_col: ['mean']})
-        print ("\n\n#############################################")
-        print ("    Puntuación media agrupada por director   ")
-        print ("#############################################\n")
-        print (data_directores)
+        
+        cad: str = 'Número medio de estudiantes por nivel'
+        n: int = 50
+
+        print ('\n','#'*n, sep='')
+        print (f'{cad:^n}')
+        print ('#'*n)
+        print ('\n',f'{data_directores}', sep='')
     
     def media_por_anho(self) -> None:
         '''
@@ -76,13 +86,17 @@ class Pandas:
         -------
         None
         '''
-        group_col = 'Fecha'
-        target_col = 'Puntuación'
-        data_directores = self.dataframe.groupby(group_col).agg({target_col: ['mean']})
-        print ("\n\n#############################################")
-        print ("    Puntuación media agrupada por año        ")
-        print ("#############################################\n")
-        print (data_directores)
+        group_col: str = 'Estudiantes'
+        target_col: str = 'Precio'
+        data_directores = self.dataframe.groupby(group_col).agg({target_col: ['count']})
+        
+        cad: str = 'Ingresos totales posibles'
+        n: int = 50
+
+        print ('\n','#'*n, sep='')
+        print (f'{cad:^n}')
+        print ('#'*n)
+        print ('\n',f'{data_directores}', sep='')
 
     @property
     def dataframe(self) -> pd.DataFrame:
