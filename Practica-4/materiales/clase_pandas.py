@@ -9,6 +9,7 @@ from curso import Curso
 
 class Pandas:
     '''
+    Clase que calcula y gestiona las estadísticas de los cursos del árbol.
     '''
     def __init__(self) -> None:
         '''

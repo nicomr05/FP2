@@ -56,6 +56,7 @@ class Curso:
         self._idioma = idioma
         self._precio = precio
         self._clave = f'{self._nombre}_{self._nivel}_{self._idioma}'
+        self._beneficio = self._precio*self._duracion*self._estudiantes
     
     def __str__(self) -> str:
         '''
@@ -67,12 +68,12 @@ class Curso:
         str
          String informativo del curso.
         '''
-        cadena: str = f'{self._nombre} | '
-        cadena += f'{self._duracion} | '
-        cadena += f'{self._estudiantes} | '
+        cadena: str = f'{self._nombre:12} | '
+        cadena += f'{self._duracion:4} | '
+        cadena += f'{self._estudiantes:4} | '
         cadena += f'{self._nivel} | '
-        cadena += f'{self._idioma} | '
-        cadena += f'{self._precio}€'
+        cadena += f'{self._idioma:3} | '
+        cadena += f'{self._precio:5} €'
         
         return cadena
     
@@ -108,6 +109,13 @@ class Curso:
     def estudiantes(self) -> str:
         return self._estudiantes
     
+    @estudiantes.setter
+    def estudiantes(self, nuevo_valor:int) -> None:
+        if isinstance(nuevo_valor, int) and nuevo_valor > 0:
+            self._estudiantes = nuevo_valor
+        else:
+            print('El número de estudiantes debe de ser un entero positivo.')
+    
     @property
     def nivel(self) -> str:
         return self._nivel
@@ -123,3 +131,7 @@ class Curso:
     @property
     def clave(self) -> str:
         return self._clave
+    
+    @property
+    def beneficio(self) -> float:
+        return self._beneficio
