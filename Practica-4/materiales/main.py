@@ -223,8 +223,6 @@ class SimuladorCursos:
                 print(f'\n  Resultado:\n\n{self.arbol_comun}')
 
             elif respuesta.upper() == 'C':
-                
-                print(self.agregado, self.comun)
 
                 if self.agregado and self.comun:
                     
