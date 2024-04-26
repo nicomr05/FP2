@@ -68,12 +68,12 @@ class Curso:
         str
          String informativo del curso.
         '''
-        cadena: str = f'{self._nombre:12} | '
+        cadena: str = f'{self._nombre:14} | '
         cadena += f'{self._duracion:4} | '
         cadena += f'{self._estudiantes:4} | '
         cadena += f'{self._nivel} | '
         cadena += f'{self._idioma:3} | '
-        cadena += f'{self._precio:5} €'
+        cadena += f'{self._precio:5.2f} €'
         
         return cadena
     
@@ -100,6 +100,13 @@ class Curso:
     @property
     def nombre(self) -> str:
         return self._nombre
+    
+    @nombre.setter
+    def nombre(self, nuevo_nombre):
+        if isinstance(nuevo_nombre, str) and len(nuevo_nombre) > 0:
+            self._nombre = nuevo_nombre
+        else:
+            print('El del curso debe ser un string no vacío.')
     
     @property
     def duracion(self) -> str:

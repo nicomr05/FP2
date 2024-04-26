@@ -27,7 +27,11 @@ class SimuladorCursos:
         Agrega los cursos realizados únicamente en ambas academias a un árbol común.
     
     opcion_leer_archivos(self) -> bool:
-        Permite elegir entre leer o no leer los ficheros de texto.
+        Permite elegir entre leer o no leer los ficheros de texto mediante un menú auxiliar.
+    
+    menu(self) -> None:
+        Imprime por pantalla el menú de opciones para navegar entre los cursos y le permite escoger
+        a un usuario entre 3 opciones de visualización/filtrado, además de la opción de poder salir del menú.
     '''
 
     def __init__(self) -> None:
@@ -61,7 +65,7 @@ class SimuladorCursos:
             texto1: str = archivoA.read()
             lineas = str(texto1).split('\n') # Leemos el archivo
             
-            for linea in lineas[1:len(lineas) - 1]:
+            for linea in lineas[1:(len(lineas)-1)]:
                 partes_linea = str(linea).split(',')
 
                 nombre      = str(partes_linea[0])
@@ -79,7 +83,7 @@ class SimuladorCursos:
             texto2: str = archivoB.read()
             lineas = str(texto2).split('\n')
             
-            for linea in lineas[1:len(lineas) - 1]:
+            for linea in lineas[1:(len(lineas)-1)]:
                 partes_linea = str(linea).split(',')
 
                 nombre      = str(partes_linea[0])
@@ -114,10 +118,12 @@ class SimuladorCursos:
                     if curso_A.beneficio >= curso_B.beneficio:
                         curso_A.estudiantes += curso_B.estudiantes
                         self.arbol_agregado[curso_A.clave] = curso_A
+                        self.arbol_agregado[curso_A.clave].nombre += ' (A)'
                     
                     else:
                         curso_B.estudiantes += curso_A.estudiantes
                         self.arbol_agregado[curso_B.clave] = curso_B
+                        self.arbol_agregado[curso_B.clave].nombre += ' (B)'
                 
                 else:
                     self.arbol_agregado[curso_A.clave] = curso_A
@@ -156,10 +162,11 @@ class SimuladorCursos:
         print(f'\n{linea}\n\n{texto}\n\n{linea}')
         
         while True:
-            eleccion = str(input('\nResponde aquí: '))
+            eleccion = str(input('\n  Responde aquí: '))
             
             if eleccion.upper() == 'S':
                 print(f'\n{linea}\n\n  Leyendo ficheros...\n')
+                self.crear_arboles_cursos()
                 sleep(0.25)
                 return True
             
@@ -182,12 +189,12 @@ class SimuladorCursos:
         '''
         linea = '-'*50
         
-        menu  = f'\n{linea}'
+        menu  = f'\n{linea}\n'
         menu += '\nA - Realizar la operación "oferta agregada"'
         menu += '\nB - Realizar la operación "oferta común"'
         menu += '\nC - Mostrar estadísticas'
         menu += '\n\nQ - Salir del menú'
-        menu += f'\n{linea}'
+        menu += f'\n\n{linea}\n'
         
         opciones = 'AaBbCcQq'
         
@@ -195,7 +202,7 @@ class SimuladorCursos:
         
         while valor:
             print(menu) # Imprimimos las opciones a elegir
-            respuesta = str(input('\nEscoge una opción: ')) # Solicitamos la opción dentro del menú
+            respuesta = str(input('\n  Escoge una opción: ')) # Solicitamos la opción dentro del menú
             print('\n' + linea + '\n')
             
             self.crear_arboles_cursos()
@@ -209,7 +216,9 @@ class SimuladorCursos:
                 sleep(0.25)
                 print('\n  Oferta terminada.\n')
 
-                print(f'\n  Resultado:\n\n{self.arbol_agregado}')
+                print(f'\n  Resultado:\n\n')
+                for curso_agregado in self.arbol_agregado.values():
+                    print(curso_agregado)
 
             elif respuesta.upper() == 'B':
                 print('\n  Creando oferta común...')
@@ -220,7 +229,9 @@ class SimuladorCursos:
                 sleep(0.25)
                 print('\n  Oferta terminada.\n')
 
-                print(f'\n  Resultado:\n\n{self.arbol_comun}')
+                print(f'\n  Resultado:\n\n')
+                for curso_comun in self.arbol_comun.values():
+                    print(curso_comun)
 
             elif respuesta.upper() == 'C':
 
@@ -285,17 +296,16 @@ class SimuladorCursos:
 
 def main() -> None:
     '''
-    Función principal que lee el archivo de texto y crea los objetos Curso.
+    Función principal que lee inicia el simulador y el menú de cursos.
     
     Returns
     -------
     None
     '''
     simulador = SimuladorCursos()
-    simulador.crear_arboles_cursos()
     simulador.menu()
 
-    '''
+    
     for cursoB in simulador.arbol_A.values():
         print(cursoB)
     print()
@@ -307,7 +317,7 @@ def main() -> None:
     print()
     for curso_com in simulador.arbol_comun.values():
         print(curso_com)
-    '''
+    
 
 
 if __name__ == '__main__':
