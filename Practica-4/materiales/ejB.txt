@@ -4,9 +4,9 @@ Rust,90,12,A,Cas,20.00
 Rust,60,10,B,Cas,15.00
 C,110,50,A,Cas,9.00
 Python,90,50,B,Eng,18.00
-JavaScript,50,20,B,Gal,14.50
-Python,75,25,B,Eng,22.00
-C,150,25,A,Cas,10.00
+JavaScript,50,20,B,Eng,14.50
+Python,75,25,A,Eng,22.00
+C,150,25,B,Cas,10.00
 SQL,60,75,C,Eng,18.00
 SQL,60,100,A,Cas,16.50
 # Añadir lineas siguiendo el formato

@@ -109,11 +109,11 @@ class Curso:
             print('El del curso debe ser un string no vacío.')
     
     @property
-    def duracion(self) -> str:
+    def duracion(self) -> int:
         return self._duracion
     
     @property
-    def estudiantes(self) -> str:
+    def estudiantes(self) -> int:
         return self._estudiantes
     
     @estudiantes.setter
@@ -132,7 +132,7 @@ class Curso:
         return self._idioma
     
     @property
-    def precio(self) -> str:
+    def precio(self) -> float:
         return self._precio
     
     @property

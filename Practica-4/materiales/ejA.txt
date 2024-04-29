@@ -1,12 +1,12 @@
 # nombre,duracion,participantes,nivel,idioma,precio
 Rust,60,10,A,Cas,15.00
 C,120,30,A,Cas,8.00
-Python,90,50,B,Eng,18.00
+Python,90,50,C,Eng,18.00
 Rust,40,20,C,Gal,13.50
-Python,75,25,B,Eng,22.00
+Python,75,25,B,Gal,22.00
 C,150,15,B,Gal,10.00
 SQL,80,80,A,Cas,14.00
 Python,30,15,B,Cas,12.50
 Perl,45,30,C,Eng,15.00
-SQL,60,100,A,Cas,16.50
+SQL,60,100,A,Gal,16.50
 # Añadir lineas siguiendo el formato

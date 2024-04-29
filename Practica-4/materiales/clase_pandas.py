@@ -5,7 +5,6 @@ Pablo José Pérez Pazos : pablo.perez.pazos@udc.es
 
 from avl_tree import AVL
 import pandas as pd
-from curso import Curso
 
 class Pandas:
     '''
@@ -32,8 +31,7 @@ class Pandas:
          Tupla con tres valores: número de estudiantes por idioma, nº medio de estudiantes
          por nivel y los ingresos totales posibles.
         '''
-        for curso in arbol:
-            curso: Curso
+        for curso in arbol.values():
             fila: dict = {'Nombre':curso.nombre, 'Duracion':curso.duracion, 'Estudiantes':curso.estudiantes, 'Nivel':curso.nivel, 'Idioma':curso.idioma, 'Precio':curso.precio}
             self.dataframe.loc[len(self.dataframe)] = fila # Añadimos cada diccionario al dataframe. Intentamos hacerlo con append pero daba error.
         
@@ -55,7 +53,7 @@ class Pandas:
         n: int = 50
 
         print ('\n','#'*n, sep='')
-        print (f'{cad:^n}')
+        print (f'{cad:^50}')
         print ('#'*n)
         print ('\n',f'{data_directores}', sep='')
     
@@ -75,7 +73,7 @@ class Pandas:
         n: int = 50
 
         print ('\n','#'*n, sep='')
-        print (f'{cad:^n}')
+        print (f'{cad:^50}')
         print ('#'*n)
         print ('\n',f'{data_directores}', sep='')
     
@@ -95,7 +93,7 @@ class Pandas:
         n: int = 50
 
         print ('\n','#'*n, sep='')
-        print (f'{cad:^n}')
+        print (f'{cad:^50}')
         print ('#'*n)
         print ('\n',f'{data_directores}', sep='')
 

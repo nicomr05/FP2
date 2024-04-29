@@ -50,18 +50,17 @@ class SimuladorCursos:
         self._comun = False
 
 
-    def crear_arboles_cursos(self) -> tuple[AVL,AVL]:
+    def crear_arboles_cursos(self) -> None:
         '''
         Método que permite leer dos archivos de texto con la información de las los cursos
         que se quieren organizar y los mete en dos árboles A y B respectivamente.
 
         Returns
         -------
-        tuple[AVL,AVL]
-         Tupla de los dos árboles de cursos.
+        None
         '''
         
-        with open(argv[1], 'r', encoding='utf-8') as archivoA:
+        with open(argv[1], 'r', encoding = 'utf-8') as archivoA:
             texto1: str = archivoA.read()
             lineas = str(texto1).split('\n') # Leemos el archivo
             
@@ -69,18 +68,16 @@ class SimuladorCursos:
                 if not linea.startswith('#'):
                     partes_linea = str(linea).split(',')
 
-                    nombre      = str(partes_linea[0])
-                    duracion    = int(partes_linea[1])
-                    estudiantes = int(partes_linea[2])
-                    nivel       = str(partes_linea[3])
-                    idioma      = str(partes_linea[4])
-                    precio      = float(partes_linea[5])
-
-                    cursoA = Curso(nombre, duracion, estudiantes, nivel, idioma, precio)
-
-                    self._arbol_A[cursoA.clave] = cursoA
-
-        with open(argv[2], 'r', encoding='utf-8') as archivoB:
+                    cursoA = Curso(nombre=      str(partes_linea[0]),
+                                   duracion=    int(partes_linea[1]),
+                                   estudiantes= int(partes_linea[2]),
+                                   nivel=       str(partes_linea[3]),
+                                   idioma=      str(partes_linea[4]),
+                                   precio=      float(partes_linea[5]))
+                    
+                    self.arbol_A[cursoA.clave] = cursoA
+        
+        with open(argv[2], 'r', encoding = 'utf-8') as archivoB:
             texto2: str = archivoB.read()
             lineas = str(texto2).split('\n')
             
@@ -88,18 +85,14 @@ class SimuladorCursos:
                 if not linea.startswith('#'):
                     partes_linea = str(linea).split(',')
     
-                    nombre      = str(partes_linea[0])
-                    duracion    = int(partes_linea[1])
-                    estudiantes = int(partes_linea[2])
-                    nivel       = str(partes_linea[3])
-                    idioma      = str(partes_linea[4])
-                    precio      = float(partes_linea[5])
-    
-                    cursoB = Curso(nombre, duracion, estudiantes, nivel, idioma, precio)
+                    cursoB = Curso(nombre=      str(partes_linea[0]),
+                                   duracion=    int(partes_linea[1]),
+                                   estudiantes= int(partes_linea[2]),
+                                   nivel=       str(partes_linea[3]),
+                                   idioma=      str(partes_linea[4]),
+                                   precio=      float(partes_linea[5]))
                     
                     self.arbol_B[cursoB.clave] = cursoB
-
-        return (self.arbol_A, self.arbol_B)
     
     
     def oferta_agregada(self) -> None:
@@ -111,9 +104,7 @@ class SimuladorCursos:
         None
         '''
         for curso_A in self.arbol_A.values():
-            curso_A: Curso
             for curso_B in self.arbol_B.values():
-                curso_B: Curso
                 
                 if curso_A == curso_B:
 
@@ -140,12 +131,17 @@ class SimuladorCursos:
         None
         '''
         for curso_A in self.arbol_A.values():
-            curso_A: Curso
             for curso_B in self.arbol_B.values():
-                curso_B: Curso
                 
                 if curso_A == curso_B:
-                    return
+
+                    if curso_A.beneficio >= curso_B.beneficio:
+                        curso_A.estudiantes += curso_B.estudiantes
+                        self.arbol_comun[curso_A.clave] = curso_A
+                    
+                    else:
+                        curso_B.estudiantes += curso_A.estudiantes
+                        self.arbol_comun[curso_B.clave] = curso_B
     
     
     def opcion_leer_archivos(self) -> bool:
@@ -169,7 +165,7 @@ class SimuladorCursos:
             if eleccion.upper() == 'S':
                 print(f'\n{linea}\n\n  Leyendo ficheros...\n')
                 self.crear_arboles_cursos()
-                sleep(0.25)
+                sleep(0.15)
                 return True
             
             elif eleccion.upper() == 'N':
@@ -204,7 +200,7 @@ class SimuladorCursos:
         
         while valor:
             print(menu) # Imprimimos las opciones a elegir
-            respuesta = str(input('\n  Escoge una opción: ')) # Solicitamos la opción dentro del menú
+            respuesta = str(input('  Escoge una opción: ')) # Solicitamos la opción dentro del menú
             print('\n' + linea + '\n')
             
             self.crear_arboles_cursos()
@@ -219,6 +215,7 @@ class SimuladorCursos:
                 print('\n  Oferta terminada.\n')
 
                 print(f'\n  Resultado:\n\n')
+                self.arbol_agregado
                 for curso_agregado in self.arbol_agregado.values():
                     print(curso_agregado)
 
@@ -308,11 +305,11 @@ def main() -> None:
     simulador.menu()
 
     
-    for cursoB in simulador.arbol_A.values():
-        print(cursoB)
-    print()
     for cursoA in simulador.arbol_B.values():
         print(cursoA)
+    print()
+    for cursoB in simulador.arbol_A.values():
+        print(cursoB)
     print()
     for curso_ag in simulador.arbol_agregado.values():
         print(curso_ag)
