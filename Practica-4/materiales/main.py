@@ -3,6 +3,7 @@ Nicolás Muñiz Rodríguez : nicolas.muniz@udc.es
 Pablo José Pérez Pazos : pablo.perez.pazos@udc.es
 '''
 
+from tomlkit import value
 from avl_tree import AVL
 from curso import Curso
 from clase_pandas import Pandas
@@ -278,7 +279,7 @@ class SimuladorCursos:
         if isinstance(booleano, bool):
             self._agregado = booleano
         else:
-            print('El para "agregado" valor debe ser un booleano.')
+            ValueError('El para "agregado" valor debe ser un booleano.')
     
     @property
     def comun(self) -> bool:
@@ -289,7 +290,7 @@ class SimuladorCursos:
         if isinstance(booleano, bool):
             self._comun = booleano
         else:
-            print('El valor para "comun" debe ser un booleano.')
+            ValueError('El valor para "comun" debe ser un booleano.')
     
 
 

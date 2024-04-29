@@ -106,7 +106,7 @@ class Curso:
         if isinstance(nuevo_nombre, str) and len(nuevo_nombre) > 0:
             self._nombre = nuevo_nombre
         else:
-            print('El del curso debe ser un string no vacío.')
+            ValueError('El del curso debe ser un string no vacío.')
     
     @property
     def duracion(self) -> int:
@@ -121,7 +121,7 @@ class Curso:
         if isinstance(nuevo_valor, int) and nuevo_valor > 0:
             self._estudiantes = nuevo_valor
         else:
-            print('El número de estudiantes debe de ser un entero positivo.')
+            ValueError('El número de estudiantes debe de ser un entero positivo.')
     
     @property
     def nivel(self) -> str:
