@@ -65,37 +65,39 @@ class SimuladorCursos:
             texto1: str = archivoA.read()
             lineas = str(texto1).split('\n') # Leemos el archivo
             
-            for linea in lineas[1:(len(lineas)-1)]:
-                partes_linea = str(linea).split(',')
+            for linea in lineas:
+                if not linea.startswith('#'):
+                    partes_linea = str(linea).split(',')
 
-                nombre      = str(partes_linea[0])
-                duracion    = int(partes_linea[1])
-                estudiantes = int(partes_linea[2])
-                nivel       = str(partes_linea[3])
-                idioma      = str(partes_linea[4])
-                precio      = float(partes_linea[5])
+                    nombre      = str(partes_linea[0])
+                    duracion    = int(partes_linea[1])
+                    estudiantes = int(partes_linea[2])
+                    nivel       = str(partes_linea[3])
+                    idioma      = str(partes_linea[4])
+                    precio      = float(partes_linea[5])
 
-                cursoA = Curso(nombre, duracion, estudiantes, nivel, idioma, precio)
-                
-                self._arbol_A[cursoA.clave] = cursoA
+                    cursoA = Curso(nombre, duracion, estudiantes, nivel, idioma, precio)
+
+                    self._arbol_A[cursoA.clave] = cursoA
 
         with open(argv[2], 'r', encoding='utf-8') as archivoB:
             texto2: str = archivoB.read()
             lineas = str(texto2).split('\n')
             
-            for linea in lineas[1:(len(lineas)-1)]:
-                partes_linea = str(linea).split(',')
-
-                nombre      = str(partes_linea[0])
-                duracion    = int(partes_linea[1])
-                estudiantes = int(partes_linea[2])
-                nivel       = str(partes_linea[3])
-                idioma      = str(partes_linea[4])
-                precio      = float(partes_linea[5])
-
-                cursoB = Curso(nombre, duracion, estudiantes, nivel, idioma, precio)
-                
-                self.arbol_B[cursoB.clave] = cursoB
+            for linea in lineas:
+                if not linea.startswith('#'):
+                    partes_linea = str(linea).split(',')
+    
+                    nombre      = str(partes_linea[0])
+                    duracion    = int(partes_linea[1])
+                    estudiantes = int(partes_linea[2])
+                    nivel       = str(partes_linea[3])
+                    idioma      = str(partes_linea[4])
+                    precio      = float(partes_linea[5])
+    
+                    cursoB = Curso(nombre, duracion, estudiantes, nivel, idioma, precio)
+                    
+                    self.arbol_B[cursoB.clave] = cursoB
 
         return (self.arbol_A, self.arbol_B)
     
