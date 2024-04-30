@@ -1,0 +1,15 @@
+JavaScript,30,25,B,Gal,16.00
+Python,39,19,A,Fre,10.19
+Rust,90,12,A,Cas,20.00
+Rust,60,10,A,Cas,20.00
+R,100,40,C,En,25.00
+Python,60,10,A,Cas,15.00
+Fortran,150,20,B,Gal,7.00
+C++,29,12,D,Eng,37.72
+PHP,157,24,D,Fre,33.34
+C,197,24,B,Eng,23.05
+C,111,1,B,Gal,35.28
+Rust,148,2,B,Cas,31.39
+PHP,63,4,B,Cas,5.29
+SQL,123,7,B,Gal,29.22
+Python,238,6,A,Ger,5.92

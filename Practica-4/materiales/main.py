@@ -98,7 +98,9 @@ class SimuladorCursos:
     
     def oferta_agregada(self) -> None:
         '''
-        Método que agrega los cursos realizados por cada una de las academias a un árbol común.
+        Método que agrega los cursos realizados por cada una de las academias a un sólo árbol. Si dos cursos son iguales
+        se escogerá el de mayor beneficio. Además, si dos cursos tienen mismo nombre, se le asignará el nombre de cada
+        academia respectivamente.
         
         Returns
         -------
@@ -111,13 +113,15 @@ class SimuladorCursos:
 
                     if curso_A.beneficio >= curso_B.beneficio:
                         curso_A.estudiantes += curso_B.estudiantes
+                        curso_A.nombre += ' (A)'
+                        curso_B.nombre += ' (B)'
                         self.arbol_agregado[curso_A.clave] = curso_A
-                        self.arbol_agregado[curso_A.clave].nombre += ' (A)'
                     
                     else:
                         curso_B.estudiantes += curso_A.estudiantes
+                        curso_A.nombre += ' (A)'
+                        curso_B.nombre += ' (B)'
                         self.arbol_agregado[curso_B.clave] = curso_B
-                        self.arbol_agregado[curso_B.clave].nombre += ' (B)'
                 
                 else:
                     self.arbol_agregado[curso_A.clave] = curso_A

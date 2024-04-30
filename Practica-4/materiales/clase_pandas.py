@@ -18,7 +18,7 @@ class Pandas:
         -------
         None
         '''
-        self._dataframe = pd.DataFrame(columns=['Nombre', 'Duracion', 'Estudiantes', 'Nivel', 'Idioma', 'precio'])
+        self._dataframe = pd.DataFrame(columns=['Nombre', 'Duracion', 'Estudiantes', 'Nivel', 'Idioma', 'Precio', 'Ingresos Totales'])
     
     def estad_totales(self, arbol:AVL) -> tuple:
         '''
@@ -32,7 +32,7 @@ class Pandas:
          por nivel y los ingresos totales posibles.
         '''
         for curso in arbol.values():
-            fila: dict = {'Nombre':curso.nombre, 'Duracion':curso.duracion, 'Estudiantes':curso.estudiantes, 'Nivel':curso.nivel, 'Idioma':curso.idioma, 'Precio':curso.precio}
+            fila: dict = {'Nombre':curso.nombre, 'Duracion':curso.duracion, 'Estudiantes':curso.estudiantes, 'Nivel':curso.nivel, 'Idioma':curso.idioma, 'Precio':curso.precio, 'Ingresos Totales':curso.beneficio}
             self.dataframe.loc[len(self.dataframe)] = fila # Añadimos cada diccionario al dataframe. Intentamos hacerlo con append pero daba error.
         
         return (self.estudiantes_por_idioma(), self.media_estudiantes_nivel(), self.ingresos_totales())
@@ -85,9 +85,8 @@ class Pandas:
         -------
         None
         '''
-        group_col: str = 'Estudiantes'
-        target_col: str = 'Precio'
-        data_directores = self.dataframe.groupby(group_col).agg({target_col: ['count']})
+        target_col: str = 'Ingresos Totales'
+        data_directores = self.dataframe.agg({target_col: ['sum']})
         
         cad: str = 'Ingresos totales posibles'
         n: int = 50

@@ -1,0 +1,12 @@
+Python,250,3,B,Gal,17.50
+C++,105,4,C,Cas,48.75
+Rust,90,12,A,Cas,20.00
+SQL,85,20,D,Eng,23.73
+Python,24,3,D,Fre,23.54
+C++,29,12,D,Eng,37.72
+Python,39,19,A,Fre,10.19
+C,66,23,A,Fre,30.87
+C,229,2,B,Ger,34.49
+Fortran,150,20,B,Gal,7.00
+Rust,153,2,C,Gal,37.09
+Rust,102,6,B,Fre,15.64
