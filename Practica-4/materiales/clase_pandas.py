@@ -20,6 +20,7 @@ class Pandas:
         '''
         self._dataframe = pd.DataFrame(columns=['Nombre', 'Duracion', 'Estudiantes', 'Nivel', 'Idioma', 'Precio', 'Ingresos Totales'])
     
+
     def estad_totales(self, arbol:AVL) -> tuple:
         '''
         Método que recoge los valores de cada película y los añade al dataframe como diccionario.
@@ -35,7 +36,10 @@ class Pandas:
             fila: dict = {'Nombre':curso.nombre, 'Duracion':curso.duracion, 'Estudiantes':curso.estudiantes, 'Nivel':curso.nivel, 'Idioma':curso.idioma, 'Precio':curso.precio, 'Ingresos Totales':curso.beneficio}
             self.dataframe.loc[len(self.dataframe)] = fila # Añadimos cada diccionario al dataframe. Intentamos hacerlo con append pero daba error.
         
-        return (self.estudiantes_por_idioma(), self.media_estudiantes_nivel(), self.ingresos_totales())
+        self.estudiantes_por_idioma()
+        self.media_estudiantes_nivel()
+        self.ingresos_totales()
+         
             
     def estudiantes_por_idioma(self) -> None:
         '''
@@ -57,6 +61,7 @@ class Pandas:
         print ('#'*n)
         print ('\n',f'{data_directores}', sep='')
     
+
     def media_estudiantes_nivel(self) -> None:
         '''
         Método que muestra el número medio de estudiantes por nivel.
@@ -77,6 +82,7 @@ class Pandas:
         print ('#'*n)
         print ('\n',f'{data_directores}', sep='')
     
+
     def ingresos_totales(self) -> None:
         '''
         Método que muestra los ingresos totales posibles..
@@ -95,6 +101,7 @@ class Pandas:
         print (f'{cad:^50}')
         print ('#'*n)
         print ('\n',f'{data_directores}', sep='')
+
 
     @property
     def dataframe(self) -> pd.DataFrame:

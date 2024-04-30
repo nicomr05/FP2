@@ -1,12 +1,12 @@
 # nombre,duracion,participantes,nivel,idioma,precio
 JavaScript,30,25,B,Gal,1.90
-Rust,90,12,A,Cas,2.30
-Rust,60,10,B,Cas,3.50
-C,110,50,A,Cas,2.00
-Python,90,50,B,Eng,3.20
-JavaScript,50,20,B,Eng,2.50
-Python,30,20,B,Cas,1.10
-C,150,25,B,Cas,2.60
+Rust,35,12,A,Cas,2.30
+Rust,50,10,B,Cas,3.50
+C,20,40,A,Cas,2.00
+Python,20,50,B,Eng,3.20
+JavaScript,40,20,B,Eng,2.50
+Python,30,20,B,Cas,5.30
+C,50,25,B,Cas,2.60
 SQL,60,75,C,Eng,3.30
-SQL,60,100,A,Cas,2.50
+SQL,20,50,A,Cas,2.50
 # Añadir lineas siguiendo el formato

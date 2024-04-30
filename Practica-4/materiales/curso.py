@@ -29,7 +29,6 @@ class Curso:
     __init__(self, nombre:str, duracion:int, estudiantes:int, nivel:str, idioma:str, precio:float) -> None:
         Asigna atributos al objeto.
     '''
-   
     def __init__(self, nombre:str, duracion:int, estudiantes:int, nivel:str, idioma:str, precio:float) -> None:       
         '''
         Método mágico que asigna atributos al objeto.
@@ -58,6 +57,7 @@ class Curso:
         self._clave = f'{self._nombre}_{self._nivel}_{self._idioma}'
         self._beneficio = self._precio*self._duracion*self._estudiantes
     
+
     def __str__(self) -> str:
         '''
         Implementación del método mágico "str".
@@ -77,6 +77,7 @@ class Curso:
         
         return cadena
     
+
     def __eq__(self, curso:'Curso') -> bool:
         '''
         Implementación del método mágico "==".
@@ -96,6 +97,7 @@ class Curso:
                     return True
         
         return False
+
 
     @property
     def nombre(self) -> str:

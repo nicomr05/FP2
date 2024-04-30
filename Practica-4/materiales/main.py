@@ -17,12 +17,17 @@ class SimuladorCursos:
 
     Methods
     -------
+    __init__(self) -> None:
+        Asigna atributos al objeto.
+
     crear_arbol_cursos(self, texto:str) -> AVL:
         Permite leer dos archivos de texto con la información de las los cursos
         que se quieren organizar y los mete en dos árboles A y B respectivamente.
     
     oferta_agregada(self) -> AVL:
-        Agrega los cursos realizados por cada una de las academias a un árbol común.
+        Agrega los cursos realizados por cada una de las academias a un sólo árbol. Si dos cursos son iguales
+        se escogerá el de mayor beneficio. Además, si dos cursos tienen mismo nombre, se le asignará el nombre de cada
+        academia respectivamente.
     
     oferta_comun(self) -> AVL:
         Agrega los cursos realizados únicamente en ambas academias a un árbol común.
@@ -34,7 +39,6 @@ class SimuladorCursos:
         Imprime por pantalla el menú de opciones para navegar entre los cursos y le permite escoger
         a un usuario entre 3 opciones de visualización/filtrado, además de la opción de poder salir del menú.
     '''
-
     def __init__(self) -> None:
         '''
         Método que asigna atributos al objeto.
@@ -162,7 +166,7 @@ class SimuladorCursos:
         linea = '-'*50
         texto = '¿Leer ficheros de los cursos A y B? (S/N)'
         
-        print(f'\n{linea}\n\n{texto}\n\n{linea}')
+        print(f'\n{"="*50}\n\n{texto}\n\n{"="*50}')
         
         while True:
             eleccion = str(input('\n  Responde aquí: '))
@@ -170,7 +174,7 @@ class SimuladorCursos:
             if eleccion.upper() == 'S':
                 print(f'\n{linea}\n\n  Leyendo ficheros...\n')
                 self.crear_arboles_cursos()
-                sleep(0.15)
+                sleep(0.10)
                 return True
             
             elif eleccion.upper() == 'N':
@@ -192,12 +196,12 @@ class SimuladorCursos:
         '''
         linea = '-'*50
         
-        menu  = f'\n{linea}\n'
+        menu  = f'\n\n{"MENÚ":=^50}\n'
         menu += '\nA - Realizar la operación "oferta agregada"'
         menu += '\nB - Realizar la operación "oferta común"'
         menu += '\nC - Mostrar estadísticas'
         menu += '\n\nQ - Salir del menú'
-        menu += f'\n\n{linea}\n'
+        menu += f'\n\n{"="*50}\n'
         
         opciones = 'AaBbCcQq'
         
@@ -216,7 +220,7 @@ class SimuladorCursos:
                 self.oferta_agregada()
                 self.agregado = True
 
-                sleep(0.25)
+                sleep(0.10)
                 print('\n  Oferta terminada.\n')
 
                 print(f'\n  Resultado:\n\n')
@@ -230,7 +234,7 @@ class SimuladorCursos:
                 self.oferta_comun()
                 self.comun = True
 
-                sleep(0.25)
+                sleep(0.10)
                 print('\n  Oferta terminada.\n')
 
                 print(f'\n  Resultado:\n\n')
@@ -242,11 +246,22 @@ class SimuladorCursos:
                 if self.agregado and self.comun:
                     
                     pandas = Pandas()
-                    bosque = (self.arbol_A, self.arbol_B, self.arbol_agregado, self.arbol_comun)
                     
-                    for arbol in bosque:
-                        pandas.estad_totales(arbol)
-                        print(f'\n{linea}\n')
+                    print(f'{linea}\n\nÁRBOL A:')
+                    pandas.estad_totales(self.arbol_A)
+                    print(f'\n{linea}\n\n')
+
+                    print(f'{linea}\n\nÁRBOL B:')
+                    pandas.estad_totales(self.arbol_B)
+                    print(f'\n{linea}\n\n')
+
+                    print(f'{linea}\n\nÁRBOL AGREGADO:')
+                    pandas.estad_totales(self.arbol_agregado)
+                    print(f'\n{linea}\n\n')
+
+                    print(f'{linea}\n\nÁRBOL COMÚN:')
+                    pandas.estad_totales(self.arbol_comun)
+                    print(f'\n{linea}\n\n')
                     
                 else:
                     print('  Se deben crear ambos árboles (oferta agregada y oferta común) antes de poder mostrar las estadísticas totales.')
@@ -256,7 +271,7 @@ class SimuladorCursos:
                 break
             
             elif respuesta not in opciones:
-                print('La opción no se encuentra en el menú.')
+                print('  La opción no se encuentra en el menú.')
     
     @property
     def arbol_A(self) -> AVL:
@@ -295,7 +310,6 @@ class SimuladorCursos:
             self._comun = booleano
         else:
             ValueError('El valor para "comun" debe ser un booleano.')
-    
 
 
 def main() -> None:
@@ -309,19 +323,6 @@ def main() -> None:
     simulador = SimuladorCursos()
     simulador.menu()
 
-    
-    for cursoA in simulador.arbol_B.values():
-        print(cursoA)
-    print()
-    for cursoB in simulador.arbol_A.values():
-        print(cursoB)
-    print()
-    for curso_ag in simulador.arbol_agregado.values():
-        print(curso_ag)
-    print()
-    for curso_com in simulador.arbol_comun.values():
-        print(curso_com)
-    
 
 
 if __name__ == '__main__':
