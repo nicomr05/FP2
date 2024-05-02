@@ -3,8 +3,6 @@ Nicolás Muñiz Rodríguez : nicolas.muniz@udc.es
 Pablo José Pérez Pazos : pablo.perez.pazos@udc.es
 '''
 
-from sqlite3 import Cursor
-from tomlkit import value
 from avl_tree import AVL
 from curso import Curso
 from clase_pandas import Pandas
