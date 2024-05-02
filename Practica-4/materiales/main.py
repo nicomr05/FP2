@@ -158,14 +158,29 @@ class SimuladorCursos:
                         self.arbol_comun[curso_B.clave] = curso_B
     
     
-    def preorder_indent_BST(self, T:AVL, p, d) -> None:
-        '''Print preorder representation of a binary subtree of T rooted at p at depth d.
-           To print aTree completely call preorder_indent_BST(aTree, aTree.root(), 0)'''
-        if p is not None:
+    def preorder_indent_BST(self, T:AVL, r, d) -> None:
+        '''
+        Imprime la representación en preorden de un árbol desde una raíz.
+        Para imprimir un árbol entero se debe llamar a preorder_indent_BST(aTree, aTree.root(), 0)
+        
+        Parameters
+        ----------
+        T : AVL
+         Árbol AVL que se quiere imprimir.
+        r : Any
+         Raíz del árbol.
+        d : Any
+         Profundidad hasta la que se quiere mostrar el árbol.
+        
+        Returns
+        -------
+        None
+        '''
+        if r is not None:
             # use depth for indentation
-            print(2*d*' ' + "(" +  str(p.value()) + ")") 
-            self.preorder_indent_BST(T, T.left(p), d+1) # left child depth is d+1
-            self.preorder_indent_BST(T, T.right(p), d+1) # right child depth is d+1
+            print(2*d*' ' + "(" +  str(r.value()) + ")") 
+            self.preorder_indent_BST(T, T.left(r), d+1) # left child depth is d+1
+            self.preorder_indent_BST(T, T.right(r), d+1) # right child depth is d+1
     
     
     def opcion_leer_archivos(self) -> bool:
