@@ -51,7 +51,7 @@ class Pandas:
         '''
         group_col: str = 'Idioma'
         target_col: str = 'Estudiantes'
-        data_directores = self.dataframe.groupby(group_col).agg({target_col: ['count']})
+        data_directores = self.dataframe.groupby(group_col).agg({target_col: ['sum']})
         
         cad: str = 'Número de estudiantes por idioma'
         n: int = 50

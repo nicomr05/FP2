@@ -68,11 +68,11 @@ class Curso:
         str
          String informativo del curso.
         '''
-        cadena: str = f'{self._nombre:14} | '
-        cadena += f'{self._duracion:4} | '
-        cadena += f'{self._estudiantes:4} | '
-        cadena += f'{self._nivel} | '
-        cadena += f'{self._idioma:3} | '
+        cadena: str = f'{self._nombre}; '
+        cadena += f'{self._duracion:4}, '
+        cadena += f'{self._estudiantes:4}, '
+        cadena += f'{self._nivel}, '
+        cadena += f'{self._idioma:3}, '
         cadena += f'{self._precio:5.2f} €'
         
         return cadena

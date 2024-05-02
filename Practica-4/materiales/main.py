@@ -3,6 +3,7 @@ Nicolás Muñiz Rodríguez : nicolas.muniz@udc.es
 Pablo José Pérez Pazos : pablo.perez.pazos@udc.es
 '''
 
+from sqlite3 import Cursor
 from tomlkit import value
 from avl_tree import AVL
 from curso import Curso
@@ -111,7 +112,9 @@ class SimuladorCursos:
         None
         '''
         for curso_A in self.arbol_A.values():
+            curso_A: Curso
             for curso_B in self.arbol_B.values():
+                curso_B: Curso
                 
                 if curso_A == curso_B:
 
@@ -140,7 +143,9 @@ class SimuladorCursos:
         None
         '''
         for curso_A in self.arbol_A.values():
+            curso_A: Curso
             for curso_B in self.arbol_B.values():
+                curso_B: Curso
                 
                 if curso_A == curso_B:
 
@@ -151,6 +156,16 @@ class SimuladorCursos:
                     else:
                         curso_B.estudiantes += curso_A.estudiantes
                         self.arbol_comun[curso_B.clave] = curso_B
+    
+    
+    def preorder_indent_BST(self, T:AVL, p, d) -> None:
+        '''Print preorder representation of a binary subtree of T rooted at p at depth d.
+           To print aTree completely call preorder_indent_BST(aTree, aTree.root(), 0)'''
+        if p is not None:
+            # use depth for indentation
+            print(2*d*' ' + "(" +  str(p.value()) + ")") 
+            self.preorder_indent_BST(T, T.left(p), d+1) # left child depth is d+1
+            self.preorder_indent_BST(T, T.right(p), d+1) # right child depth is d+1
     
     
     def opcion_leer_archivos(self) -> bool:
@@ -183,7 +198,7 @@ class SimuladorCursos:
             
             else:
                 print(f'\n  Respuesta no válida.\n\n{linea}')
-        
+
         
     def menu(self) -> None:
         '''
@@ -224,9 +239,7 @@ class SimuladorCursos:
                 print('\n  Oferta terminada.\n')
 
                 print(f'\n  Resultado:\n\n')
-                self.arbol_agregado
-                for curso_agregado in self.arbol_agregado.values():
-                    print(curso_agregado)
+                self.preorder_indent_BST(self.arbol_agregado, self.arbol_agregado.root(), 0)
 
             elif respuesta.upper() == 'B':
                 print('\n  Creando oferta común...')
@@ -238,8 +251,7 @@ class SimuladorCursos:
                 print('\n  Oferta terminada.\n')
 
                 print(f'\n  Resultado:\n\n')
-                for curso_comun in self.arbol_comun.values():
-                    print(curso_comun)
+                self.preorder_indent_BST(self.arbol_comun, self.arbol_comun.root(), 0)
 
             elif respuesta.upper() == 'C':
 
