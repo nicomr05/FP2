@@ -67,10 +67,14 @@ class Pandas:
         group_col = 'Director'
         target_col = 'Título'
         data_directores = self.dataframe.groupby(group_col).agg({target_col: ['count']})
-        print ("\n\n#############################################")
-        print ("    Número de películas por director         ")
-        print ("#############################################\n")
-        print (data_directores)
+
+        cad: str = 'Número de películas por director'
+        n: int = 50
+
+        print ('\n','#'*n, sep='')
+        print (f'{cad:^50}')
+        print ('#'*n)
+        print ('\n',f'{data_directores}', sep='')
     
     def media_director(self) -> None:
         '''
@@ -83,10 +87,14 @@ class Pandas:
         group_col = 'Director'
         target_col = 'Puntuación'
         data_directores = self.dataframe.groupby(group_col).agg({target_col: ['mean']})
-        print ("\n\n#############################################")
-        print ("    Puntuación media agrupada por director   ")
-        print ("#############################################\n")
-        print (data_directores)
+        
+        cad: str = 'Puntuación media agrupada por director'
+        n: int = 50
+
+        print ('\n'*3,'#'*n, sep='')
+        print (f'{cad:^50}')
+        print ('#'*n)
+        print ('\n',f'{data_directores}', sep='')
     
     def media_por_anho(self) -> None:
         '''
@@ -99,10 +107,14 @@ class Pandas:
         group_col = 'Fecha'
         target_col = 'Puntuación'
         data_directores = self.dataframe.groupby(group_col).agg({target_col: ['mean']})
-        print ("\n\n#############################################")
-        print ("    Puntuación media agrupada por año        ")
-        print ("#############################################\n")
-        print (data_directores)
+        
+        cad: str = 'Puntuación media agrupada por año'
+        n: int = 50
+
+        print ('\n'*3,'#'*n, sep='')
+        print (f'{cad:^50}')
+        print ('#'*n)
+        print ('\n',f'{data_directores}', sep='')
 
     @property
     def dataframe(self) -> pd.DataFrame:

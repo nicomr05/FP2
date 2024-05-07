@@ -75,14 +75,15 @@ class SimuladorPeliculas:
             lineas: str = str(texto_peliculas).split('\n')
         
             for linea in lineas:
-                partes_linea: str = str(linea).split('; ')
+                if len(linea) > 0 and not linea.startswith('#'):
+                    partes_linea: str = str(linea).split('; ')
 
-                pelicula = Pelicula(str(partes_linea[0]),
-                                    str(partes_linea[1]),
-                                    int(partes_linea[2]),
-                                    float(partes_linea[3]))
+                    pelicula = Pelicula(str(partes_linea[0]),
+                                        str(partes_linea[1]),
+                                        int(partes_linea[2]),
+                                        float(partes_linea[3]))
 
-                self.lista_ordenada.add(pelicula)
+                    self.lista_ordenada.add(pelicula)
                 
     
     def eliminar_repetidos(self) -> None:
@@ -100,8 +101,8 @@ class SimuladorPeliculas:
         
         while True:
             
-            posicion_pelicula: Pelicula = copia_lista.first()
-            posicion_pelicula_posterior: Pelicula = copia_lista.after(posicion_pelicula)
+            posicion_pelicula  = copia_lista.first()
+            posicion_pelicula_posterior = copia_lista.after(posicion_pelicula)
 
             primera: Pelicula = copia_lista.get_element(posicion_pelicula)
             segunda: Pelicula = copia_lista.get_element(posicion_pelicula_posterior)
@@ -173,18 +174,19 @@ class SimuladorPeliculas:
         if isinstance(director, str) and len(director) > 0:
             
             for pelicula in self.lista_ordenada:
-                if director in pelicula.director:
+                if director.lower() in pelicula.director.lower():
                     lista_peliculas.append(pelicula)
             
             if len(lista_peliculas) != 0:
-                    for peli in lista_peliculas:
-                        print(peli)
+                print(f'\n{"-"*50}\n\n  Películas disponibles:\n')
+                for peli in lista_peliculas:
+                    print(peli)
+
             else:
-                print(f'\n  No se han encontrado películas de "{director}".')
-                
+                print(f'\n  No se han encontrado películas del director/a "{director}".')
                 
         else:
-            print('El director introducido deben ser una cadena de texto no vacía.')
+            print('El director introducido debe ser una cadena de texto no vacía.')
 
     
     def buscar_anho(self, anho:int) -> None:
@@ -205,20 +207,67 @@ class SimuladorPeliculas:
         if isinstance(anho, int) and anho > 0:
             
             for pelicula in self.lista_ordenada:
-                if anho == pelicula.anho_estreno:
+                pelicula: Pelicula
+                if anho == pelicula.anho_estreno or \
+                    anho + 1800 == pelicula.anho_estreno or \
+                    anho + 1900 == pelicula.anho_estreno or \
+                    anho + 2000 == pelicula.anho_estreno:
+                    
                     lista_peliculas.append(pelicula)
 
             if len(lista_peliculas) != 0:
+                print(f'\n{"-"*50}\n\n  Películas disponibles:\n')
                 for peli in lista_peliculas:
                     print(peli)
 
             else:
-                print(f'\n  No se han encontrado películas del {anho}.')
+                print(f'\n  No se han encontrado películas del año {anho}.')
         
         else:
             print('\n  El año introducido debe ser un entero positivo.')
     
     
+    def crear_archivo_sin_repetidos(self) -> None:
+        '''
+        Método que crea un archivo de texto sin películas repetidas a partir de una lista ordenada.
+
+        Returns
+        -------
+        None
+        '''
+        print('  Creando archivo...')
+        
+        if self.lista_ordenada_sin_repetidos.is_empty():
+            self.eliminar_repetidos()
+
+        nombre = str(input('\n  Introduce el nombre que le quieres dar al archivo: '))
+        
+        formato = '.txt'
+        if formato not in nombre:
+            nombre += formato
+        
+        with open(nombre, 'w', encoding='utf-8') as file: # Creamos un nuevo archivo sin películas repetidas
+            for pelicula in self.lista_ordenada_sin_repetidos:
+                file.write(f'{pelicula.director}; {pelicula.titulo}; {pelicula.anho_estreno}; {pelicula.puntuacion_media}\n')
+        
+        sleep(0.10)
+        print('\n  Archivo creado.')
+
+
+    def mostrar_estadisticas(self) -> None:
+        '''
+        Método que muestra por pantalla las estadísticas de las películas de la lista sin repetidos.
+
+        Returns
+        -------
+        None
+        '''
+        if self.lista_ordenada_sin_repetidos.is_empty():
+            self.eliminar_repetidos()
+                
+        datos = Pandas()
+        datos.estad_totales(self.lista_ordenada_sin_repetidos)
+
     def menu(self) -> None:
         '''
         Imprime por pantalla el menú de opciones para navegar entre las películas y le permite escoger a un usuario
@@ -241,9 +290,9 @@ class SimuladorPeliculas:
         
         opciones = 'AaBbCcQq'
         
-        self.opcion_leer_archivos()
+        valor: bool = self.opcion_leer_archivos()
         
-        while True:
+        while valor:
             print(menu) # Imprimimos las opciones a elegir
             respuesta: str = str(input('\n  Escoge una opción: ')) # Solicitamos la opción dentro del menú
             
@@ -255,41 +304,21 @@ class SimuladorPeliculas:
             
             elif respuesta.upper() == 'B':
                 director: str = str(input('  Introduce el director que deseas buscar (Formato de búsqueda: Apellido, Nombre): '))
-                
-                print('\n  Películas disponibles:')
                 self.buscar_director(director)
 
             elif respuesta.upper() == 'C':
                 try:
                     anho: int = int(input('  Introduce el año de las películas que deseas buscar: '))
-                    
-                    print('\n  Películas disponibles:')
                     self.buscar_anho(anho)
                     
                 except ValueError:
                     print('\n  El año debe ser un entero.')
                     
             elif respuesta.upper() == 'D':
-                print('Creando archivo...\n')
-                self.eliminar_repetidos() # Procesamos la lista de películas para eliminar repetidos.
-                
-                with open('peliculas_sin_repetidos.txt', 'w', encoding='utf-8') as archivo_sin_repetidos: # Creamos un nuevo archivo sin películas repetidas
-
-                    for pelicula in self.lista_ordenada_sin_repetidos:
-                        pelicula: Pelicula
-                        
-                        archivo_sin_repetidos.write(f'{pelicula.director}; {pelicula.titulo}; {pelicula.anho_estreno}; {pelicula.puntuacion_media}\n')
-                
-                sleep(0.20)
-                print('Archivo creado.')
-                sleep(0.10)
+                self.crear_archivo_sin_repetidos()
             
             elif respuesta.upper() == 'E':
-                
-                self.eliminar_repetidos() # Procesamos la lista de películas para eliminar repetidos y la guardamos en una variable
-                
-                datos = Pandas()
-                datos.estad_totales(self.lista_ordenada_sin_repetidos)
+                self.mostrar_estadisticas()
             
             elif respuesta.upper() == 'Q':
                 print('\n  Saliendo...\n')
@@ -317,8 +346,7 @@ def main() -> None:
     None
     '''
     simulador = SimuladorPeliculas()
-    simulador.menu() #Mostramos el menú y ejecutamos la función del menú (implementación más arriba).
-
+    simulador.menu() #Mostramos el menú y ejecutamos la función del menú.
 
         
 if __name__ == '__main__':
