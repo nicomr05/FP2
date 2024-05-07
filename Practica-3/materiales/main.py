@@ -2,12 +2,8 @@
 Nicolás Muñiz Rodríguez : nicolas.muniz@udc.es
 Pablo José Pérez Pazos : pablo.perez.pazos@udc.es
 '''
-from re import S
 from sys import argv
 from time import sleep
-
-from numpy import isin
-from zmq import CURVE_PUBLICKEY
 from pelicula import Pelicula
 from clase_pandas import Pandas
 
@@ -45,6 +41,12 @@ class SimuladorPeliculas:
     buscar_anho(self, anho:int) -> None:
         Busca un año en la lista ordenada de directores.
     
+    crear_archivo_sin_repetidos(self) -> None:
+        Crea un archivo de texto sin películas repetidas a partir de una lista ordenada.    
+    
+    mostrar_estadisticas(self) -> None:
+        Muestra por pantalla las estadísticas de las películas de la lista sin repetidos.
+
     menu(self) -> None:
         Imprime por pantalla el menú de opciones para navegar entre las películas y le permite escoger a un usuario
         entre 3 opciones de visualización/filtrado de la lista, además de la opción de poder salir del menú.
@@ -267,6 +269,7 @@ class SimuladorPeliculas:
                 
         datos = Pandas()
         datos.estad_totales(self.lista_ordenada_sin_repetidos)
+
 
     def menu(self) -> None:
         '''
